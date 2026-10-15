@@ -2,6 +2,7 @@
 title: KAI=SEN
 authors: [しっしー]
 year: 2021
+month: 12
 event: 未来祭 2021
 playUrl: https://cluster.mu/w/0f4058bf-46b5-4828-bf02-d9d47d093027
 playLabel: cluster で遊ぶ

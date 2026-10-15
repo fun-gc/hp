@@ -2,6 +2,7 @@
 title: Building Game
 authors: [タクミン]
 year: 2021
+month: 12
 event: 未来祭 2021
 playUrl: https://cluster.mu/w/e7648c0d-339a-40c8-a841-8773b699b536
 playLabel: cluster で遊ぶ

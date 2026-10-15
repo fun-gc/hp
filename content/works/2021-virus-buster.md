@@ -2,6 +2,7 @@
 title: Virus Buster!!
 authors: [shin]
 year: 2021
+month: 12
 event: 未来祭 2021
 playUrl: https://drive.google.com/file/d/1jdAN8kGJzTPxChgLtQOWw2Kq3W9mTFSg/view?usp=sharing
 playLabel: ダウンロード

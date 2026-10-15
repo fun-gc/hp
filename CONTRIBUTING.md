@@ -60,16 +60,20 @@ tags: [イベント]
 title: 作品名
 authors: [作者名]
 year: 2026
+month: 10
 event: 未来祭 2026
 playUrl: https://unityroom.com/games/xxxx
 playLabel: unityroom で遊ぶ
-youtubeId: 動画URLの v= の後ろの文字列
+youtubeId: 動画URLの v= の後ろの文字列(ショートなら shorts/ の後ろ)
+thumbnail: /works/2026-作品名.gif
 tags: [アクション]
 ---
 作品の説明文。
 ```
 
-`playUrl`・`playLabel`・`youtubeId`・`tags` は省略できます。
+- `month` は展示した月。同じ年の作品が新しい順に並びます。
+- サムネイルは `thumbnail` に指定した画像・GIF(`public/works/` に置く)→ YouTube のサムネイルの順で使います。`youtubeId` があれば、サムネイルを押すと動画が再生されます。
+- `month`・`playUrl`・`playLabel`・`youtubeId`・`thumbnail`・`tags` は省略できます。
 
 ## メンバーのプロフィール
 

@@ -62,7 +62,13 @@ export function getWorks(): Work[] {
       const meta = parseOrThrow(workSchema, data, `content/works/${file}`);
       return { ...meta, slug: file.replace(/\.md$/, ""), body: content.trim() };
     })
-    .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title, "ja"));
+    .sort(
+      (a, b) =>
+        b.year - a.year ||
+        (b.month ?? 0) - (a.month ?? 0) ||
+        (a.event ?? "").localeCompare(b.event ?? "", "ja") ||
+        a.title.localeCompare(b.title, "ja"),
+    );
 }
 
 export function getNews(): News[] {

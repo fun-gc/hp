@@ -2,6 +2,7 @@
 title: 灯篭 -TOUROU-
 authors: [しっしー]
 year: 2021
+month: 12
 event: 未来祭 2021
 playUrl: https://unityroom.com/games/tourou_daimongi
 playLabel: unityroom で遊ぶ

@@ -52,10 +52,14 @@ export const workSchema = z.object({
   title: z.string(),
   authors: z.array(z.string()).min(1),
   year: z.number().int(),
+  // 同じ年の中での並び順に使う(展示した月)。新しいものほど上に出る
+  month: z.number().int().min(1).max(12).optional(),
   event: z.string().optional(),
   playUrl: z.url().optional(),
   playLabel: z.string().optional(),
   youtubeId: z.string().optional(),
+  // public/ 以下に置いた画像や GIF のパス(例: /works/xxx.gif)。YouTube のサムネイルより優先する
+  thumbnail: z.string().startsWith("/").optional(),
   tags: z.array(z.string()).default([]),
 });
 export type Work = z.infer<typeof workSchema> & { slug: string; body: string };
