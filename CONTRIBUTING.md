@@ -72,8 +72,9 @@ tags: [アクション]
 ```
 
 - `month` は展示した月。同じ年の作品が新しい順に並びます。
+- `order` を付けると、同じイベントの中で小さい数字ほど左に並びます(付けない作品はその後ろにタイトル順)。
 - サムネイルは `thumbnail` に指定した画像・GIF(`public/works/` に置く)→ YouTube のサムネイルの順で使います。`youtubeId` があれば、サムネイルを押すと動画が再生されます。
-- `month`・`playUrl`・`playLabel`・`youtubeId`・`thumbnail`・`tags` は省略できます。
+- `month`・`order`・`playUrl`・`playLabel`・`youtubeId`・`thumbnail`・`tags` は省略できます。
 
 ## メンバーのプロフィール
 

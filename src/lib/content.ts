@@ -67,6 +67,7 @@ export function getWorks(): Work[] {
         b.year - a.year ||
         (b.month ?? 0) - (a.month ?? 0) ||
         (a.event ?? "").localeCompare(b.event ?? "", "ja") ||
+        (a.order ?? Infinity) - (b.order ?? Infinity) ||
         a.title.localeCompare(b.title, "ja"),
     );
 }

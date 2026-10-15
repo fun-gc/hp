@@ -55,6 +55,8 @@ export const workSchema = z.object({
   // 同じ年の中での並び順に使う(展示した月)。新しいものほど上に出る
   month: z.number().int().min(1).max(12).optional(),
   event: z.string().optional(),
+  // 同じイベント内での並び順。小さいほど左(先)に出る。省略すると最後尾でタイトル順
+  order: z.number().int().optional(),
   playUrl: z.url().optional(),
   playLabel: z.string().optional(),
   youtubeId: z.string().optional(),
