@@ -60,7 +60,6 @@ export default function Home() {
         </div>
         <div className="mx-auto w-full max-w-sm md:max-w-md">
           <InteractiveLogo className="aspect-[1210/1280] w-full" />
-          <p className="mt-3 text-center text-xs text-muted">立方体の面を押してみよう</p>
         </div>
       </section>
 

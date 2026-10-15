@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Chakra_Petch, JetBrains_Mono } from "next/font/google";
-// Noto Sans JP は next/font/google だと Cloudflare のビルドで失敗するため、npm パッケージから自前で配信する
-import "@fontsource-variable/noto-sans-jp";
+// 日本語フォントは next/font/google だと Cloudflare のビルドで失敗するため、npm パッケージから自前で配信する
+import "@fontsource/line-seed-jp/400.css";
+import "@fontsource/line-seed-jp/700.css";
+import "@fontsource/line-seed-jp/800.css";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { site } from "@/lib/site";

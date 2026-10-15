@@ -16,8 +16,8 @@
 }
 
 @theme inline {
-  --font-sans: "Noto Sans JP Variable", system-ui, sans-serif;
-  --font-display: var(--font-chakra-petch), "Noto Sans JP Variable", sans-serif;
+  --font-sans: "LINE Seed JP", system-ui, sans-serif;
+  --font-display: var(--font-chakra-petch), "LINE Seed JP", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
