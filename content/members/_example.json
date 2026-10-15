@@ -1,0 +1,13 @@
+{
+  "discordId": "000000000000000000",
+  "name": "ふぐ太郎",
+  "avatarUrl": "https://cdn.discordapp.com/embed/avatars/0.png",
+  "roles": ["programmer", "planner"],
+  "admissionYear": 2025,
+  "bio": "Unity で 2D アクションをつくっています。",
+  "favoriteGames": ["Hollow Knight"],
+  "works": ["2021-tourou"],
+  "links": { "github": "https://github.com/fun-gc" },
+  "medals": [],
+  "public": false
+}

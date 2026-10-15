@@ -1,0 +1,22 @@
+name: 年度替わりの再ビルド
+
+# メンバーの学年はビルドした日を基準に計算するので、4 月 1 日(日本時間 0:05)に再ビルドして繰り上げる。
+# Cloudflare Pages の Deploy Hook の URL をリポジトリの Secrets に CF_PAGES_DEPLOY_HOOK として登録しておく。
+on:
+  schedule:
+    - cron: "5 15 31 3 *"
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloudflare Pages の再ビルドを依頼
+        env:
+          HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::CF_PAGES_DEPLOY_HOOK が未設定のため再ビルドをスキップしました"
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK"

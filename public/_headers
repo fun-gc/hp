@@ -1,0 +1,4 @@
+# Cloudflare Pages 用のヘッダー設定(ビルド時に out/ にコピーされる)
+# _next/static/ のファイル名には内容のハッシュが入るので、ブラウザに長くキャッシュさせてよい
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

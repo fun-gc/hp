@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* 色は講座テンプレート(FUN GC 講座テンプレート.pdf)から取った値 */
+@theme {
+  --color-paper: #fafaf6;
+  --color-ink: #17181c;
+  --color-ink-2: #26282e;
+  --color-line: #deddd6;
+  --color-muted: #5b5d63;
+  --color-fun-red: #ed1c24;
+  --color-fun-green: #22b14c;
+  --color-fun-yellow: #fff200;
+  /* 文字に使うときは少し濃い色にして読みやすくする */
+  --color-fun-red-ink: #c4161c;
+  --color-fun-green-ink: #157a33;
+}
+
+@theme inline {
+  --font-sans: "LINE Seed JP", system-ui, sans-serif;
+  --font-display: var(--font-chakra-petch), "LINE Seed JP", sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-fun-yellow);
+  color: var(--color-ink);
+}
+
+/* 蛍光ペン風の強調(テンプレートの「ここだけは覚える」) */
+.marker {
+  background: linear-gradient(transparent 58%, var(--color-fun-yellow) 58%);
+}
+
+/* お知らせ本文(Markdown)の見た目 */
+.prose-fun {
+  line-height: 1.9;
+}
+.prose-fun > * + * {
+  margin-top: 1.1em;
+}
+.prose-fun h2 {
+  margin-top: 2em;
+  border-left: 6px solid var(--color-fun-red);
+  padding-left: 0.6em;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+.prose-fun h3 {
+  margin-top: 1.6em;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.prose-fun a {
+  color: var(--color-fun-red-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prose-fun ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+.prose-fun ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.prose-fun code {
+  font-family: var(--font-mono);
+  background: #ecebe6;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
+.prose-fun pre {
+  background: var(--color-ink);
+  color: #f2f2ee;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+.prose-fun pre code {
+  background: none;
+  padding: 0;
+}
+.prose-fun img {
+  max-width: 100%;
+}
+.prose-fun blockquote {
+  border-left: 4px solid var(--color-line);
+  padding-left: 1em;
+  color: var(--color-muted);
+}
