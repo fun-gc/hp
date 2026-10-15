@@ -16,8 +16,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-noto-sans-jp), system-ui, sans-serif;
-  --font-display: var(--font-chakra-petch), var(--font-noto-sans-jp), sans-serif;
+  --font-sans: "Noto Sans JP Variable", system-ui, sans-serif;
+  --font-display: var(--font-chakra-petch), "Noto Sans JP Variable", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 

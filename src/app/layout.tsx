@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { Chakra_Petch, JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
+import { Chakra_Petch, JetBrains_Mono } from "next/font/google";
+// Noto Sans JP は next/font/google だと Cloudflare のビルドで失敗するため、npm パッケージから自前で配信する
+import "@fontsource-variable/noto-sans-jp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { site } from "@/lib/site";
 import "./globals.css";
-
-const notoSansJp = Noto_Sans_JP({
-  variable: "--font-noto-sans-jp",
-  weight: ["400", "700", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const chakraPetch = Chakra_Petch({
   variable: "--font-chakra-petch",
@@ -45,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ja"
-      className={`${notoSansJp.variable} ${chakraPetch.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${chakraPetch.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
         <SiteHeader />
