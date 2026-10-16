@@ -19,7 +19,8 @@ export default function Home() {
 
   return (
     <>
-      <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-20">
+      {/* ロゴの演出はロゴより外側にも描くので、横にはみ出した分はここで切る */}
+      <section className="mx-auto grid max-w-6xl items-center gap-10 overflow-x-clip px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-20">
         <div className="space-y-6">
           <h1 className="text-3xl font-black leading-snug tracking-tight sm:text-5xl">
             {site.university}の
