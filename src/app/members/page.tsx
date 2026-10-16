@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { MemberCard } from "@/components/MemberCard";
-import { PageHeading, SectionLabel } from "@/components/SectionLabel";
+import { PageHeading } from "@/components/SectionLabel";
 import { getMedals, getMembers } from "@/lib/content";
 import { memberStanding } from "@/lib/grade";
 
@@ -32,7 +32,6 @@ export default function MembersPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
-        label="MEMBERS"
         title="メンバー"
         lead="プロフィールは Discord の /profile コマンドから登録できるようにする予定です。掲載を希望したメンバーだけを表示しています。"
       />
@@ -46,7 +45,6 @@ export default function MembersPage() {
           {active.length > 0 && renderGrid(active)}
           {alumni.length > 0 && (
             <section className="space-y-6">
-              <SectionLabel>ALUMNI</SectionLabel>
               <h2 className="text-2xl font-black">OB・OG</h2>
               {renderGrid(alumni)}
             </section>

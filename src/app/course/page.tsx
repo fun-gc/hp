@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cube, cubeCycle } from "@/components/Cube";
 import { ScheduleCalendar } from "@/components/ScheduleCalendar";
-import { PageHeading, SectionLabel } from "@/components/SectionLabel";
+import { PageHeading } from "@/components/SectionLabel";
 import { getSchedule } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -26,14 +26,12 @@ export default function CoursePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
-        label="COURSE"
         title="ゲーム開発講座"
         lead="Unity をメインにしたゲーム開発講座です。"
       />
 
       <section id="schedule" className="mb-20 scroll-mt-24 space-y-6">
         <div className="space-y-3">
-          <SectionLabel>SCHEDULE</SectionLabel>
           <h2 className="text-3xl font-black">講座・イベントの日程</h2>
           <p className="text-muted">日付を押すと、その日の予定だけを表示します。</p>
         </div>
@@ -42,8 +40,7 @@ export default function CoursePage() {
 
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-5">
-          <SectionLabel>TIME · 90 分</SectionLabel>
-          <h2 className="text-2xl font-black">1 回の流れ</h2>
+          <h2 className="text-2xl font-black">1 回の流れ(90 分)</h2>
           <ul className="divide-y divide-line border-y border-line">
             {flow.map((f, i) => (
               <li key={f.title} className="flex items-center gap-4 py-3">
@@ -56,7 +53,6 @@ export default function CoursePage() {
           </ul>
         </div>
         <div className="space-y-5">
-          <SectionLabel>EXAMPLE · 第 1 回</SectionLabel>
           <h2 className="text-2xl font-black">たとえば第 1 回では</h2>
           <ol className="space-y-3">
             {firstSession.map((t, i) => (

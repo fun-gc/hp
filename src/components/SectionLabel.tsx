@@ -16,10 +16,9 @@ export function SectionLabel({ children, invert = false }: { children: React.Rea
   );
 }
 
-export function PageHeading({ label, title, lead }: { label: string; title: string; lead?: React.ReactNode }) {
+export function PageHeading({ title, lead }: { title: string; lead?: React.ReactNode }) {
   return (
     <header className="mb-10 space-y-4">
-      <SectionLabel>{label}</SectionLabel>
       <h1 className="text-3xl font-black tracking-tight sm:text-5xl">{title}</h1>
       {lead && <p className="max-w-2xl text-base leading-relaxed text-muted sm:text-lg">{lead}</p>}
     </header>

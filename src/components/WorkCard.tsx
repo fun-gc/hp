@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import type { Work } from "@/lib/schema";
+import { workPoster } from "@/lib/work";
 
 /* eslint-disable @next/next/no-img-element -- GIF や外部サムネイルをそのまま表示する */
-function Poster({ src, contain = false }: { src: string; contain?: boolean }) {
+export function Poster({ src, contain = false }: { src: string; contain?: boolean }) {
   if (!contain) {
     return <img src={src} alt="" loading="lazy" className="size-full object-cover opacity-90 transition group-hover:opacity-100" />;
   }
@@ -21,9 +22,7 @@ function Poster({ src, contain = false }: { src: string; contain?: boolean }) {
 // 作品カード。サムネイルを押したときだけ YouTube を読み込むので、一覧ページが重くならない。
 export function WorkCard({ work }: { work: Work }) {
   const [playing, setPlaying] = useState(false);
-  // サムネイルは「自前の画像・GIF」→「YouTube のサムネイル」の順で使う
-  const poster =
-    work.thumbnail ?? (work.youtubeId ? `https://i.ytimg.com/vi/${work.youtubeId}/hqdefault.jpg` : undefined);
+  const poster = workPoster(work);
 
   return (
     <article className="flex flex-col border border-line bg-white">

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SectionLabel } from "@/components/SectionLabel";
 import { getNews } from "@/lib/content";
 
 export const dynamicParams = false;
@@ -24,7 +23,7 @@ export default async function NewsArticle({ params }: PageProps<"/news/[slug]">)
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <header className="mb-10 space-y-4">
-        <SectionLabel>NEWS · {item.date.toISOString().slice(0, 10).replaceAll("-", ".")}</SectionLabel>
+        <p className="font-display text-sm font-bold text-muted">{item.date.toISOString().slice(0, 10).replaceAll("-", ".")}</p>
         <h1 className="text-3xl font-black leading-snug sm:text-4xl">{item.title}</h1>
       </header>
       {/* 本文は content/news の Markdown をビルド時に HTML にしたもの(リポジトリ内の文章だけを表示する) */}

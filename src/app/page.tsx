@@ -1,34 +1,17 @@
 import Link from "next/link";
-import { Cube } from "@/components/Cube";
 import { InteractiveLogo } from "@/components/InteractiveLogo";
 import { SectionLabel } from "@/components/SectionLabel";
-import { getNews, getSchedule } from "@/lib/content";
+import { Poster } from "@/components/WorkCard";
+import { getNews, getSchedule, getWorks } from "@/lib/content";
 import { eventKindLabels } from "@/lib/schema";
 import { site } from "@/lib/site";
-
-const activities = [
-  {
-    color: "red" as const,
-    title: "ゲーム開発講座",
-    text: "Unity を中心に、まず動かして体験してから学ぶ 90 分の講座を開いています。",
-    href: "/course/",
-  },
-  {
-    color: "green" as const,
-    title: "作品展示",
-    text: `新入生歓迎イベント ${site.events.welcome} と学校祭「${site.events.festival}」で、メンバーのゲームを展示しています。`,
-    href: "/works/",
-  },
-  {
-    color: "yellow" as const,
-    title: "チーム開発",
-    text: "役割を分担して、ひとつのゲームを長期間かけてつくるチーム開発にも取り組んでいます。",
-    href: "/about/#team",
-  },
-];
+import { workPoster } from "@/lib/work";
 
 export default function Home() {
   const news = getNews().slice(0, 3);
+  const works = getWorks()
+    .filter((w) => workPoster(w))
+    .slice(0, 4);
   const buildDate = new Date().toISOString().slice(0, 10);
   const upcoming = getSchedule()
     .filter((e) => e.date >= buildDate)
@@ -38,16 +21,13 @@ export default function Home() {
     <>
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-20">
         <div className="space-y-6">
-          <SectionLabel>FUTURE UNIVERSITY HAKODATE</SectionLabel>
-          <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-6xl">
-            つくって、
+          <h1 className="text-3xl font-black leading-snug tracking-tight sm:text-5xl">
+            {site.university}の
             <br />
-            遊んで、
-            <br />
-            <span className="marker">見せあおう。</span>
+            <span className="marker">ゲーム制作サークル</span>です。
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-            FUN GC は{site.university}のゲーム制作サークルです。Discord と学内を拠点に、講座、展示、チーム開発を通してゲームづくりを楽しんでいます。
+            Discord と学内を拠点に、Unity の講座、展示、チーム開発をしています。
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/join/" className="bg-ink px-6 py-3 font-bold text-white transition hover:bg-fun-red">
@@ -64,24 +44,28 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="mb-8 space-y-3">
-          <SectionLabel>ACTIVITY</SectionLabel>
-          <h2 className="text-3xl font-black">3 つの活動</h2>
+        <div className="mb-8 flex items-end justify-between">
+          <div className="space-y-3">
+            <SectionLabel>WORKS</SectionLabel>
+            <h2 className="text-3xl font-black">作品</h2>
+          </div>
+          <Link href="/works/" className="text-sm font-bold hover:text-fun-red-ink">
+            一覧 →
+          </Link>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {activities.map((a) => (
-            <Link
-              key={a.title}
-              href={a.href}
-              className="group flex flex-col gap-4 border border-line bg-white p-6 transition hover:-translate-y-1 hover:shadow-[6px_6px_0_var(--color-ink)]"
-            >
-              <Cube color={a.color} className="size-10" />
-              <h3 className="text-xl font-black">{a.title}</h3>
-              <p className="flex-1 text-sm leading-relaxed text-muted">{a.text}</p>
-              <span className="font-display text-sm font-bold tracking-widest group-hover:text-fun-red-ink">MORE →</span>
-            </Link>
+        <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {works.map((w) => (
+            <li key={w.slug}>
+              <Link href="/works/" className="group block space-y-2">
+                <div className="relative aspect-video overflow-hidden bg-ink">
+                  <Poster src={workPoster(w)!} contain={Boolean(w.thumbnail)} />
+                </div>
+                <p className="font-bold leading-snug group-hover:text-fun-red-ink">{w.title}</p>
+                <p className="text-xs text-muted">{w.event ?? w.year}</p>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-12 px-4 py-12 sm:px-6 md:grid-cols-2">
@@ -140,9 +124,9 @@ export default function Home() {
         <div className="relative overflow-hidden bg-ink px-6 py-12 text-white sm:px-12">
           <div className="relative z-10 max-w-xl space-y-5">
             <SectionLabel invert>JOIN US</SectionLabel>
-            <h2 className="text-3xl font-black sm:text-4xl">一緒にゲームをつくろう</h2>
+            <h2 className="text-3xl font-black sm:text-4xl">部員募集中</h2>
             <p className="leading-relaxed text-white/75">
-              プログラム、絵、音、企画。得意なことがあってもなくても、ゲームが好きならぜひ見学に来てください。
+              見学はいつでも受け付けています。
             </p>
             <Link href="/join/" className="inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-white">
               入部案内へ
