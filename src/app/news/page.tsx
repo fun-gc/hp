@@ -9,7 +9,7 @@ export default function NewsPage() {
   const news = getNews();
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeading label="NEWS" title="お知らせ" />
+      <PageHeading title="お知らせ" />
       <ul className="divide-y divide-line border-y border-line">
         {news.map((n) => (
           <li key={n.slug}>

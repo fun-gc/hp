@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Cube, cubeCycle } from "@/components/Cube";
-import { PageHeading, SectionLabel } from "@/components/SectionLabel";
+import { PageHeading } from "@/components/SectionLabel";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "活動紹介" };
@@ -14,7 +14,7 @@ const activities = [
   },
   {
     title: `新入生歓迎イベント ${site.events.welcome} での展示`,
-    text: "春の新入生歓迎イベントで、メンバーがつくったゲームを展示します。実際に遊んでもらいながら、サークルの雰囲気を知ってもらう場です。",
+    text: "春の新入生歓迎イベントで、メンバーがつくったゲームを展示します。",
   },
   {
     title: `学校祭「${site.events.festival}」での展示`,
@@ -32,9 +32,8 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
-        label="ABOUT"
         title="活動紹介"
-        lead={`FUN GC は${site.university}のゲーム制作サークルです。活動の拠点は Discord と学内。オンラインで相談しながら、集まって講座や展示準備をしています。`}
+        lead={`FUN GC は${site.university}のゲーム制作サークルです。活動の拠点は Discord と学内です。`}
       />
 
       <ol className="divide-y divide-line border-y border-line">
@@ -46,10 +45,9 @@ export default function AboutPage() {
               <h2 className="text-xl font-black sm:text-2xl">{a.title}</h2>
               <p className="max-w-3xl leading-relaxed text-muted">{a.text}</p>
               {a.id === "team" && (
-                <div className="max-w-3xl border-l-4 border-fun-yellow bg-white px-5 py-4">
-                  <p className="font-display text-xs font-bold tracking-[0.2em] text-muted">NOW DEVELOPING</p>
-                  <p className="mt-1 font-bold">いまはメトロイドヴァニア作品をチームで開発中です。続報をお楽しみに。</p>
-                </div>
+                <p className="max-w-3xl border-l-4 border-fun-yellow bg-white px-5 py-4 font-bold">
+                  いまはメトロイドヴァニアを開発しています。
+                </p>
               )}
               {a.link && (
                 <Link href={a.link.href} className="inline-block font-bold hover:text-fun-red-ink">
@@ -63,14 +61,12 @@ export default function AboutPage() {
 
       <section className="mt-16 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <SectionLabel>HISTORY</SectionLabel>
           <h2 className="text-2xl font-black">FUGU から FUN GC へ</h2>
           <p className="leading-relaxed text-muted">
             以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUN GC として活動を続けています。
           </p>
         </div>
         <div className="space-y-4">
-          <SectionLabel>PLACE</SectionLabel>
           <h2 className="text-2xl font-black">活動場所</h2>
           <ul className="space-y-2 leading-relaxed text-muted">
             <li>・Discord サーバー(日々の相談、作品共有、お知らせ)</li>
