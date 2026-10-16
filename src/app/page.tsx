@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Cube } from "@/components/Cube";
 import { InteractiveLogo } from "@/components/InteractiveLogo";
-import { PointBand, SectionLabel } from "@/components/SectionLabel";
+import { SectionLabel } from "@/components/SectionLabel";
 import { getNews, getSchedule } from "@/lib/content";
 import { eventKindLabels } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -81,9 +81,6 @@ export default function Home() {
               <span className="font-display text-sm font-bold tracking-widest group-hover:text-fun-red-ink">MORE →</span>
             </Link>
           ))}
-        </div>
-        <div className="mt-8">
-          <PointBand>用語は後から。まず動かして、体験してから名前を付けよう。</PointBand>
         </div>
       </section>
 

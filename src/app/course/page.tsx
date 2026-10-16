@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cube, cubeCycle } from "@/components/Cube";
 import { ScheduleCalendar } from "@/components/ScheduleCalendar";
-import { PageHeading, PointBand, SectionLabel } from "@/components/SectionLabel";
+import { PageHeading, SectionLabel } from "@/components/SectionLabel";
 import { getSchedule } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -28,8 +28,17 @@ export default function CoursePage() {
       <PageHeading
         label="COURSE"
         title="ゲーム開発講座"
-        lead="Unity をメインにしたゲーム開発講座です。用語を覚えるより先に、まず動かしてみる。動いたら「どうして?」を一緒に考える。そんな流れで進めます。"
+        lead="Unity をメインにしたゲーム開発講座です。"
       />
+
+      <section id="schedule" className="mb-20 scroll-mt-24 space-y-6">
+        <div className="space-y-3">
+          <SectionLabel>SCHEDULE</SectionLabel>
+          <h2 className="text-3xl font-black">講座・イベントの日程</h2>
+          <p className="text-muted">日付を押すと、その日の予定だけを表示します。</p>
+        </div>
+        <ScheduleCalendar events={events} buildDate={buildDate} />
+      </section>
 
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-5">
@@ -70,19 +79,6 @@ export default function CoursePage() {
             <p className="text-sm text-muted">講座資料は GitHub で公開する準備をしています。</p>
           )}
         </div>
-      </section>
-
-      <div className="mt-12">
-        <PointBand>再生中の変更は、停止すると元に戻る。いい数値が見つかったらメモしてから停止しよう。</PointBand>
-      </div>
-
-      <section id="schedule" className="mt-20 scroll-mt-24 space-y-6">
-        <div className="space-y-3">
-          <SectionLabel>SCHEDULE</SectionLabel>
-          <h2 className="text-3xl font-black">講座・イベントの日程</h2>
-          <p className="text-muted">日付を押すと、その日の予定だけを表示します。</p>
-        </div>
-        <ScheduleCalendar events={events} buildDate={buildDate} />
       </section>
     </div>
   );

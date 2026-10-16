@@ -25,12 +25,3 @@ export function PageHeading({ label, title, lead }: { label: string; title: stri
     </header>
   );
 }
-
-export function PointBand({ label = "POINT", children }: { label?: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-2 bg-ink px-6 py-5 text-white sm:flex-row sm:items-center sm:gap-6">
-      <span className="font-display text-sm font-bold tracking-[0.2em] text-fun-yellow">{label}</span>
-      <p className="font-bold leading-relaxed">{children}</p>
-    </div>
-  );
-}
