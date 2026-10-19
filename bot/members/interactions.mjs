@@ -66,11 +66,11 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
 
   const reply = (content, extra) => json({ type: CHANNEL_MESSAGE, data: privateMessage(content, extra) });
   const guildId = interaction.guild_id;
-  if (!guildId) return reply("FUNGC のサーバーの中で使ってください。");
+  if (!guildId) return reply("このコマンドは FUNGC のサーバーの中で使ってね。");
   const repo = env.GITHUB_REPO || "fun-gc/hp";
   const useApp = Boolean(env.GITHUB_APP_ID && env.GITHUB_APP_PRIVATE_KEY);
   if (!useApp && !env.GITHUB_TOKEN) {
-    return reply("まだ準備中です(サイト側に GitHub App の設定がありません)。運営に知らせてください。");
+    return reply("ごめんね、まだ準備中なんだ(サイト側に GitHub App の設定がないみたい)。運営に教えてあげてね。");
   }
 
   const member = interaction.member;
@@ -94,11 +94,11 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
         .then(edit)
         .catch((err) => {
           console.error(err);
-          return edit(`うまく処理できませんでした。時間をおいてもう一度試すか、運営に知らせてください。\n(${err.message})`);
+          return edit(`ごめんね、うまくいかなかったみたい…。少し時間をおいてもう一度試すか、運営に知らせてね。\n(${err.message})`);
         }),
     );
   };
-  const pr = (pull) => (pull?.html_url ? `\n運営の確認用: <${pull.html_url}>` : "");
+  const pr = (pull) => (pull?.html_url ? `\n運営さんの確認用はこちらだよ: <${pull.html_url}>` : "");
   const who = `**${displayName(member, user)}**(@${user.username}、ID ${user.id})`;
 
   if (interaction.type === APPLICATION_COMMAND && interaction.data.name === "profile") {
@@ -109,7 +109,7 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
         console.error(err);
         return null;
       });
-      if (sub === "links" && loaded && !loaded.member) return reply("先に `/profile edit` でプロフィールを登録してください。");
+      if (sub === "links" && loaded && !loaded.member) return reply("先に `/profile edit` でプロフィールを登録してね。");
       const existing = loaded?.member;
       const modal = sub === "edit" ? editModal({ existing, name: displayName(member, user), now: now() }) : linksModal({ existing });
       return json({ type: MODAL, data: modal });
@@ -118,15 +118,15 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
     if (sub === "show") {
       later(async () => {
         const { member: saved, pull } = await gh.loadMember(user.id);
-        if (!saved) return pull ? `掲載の取り下げを運営が確認しています。${pr(pull)}` : "まだ登録されていません。`/profile edit` から登録できます。";
-        const state = pull ? `運営の確認待ちの内容です。マージされると ${SITE_MEMBERS} に反映されます。${pr(pull)}` : `${SITE_MEMBERS} に載っています。`;
+        if (!saved) return pull ? `掲載の取り下げを、いま運営さんが確認しているよ。${pr(pull)}` : "まだ登録されていないみたい。`/profile edit` から登録できるよ。";
+        const state = pull ? `これは運営さんの確認待ちの内容だよ。確認が済んだら ${SITE_MEMBERS} に載るからね。${pr(pull)}` : `${SITE_MEMBERS} にちゃんと載っているよ。`;
         return `${describe(saved, now())}\n\n${state}`;
       });
       return json({ type: DEFERRED_CHANNEL_MESSAGE, data: { flags: EPHEMERAL } });
     }
 
     if (sub === "delete") {
-      return reply("サイトのメンバー欄から外し、登録内容を消します。運営が確認してから消えます。よろしいですか?", {
+      return reply("サイトのメンバー欄から外して、登録した内容を消すよ。運営さんが確認してから消えるからね。ほんとうにいい?", {
         components: [{ type: 1, components: [{ type: 2, style: 4, label: "掲載をやめる", custom_id: DELETE_BUTTON }] }],
       });
     }
@@ -138,11 +138,11 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
         title: `メンバーの掲載をやめる: ${displayName(member, user)}`,
         body: `Discord の \`/profile delete\` から ${who} が掲載の取り下げを希望しました。\n\nマージすると ${SITE_MEMBERS} から消えます。`,
       });
-      if (result.status === "missing") return "まだ登録されていないので、消すものはありません。";
-      if (result.status === "withdrawn") return "確認待ちだった登録を取り下げました。サイトには載りません。";
-      return `取り下げを受け付けました。運営が確認するとサイトから消えます。${pr(result.pull)}`;
+      if (result.status === "missing") return "まだ登録されていないから、消すものはないよ。";
+      if (result.status === "withdrawn") return "確認待ちだった登録を取り下げたよ。サイトには載らないから安心してね。";
+      return `取り下げを受け付けたよ。運営さんが確認したら、サイトから消えるからね。${pr(result.pull)}`;
     });
-    return json({ type: UPDATE_MESSAGE, data: { content: "処理しています…", components: [] } });
+    return json({ type: UPDATE_MESSAGE, data: { content: "ちょっと待っててね…", components: [] } });
   }
 
   if (interaction.type === MODAL_SUBMIT && [EDIT_MODAL, LINKS_MODAL].includes(interaction.data.custom_id)) {
@@ -161,9 +161,9 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
           body: `Discord の \`/profile\` から ${who} が送ったプロフィールです。\n\nマージすると ${SITE_MEMBERS} に反映されます。マージ前にもう一度送られた内容は、この PR に追加されます。`,
         },
       );
-      if (result.error) return `${result.error}\nもう一度コマンドからやり直してください。`;
+      if (result.error) return `${result.error}\nもう一度コマンドからやり直してね。`;
       return [
-        `受け付けました。運営が確認すると ${SITE_MEMBERS} に載ります。`,
+        `受け付けたよ。運営さんが確認したら ${SITE_MEMBERS} に載るからね。`,
         "",
         describe(result.member, now()),
         pr(result.pull),
@@ -172,5 +172,5 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
     return json({ type: DEFERRED_CHANNEL_MESSAGE, data: { flags: EPHEMERAL } });
   }
 
-  return reply("このコマンドには対応していません。");
+  return reply("ごめんね、このコマンドにはまだ対応していないんだ。");
 }
