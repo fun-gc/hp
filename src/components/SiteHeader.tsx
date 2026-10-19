@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { navItems } from "@/lib/site";
 import { LogoMark } from "./Logo";
 
-export function SiteHeader() {
+/** children はヘッダーのすぐ下に出す帯(開催中の予定など) */
+export function SiteHeader({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -53,6 +54,8 @@ export function SiteHeader() {
           </span>
         </button>
       </div>
+
+      {children}
 
       {open && (
         <nav id="mobile-menu" className="border-t border-line bg-paper md:hidden" aria-label="メインメニュー">
