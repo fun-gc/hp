@@ -33,7 +33,7 @@ tags: [イベント]
 
 ## 講座やイベントの日程を追加する
 
-`content/schedule.json` に 1 件ずつ追加します。最後の項目のあとに `,` を付けないよう注意してください。
+Discord のメンバー募集チャンネルに投稿した予定は、自動でカレンダーに載ります(書き方は [docs/discord-bot.md](./docs/discord-bot.md#投稿の書き方))。Discord に投稿しない予定は、`content/schedule.json` に 1 件ずつ追加します。最後の項目のあとに `,` を付けないよう注意してください。
 
 ```json
 [
