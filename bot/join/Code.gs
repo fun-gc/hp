@@ -1,5 +1,6 @@
 /* Google フォームに紐づく Apps Script 用。招待 URL はスクリプトプロパティに保存する。 */
 var JOIN_EMAIL_TITLE = 'メールアドレス';
+var JOIN_PURPOSE_TITLE = 'ご希望';
 var JOIN_CONSENT_TITLE = '回答内容の利用と自動送信について';
 var JOIN_CONSENT_TEXT = '回答内容を入部・見学の連絡と Discord への参加案内に使用すること、および @fun.ac.jp の場合は招待メールが自動送信されることを確認しました。';
 
@@ -25,7 +26,15 @@ function getInviteUrl_() {
 function installJoinAutomation() {
   getInviteUrl_();
   var form = FormApp.getActiveForm();
-  if (!form) throw new Error('入部希望フォームから Apps Script を開いて実行してください。');
+  if (!form) throw new Error('入部・見学フォームから Apps Script を開いて実行してください。');
+  form.setTitle('FUN GC 入部・見学フォーム').setDescription('公立はこだて未来大学のゲーム制作サークル FUN GC への入部・見学を希望する方のフォームです。\n\n入部・見学のどちらの場合も、メールアドレスが @fun.ac.jp であれば、送信後に学内メール宛てへ Discord サーバーの招待リンクを自動送信します。学内以外のメールアドレスには招待リンクを自動送信しません。ご相談は contact@fungc.org へご連絡ください。\n\n回答内容は、入部・見学の連絡と Discord への参加案内に使用し、サークル運営メンバーが確認します。招待メールが届かない場合は、迷惑メールフォルダーと入力したメールアドレスをご確認ください。');
+  var purposes = form.getItems(FormApp.ItemType.MULTIPLE_CHOICE).filter(function (item) {
+    return item.getTitle() === JOIN_PURPOSE_TITLE;
+  });
+  if (purposes.length > 1) throw new Error('ご希望の質問が重複しています。');
+  var purposeItem = purposes.length ? purposes[0].asMultipleChoiceItem() : form.addMultipleChoiceItem();
+  purposeItem.setTitle(JOIN_PURPOSE_TITLE).setChoiceValues(['入部', '見学']).setRequired(true);
+  form.moveItem(purposeItem.getIndex(), 0);
   var emails = form.getItems(FormApp.ItemType.TEXT).filter(function (item) {
     return item.getTitle() === JOIN_EMAIL_TITLE;
   });
@@ -35,11 +44,11 @@ function installJoinAutomation() {
   if (emails.length !== 1 || consents.length !== 1) throw new Error('メール欄または確認欄のタイトル・形式を確認してください。');
   var emailItem = emails[0].asTextItem();
   var consentItem = consents[0].asCheckboxItem();
-  emailItem.setRequired(true).setHelpText('@fun.ac.jp の場合、このアドレスに Discord 招待を自動送信します。学内以外のアドレスには自動送信しません。')
+  emailItem.setRequired(true).setHelpText('入部・見学のどちらでも、@fun.ac.jp の場合はこのアドレスに Discord 招待を自動送信します。学内以外のアドレスには自動送信しません。')
     .setValidation(FormApp.createTextValidation().requireTextIsEmail().setHelpText('メールアドレスを正しく入力してください。').build());
   consentItem.setChoiceValues([JOIN_CONSENT_TEXT]).setRequired(true);
   form.setAllowResponseEdits(false).setPublishingSummary(false).setShowLinkToRespondAgain(false)
-    .setConfirmationMessage('お申し込みを受け付けました。@fun.ac.jp のメールアドレスを入力した方には、Discord の招待リンクを自動送信します。届かない場合は迷惑メールフォルダーをご確認のうえ、contact@fungc.org へご連絡ください。学内以外のアドレスには自動送信しません。');
+    .setConfirmationMessage('お申し込みを受け付けました。入部・見学のどちらでも、@fun.ac.jp のメールアドレスを入力した方には Discord の招待リンクを自動送信します。届かない場合は迷惑メールフォルダーをご確認のうえ、contact@fungc.org へご連絡ください。学内以外のアドレスには自動送信しません。');
   var props = PropertiesService.getScriptProperties();
   props.setProperties({JOIN_FORM_ID: form.getId(), JOIN_EMAIL_ITEM_ID: String(emailItem.getId()), JOIN_CONSENT_ITEM_ID: String(consentItem.getId())});
   var exists = ScriptApp.getProjectTriggers().some(function (trigger) {
@@ -48,6 +57,7 @@ function installJoinAutomation() {
   });
   if (!exists) ScriptApp.newTrigger('onJoinFormSubmit').forForm(form).onFormSubmit().create();
   console.log('自動返信の設定が完了しました。公開前に学内・学外アドレスで送信を確認してください。');
+  console.log('回答用 URL: ' + form.getPublishedUrl());
 }
 
 function onJoinFormSubmit(event) {
@@ -77,7 +87,7 @@ function onJoinFormSubmit(event) {
     MailApp.sendEmail({
       to: email,
       subject: '【FUN GC】Discord サーバーへのご案内',
-      body: 'FUN GC への入部のお申し込みありがとうございます。\n\n以下のリンクから Discord サーバーにご参加ください。\n' + invite + '\n\n参加後は、サーバー内の案内をご確認ください。\nこの招待リンクはほかの方へ転送しないでください。\n\nこのメールは入部希望フォームの回答を受けて自動送信しています。\nお申し込みに心当たりがない場合は、リンクを開かず、このメールを破棄してください。\nご不明な点は contact@fungc.org へご連絡ください。\n\nFUN GC\nhttps://fungc.org',
+      body: 'FUN GC への入部・見学のお申し込みありがとうございます。\n\n以下のリンクから Discord サーバーにご参加ください。\n' + invite + '\n\n参加後は、サーバー内の案内をご確認ください。\nこの招待リンクはほかの方へ転送しないでください。\n\nこのメールは入部・見学フォームの回答を受けて自動送信しています。\nお申し込みに心当たりがない場合は、リンクを開かず、このメールを破棄してください。\nご不明な点は contact@fungc.org へご連絡ください。\n\nFUN GC\nhttps://fungc.org',
       name: 'FUN GC',
       replyTo: 'contact@fungc.org'
     });

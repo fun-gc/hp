@@ -89,4 +89,4 @@ Discord Bot の `/profile` から登録できるようにする予定です(→ 
 
 `src/lib/site.ts` にまとまっています(問い合わせフォームの URL、講座資料の公開状態など)。
 
-入部希望フォームは `joinFormUrl` に設定します。学内メールへの Discord 招待の自動送信は Google 側で動きます。初回の設定と公開前の確認は [docs/join-form.md](./docs/join-form.md) を参照してください。
+入部・見学フォームは `joinFormUrl` に設定します。入部・見学のどちらも、学内メールへの Discord 招待を Google 側で自動送信します。初回の設定と公開前の確認は [docs/join-form.md](./docs/join-form.md) を参照してください。

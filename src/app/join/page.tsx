@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = { title: "入部案内" };
 
 const steps = [
-  { title: "フォームで入部を申し込む", text: "入部希望フォームに名前とメールアドレスを入力してください。見学や相談をしたい方は、下の連絡先からも相談できます。" },
+  { title: "フォームで入部・見学を申し込む", text: "入部・見学フォームで希望する内容を選び、名前とメールアドレスを入力してください。相談は下の連絡先でも受け付けています。" },
   { title: "メールを確認して Discord に参加", text: "メールアドレスが @fun.ac.jp の場合、学内メール宛てに Discord サーバーの招待リンクを自動送信します。届いたメールから参加してください。" },
   { title: "講座やチームに参加", text: "講座で Unity の基本を学びながら、展示やチーム開発に参加できます。" },
 ];
@@ -19,9 +19,9 @@ export default function JoinPage() {
       />
 
       <section aria-labelledby="join-form-heading" className="mb-12 max-w-3xl border-2 border-ink bg-white p-6 sm:p-8">
-        <h2 id="join-form-heading" className="text-2xl font-black">入部を希望する方へ</h2>
+        <h2 id="join-form-heading" className="text-2xl font-black">入部・見学を希望する方へ</h2>
         <p className="mt-4 leading-relaxed">
-          入部希望フォームを送信すると、<strong>@fun.ac.jp の学内メール宛てに Discord サーバーの招待リンクを自動送信します。</strong>
+          入部・見学のどちらでも、フォームを送信すると<strong>@fun.ac.jp の学内メール宛てに Discord サーバーの招待リンクを自動送信します。</strong>
           学内メールアドレスをお持ちの方は、そのアドレスを入力してください。
         </p>
         <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -31,16 +31,16 @@ export default function JoinPage() {
         </p>
         {site.joinFormUrl ? (
           <a href={site.joinFormUrl} target="_blank" rel="noreferrer" className="mt-6 inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-ink hover:text-white">
-            入部希望フォームを開く（Google フォーム） ↗
+            入部・見学フォームを開く（Google フォーム） ↗
           </a>
         ) : (
-          <p className="mt-6 font-bold">入部希望フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
+          <p className="mt-6 font-bold">入部・見学フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
         )}
       </section>
 
       <section className="max-w-3xl">
         <div className="space-y-5">
-          <h2 className="text-2xl font-black">入部までの流れ</h2>
+          <h2 className="text-2xl font-black">入部・見学までの流れ</h2>
           <ol className="space-y-4">
             {steps.map((s, i) => (
               <li key={s.title} className="flex gap-4">

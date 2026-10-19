@@ -65,6 +65,21 @@ test('学外・未同意・別フォームからは送信しない', () => {
   assert.equal(h.sent.length, 0);
 });
 
+test('入部・見学のどちらも、学内アドレスなら同じ招待を送信する', () => {
+  const h = harness();
+  for (const purpose of ['入部', '見学']) {
+    const event = h.event('student@fun.ac.jp', true, 'response-' + purpose);
+    const original = event.response.getItemResponses;
+    event.response.getItemResponses = () => [
+      { getItem: () => ({ getId: () => 'purpose-1' }), getResponse: () => purpose }, ...original(),
+    ];
+    assert.equal(h.context.onJoinFormSubmit(event), 'sent');
+  }
+  assert.equal(h.sent.length, 2);
+  assert.equal(h.sent[0].body, h.sent[1].body);
+  assert.match(h.sent[0].body, /入部・見学のお申し込み/);
+});
+
 test('送信失敗・上限・招待未設定は送信済みにせず、再処理できる', () => {
   const h = harness();
   h.state.fail = true;
