@@ -5,6 +5,7 @@
 - 文章や予定を更新したい → [CONTRIBUTING.md](./CONTRIBUTING.md)(Git を使わず GitHub の画面だけで編集できます)
 - 公開の仕組み → [docs/deploy-cloudflare.md](./docs/deploy-cloudflare.md)
 - Discord Bot 連携の設計 → [docs/discord-bot.md](./docs/discord-bot.md)
+- 入部・見学フォームと Discord 招待の自動送信 → [docs/join-form.md](./docs/join-form.md)
 
 ## 構成
 
