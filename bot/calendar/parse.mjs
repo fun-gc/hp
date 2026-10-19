@@ -9,7 +9,7 @@ const LABELS = {
   date: ["開催日時", "日時", "日程", "日付", "開催日", "期間", "いつ"],
   time: ["時間", "時刻", "開始"],
   place: ["開催場所", "場所", "会場", "集合場所", "集合", "どこ"],
-  note: ["内容", "概要", "詳細", "説明", "やること", "備考"],
+  note: ["内容", "概要", "詳細", "説明", "やること"],
 };
 const labelList = Object.entries(LABELS)
   .flatMap(([kind, words]) => words.map((w) => [kind, w]))
@@ -39,6 +39,7 @@ export function normalize(text) {
     })
     .replace(/<a?:(\w+):\d+>/g, "")
     .replace(/<(?:@[!&]?|#)\d+>/g, "")
+    .replace(/https:\/\/(?:\w+\.)?discord(?:app)?\.com\/channels\/[\d/]+/g, "")
     .replace(/@(?:everyone|here)/g, "")
     .normalize("NFKC")
     .replace(/\*\*|__|~~|\|\||`/g, "")
@@ -56,7 +57,8 @@ function matchLabel(line) {
     const bracket = line.match(new RegExp(`^[【\\[\\(<]\\s*${word}\\s*[】\\]\\)>]\\s*(.*)$`));
     const colon = line.match(new RegExp(`^${word}\\s*(?::|=|\\s)\\s*(.*)$`));
     const value = (bracket ?? colon)?.[1]?.trim();
-    if (value !== undefined && value !== "") return { kind, value };
+    // 「【日時】」だけの行は、値が次の行に書かれている
+    if (value !== undefined && (value !== "" || bracket || line.endsWith(":"))) return { kind, value };
   }
   return null;
 }
@@ -133,7 +135,8 @@ function titleFrom(line) {
 }
 
 function kindOf(text) {
-  if (/講座|勉強会|もくもく|ハンズオン/.test(text)) return "course";
+  // 「【第3回】」のような通し番号つきの会も講座とみなす
+  if (/講座|勉強会|もくもく|ハンズオン|第[\d.]+回/.test(text)) return "course";
   if (/展示|未来祭|Miraive|ミライブ|展覧/i.test(text)) return "exhibition";
   return "event";
 }
@@ -142,19 +145,28 @@ const cut = (s, n) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
 /**
  * 1 件の投稿から予定を取り出す。予定と読めなければ空配列。
- * @param {{ content: string, postedAt: string, threadName?: string }} post
+ * @param {{ content: string, postedAt: string, threadName?: string, tags?: string[] }} post
+ *   tags はフォーラムのタグ名。種類(講座・展示など)の判定にだけ使う
  */
-export function parsePost({ content, postedAt, threadName }) {
+export function parsePost({ content, postedAt, threadName, tags = [] }) {
   const text = normalize(content);
   if (/非掲載/.test(text)) return [];
   const lines = text.split("\n").map(cleanLine).filter(Boolean);
   const fields = { title: [], date: [], time: [], place: [], note: [] };
   const others = [];
+  let pending = null;
   for (const line of lines) {
     const label = matchLabel(line);
-    if (label) fields[label.kind].push(label.value);
-    else others.push(line);
+    if (label) {
+      if (label.value) fields[label.kind].push(label.value);
+      pending = label.value ? null : label.kind;
+    } else if (pending) {
+      fields[pending].push(line);
+      pending = null;
+    } else others.push(line);
   }
+  // 「#チャンネル と同じ」のようにリンクを消すと意味をなさない内容は載せない
+  fields.note = fields.note.filter((n) => !/^[とのにをはがでも]/.test(n));
 
   const posted = jstDate(Date.parse(postedAt));
   let dateText;
@@ -179,7 +191,7 @@ export function parsePost({ content, postedAt, threadName }) {
 
   const event = {
     title,
-    kind: kindOf([title, ...lines].join("\n")),
+    kind: kindOf([title, ...tags, ...lines].join("\n")),
     ...time,
     ...(fields.place[0] && { place: cut(fields.place[0], 60) }),
     ...(fields.note.length && { note: cut(fields.note.join(" "), 120) }),
