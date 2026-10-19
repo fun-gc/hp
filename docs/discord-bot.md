@@ -55,7 +55,7 @@ Unity 講座 第2回
 3. Discord の **ユーザー設定 → 詳細設定 → 開発者モード** を ON にし、メンバー募集チャンネルを右クリック → **チャンネル ID をコピー**。
 4. GitHub の `fun-gc/hp` → **Settings → Secrets and variables → Actions**
    - **Secrets** に `DISCORD_BOT_TOKEN`(1 のトークン)。`CF_PAGES_DEPLOY_HOOK` がまだなら [deploy-cloudflare.md](./deploy-cloudflare.md) の 3 を見て登録する。
-   - **Variables** に `DISCORD_CHANNEL_ID`(3 の ID)。
+   - **Variables** に `DISCORD_CHANNEL_ID`(3 の ID)。Secrets に入れても動きます。
 5. Cloudflare の Pages プロジェクト → **Settings → Variables and Secrets** に、本番とプレビューの両方で `DISCORD_BOT_TOKEN`(Secret)と `DISCORD_CHANNEL_ID`(Text)を追加する。
 
 設定したら GitHub の **Actions → Discord の予定を反映 → Run workflow** で一度動かすと、すぐ反映されます。
