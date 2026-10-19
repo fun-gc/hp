@@ -128,36 +128,39 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
         </div>
       </div>
 
-      <div>
-        <p className="mb-3 font-bold">
-          {selected ? `${Number(selected.slice(5, 7))}月${Number(selected.slice(8))}日の予定` : `${mon}月の予定`}
-        </p>
-        {listed.length === 0 ? (
-          <p className="border border-dashed border-line px-4 py-8 text-center text-sm text-muted">
-            この月の予定はまだありません。決まりしだい追加します。
+      {/* PC では一覧の高さをカレンダーに合わせ、入りきらない分は一覧の中でスクロールする */}
+      <div className="lg:relative">
+        <div className="flex flex-col lg:absolute lg:inset-0">
+          <p className="mb-3 shrink-0 font-bold">
+            {selected ? `${Number(selected.slice(5, 7))}月${Number(selected.slice(8))}日の予定` : `${mon}月の予定`}
           </p>
-        ) : (
-          <ul className="divide-y divide-line border-y border-line">
-            {listed.map((e, i) => (
-              <li key={`${e.date}-${i}`} className="flex gap-4 py-4">
-                <div className="w-14 shrink-0 text-center">
-                  <p className="font-display text-2xl font-bold leading-none">{Number(e.date.slice(8))}</p>
-                  <p className="text-xs text-muted">{weekdays[new Date(`${e.date}T00:00:00Z`).getUTCDay()]}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="flex flex-wrap items-center gap-2">
-                    <span className={`px-2 py-0.5 text-xs font-bold ${kindStyle[e.kind].tag}`}>{eventKindLabels[e.kind]}</span>
-                    <span className="font-bold">{e.title}</span>
-                  </p>
-                  <p className="text-sm text-muted">
-                    {[e.start && `${e.start}${e.end ? `〜${e.end}` : "〜"}`, e.place].filter(Boolean).join(" / ")}
-                  </p>
-                  {e.note && <p className="text-sm">{e.note}</p>}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+          {listed.length === 0 ? (
+            <p className="border border-dashed border-line px-4 py-8 text-center text-sm text-muted">
+              この月の予定はまだありません。決まりしだい追加します。
+            </p>
+          ) : (
+            <ul className="max-h-[32rem] min-h-0 divide-y divide-line overflow-y-auto overscroll-contain border-y border-line lg:max-h-none lg:flex-1">
+              {listed.map((e, i) => (
+                <li key={`${e.date}-${i}`} className="flex gap-4 py-4">
+                  <div className="w-14 shrink-0 text-center">
+                    <p className="font-display text-2xl font-bold leading-none">{Number(e.date.slice(8))}</p>
+                    <p className="text-xs text-muted">{weekdays[new Date(`${e.date}T00:00:00Z`).getUTCDay()]}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="flex flex-wrap items-center gap-2">
+                      <span className={`px-2 py-0.5 text-xs font-bold ${kindStyle[e.kind].tag}`}>{eventKindLabels[e.kind]}</span>
+                      <span className="font-bold">{e.title}</span>
+                    </p>
+                    <p className="text-sm text-muted">
+                      {[e.start && `${e.start}${e.end ? `〜${e.end}` : "〜"}`, e.place].filter(Boolean).join(" / ")}
+                    </p>
+                    {e.note && <p className="text-sm">{e.note}</p>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
