@@ -1,0 +1,29 @@
+name: Discord のコマンドを登録
+
+# /profile コマンドを FUNGC の Discord サーバーに登録する。コマンドの形(bot/members/commands.mjs)を変えたときに自動で動く。
+# カレンダーと同じ DISCORD_BOT_TOKEN と DISCORD_CHANNEL_ID を使う(docs/discord-bot.md)。
+on:
+  push:
+    branches: [main]
+    paths: [bot/members/commands.mjs]
+  workflow_dispatch:
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: コマンドを登録
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_ID: ${{ vars.DISCORD_CHANNEL_ID || secrets.DISCORD_CHANNEL_ID }}
+          DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID }}
+        run: |
+          if [ -z "$DISCORD_BOT_TOKEN" ]; then
+            echo "::notice::DISCORD_BOT_TOKEN が未設定なのでスキップしました"
+            exit 0
+          fi
+          node bot/members/commands.mjs
