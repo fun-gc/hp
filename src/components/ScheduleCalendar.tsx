@@ -6,11 +6,12 @@ import { eventKindLabels, type ScheduleEvent } from "@/lib/schema";
 const kindStyle: Record<ScheduleEvent["kind"], { dot: string; tag: string }> = {
   course: { dot: "bg-fun-red", tag: "bg-fun-red text-white" },
   exhibition: { dot: "bg-fun-green", tag: "bg-fun-green text-white" },
-  event: { dot: "bg-fun-yellow", tag: "bg-fun-yellow text-ink" },
+  // 黄色は白地で見えにくいので、印に墨色の縁を付ける
+  event: { dot: "bg-fun-yellow ring-1 ring-ink", tag: "bg-fun-yellow text-ink" },
   other: { dot: "bg-muted", tag: "bg-ink text-white" },
 };
 
-const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+const weekdays = ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"];
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -110,7 +111,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
                 </span>
                 <span className="flex flex-wrap justify-center gap-1">
                   {dayEvents.map((e, j) => (
-                    <span key={j} className={`size-2 ${kindStyle[e.kind].dot}`} />
+                    <span key={j} className={`size-2.5 ${kindStyle[e.kind].dot}`} />
                   ))}
                 </span>
               </button>
