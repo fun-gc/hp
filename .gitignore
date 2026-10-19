@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Discord のメンバー募集チャンネルからビルド時に作る(bot/calendar/sync.mjs)
 /content/discord-events.json
+
+# wrangler pages dev で Discord の受け口(functions/)を手元で動かしたときのファイル
+/.wrangler/

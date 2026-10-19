@@ -33,7 +33,7 @@ export default function MembersPage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
         title="メンバー"
-        lead="プロフィールは Discord の /profile コマンドから登録できるようにする予定です。掲載を希望したメンバーだけを表示しています。"
+        lead="プロフィールは FUNGC の Discord で /profile edit から登録できます。掲載を希望したメンバーだけを表示しています。"
       />
 
       {members.length === 0 ? (

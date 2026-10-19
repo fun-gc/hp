@@ -63,52 +63,80 @@ Unity 講座 第2回
 
 公開リポジトリの定期実行は、リポジトリに 60 日間変更がないと GitHub に止められます。止まったときはメールが来るので、Actions の画面から再開してください。
 
-## プロフィールとメダル(これから作る)
+## メンバー登録(/profile コマンド)
 
-- **常時起動のサーバーを持たない。** Discord のスラッシュコマンドは HTTP で受け取れる(Interactions Endpoint)ので、Bot は **Cloudflare Workers**(無料枠)で動かす。サイトと同じ Cloudflare アカウントで管理できる。
-- **データの置き場はこのリポジトリ。** Bot はデータベースを持たず、`content/members/<DiscordのユーザーID>.json` を書き換える **PR を作る**。運営が承認してマージすると、サイトが再ビルドされて反映される。履歴が残り、いたずらや誤入力も PR で止められる。
+Discord で `/profile edit` を使うと、入力フォームが開きます。送った内容は `content/members/<DiscordのユーザーID>.json` を書き換える PR になり、運営がマージするとメンバーページに載ります。
 
 ```
-メンバー: /profile
-   ↓ (Discord が HTTP で通知)
-Cloudflare Worker(Bot)
-   ↓ GitHub App として PR を作成: content/members/1234....json
-運営が PR を承認・マージ
-   ↓
-Cloudflare Pages が再ビルド → fungc.org のメンバー欄に反映
+メンバー: /profile edit → フォームに入力して送信
+   ↓ Discord が HTTP で通知(Interactions Endpoint URL: https://fungc.org/api/discord)
+Cloudflare Pages Functions(functions/api/discord.js → bot/members/interactions.mjs)
+   ↓ 署名を確かめ、src/lib/schema.ts と同じ zod スキーマで入力を検証
+GitHub にブランチ member/<ユーザーID> と PR を作る(bot/members/github.mjs)
+   ↓ 運営が PR を確認してマージ
+Cloudflare Pages が再ビルド → fungc.org/members に反映
 ```
 
-## コマンド案
+- 受け口はサイトと同じ Cloudflare Pages の中で動きます(`functions/` フォルダ)。別のサーバーや Worker は要りません。サイト本体は今までどおり静的な HTML です。
+- 1 人につき PR は 1 つです。マージ前にもう一度送ると同じ PR に追加され、PR の題も最後の操作に合わせて変わります。
+- 入力に問題があれば PR は作らず、本人にだけ見える返信で伝えます。PR の CI(ビルド)でももう一度検証します。
+- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)は運営が手で入れる項目で、`/profile` で編集しても消えません。
+- アイコンは Discord のアバター(サーバー用のアバターがあればそれ)を使い、`/profile edit` か `/profile links` を送るたびに最新にします。
+
+### コマンド
+
+| コマンド | 内容 |
+| --- | --- |
+| `/profile edit` | フォームが開く。名前、入学年度、担当、自己紹介、好きなゲーム(5 つまで)を入力。登録済みなら今の内容が入っている |
+| `/profile links` | X、GitHub、Web サイトのリンク。`@名前` やユーザー名だけでも受け付ける |
+| `/profile show` | 登録した内容と、運営の確認待ちかどうかを確認(本人にだけ見える返信) |
+| `/profile delete` | 掲載をやめる。ファイルを消す PR を作る。まだ載っていなければ確認待ちの PR を閉じる |
+
+- 学年は入学年度から自動で計算します(4 年生で OB・OG 表示)。`src/lib/grade.ts` 参照。
+- 返信はすべて本人にだけ見えます。
+
+### プライバシー
+
+リポジトリは公開なので、載せたくない人のファイルはリポジトリに置きません(`/profile delete` でファイルごと消します)。Discord のユーザー ID はファイル名に使うため、登録した人の ID は公開されます。このことは `/profile edit` の説明に書いてあります。
+
+### 初回の設定(管理者が 1 回だけ)
+
+カレンダー用に作った Discord のアプリ(Bot)をそのまま使います。サーバーに入れ直す必要はありません。
+
+1. **GitHub のトークンを作る**: GitHub の **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
+   - Resource owner: `fun-gc`、Repository access: **Only select repositories** で `hp`
+   - Permissions: **Contents** と **Pull requests** を **Read and write**
+   - 期限は組織のルールで決まります。切れたら作り直して 2 の `GITHUB_TOKEN` を差し替えます。組織で承認が必要な設定なら、`fun-gc` の **Settings → Personal access tokens → Pending requests** で承認します。
+   - PR はこのトークンを作った人の名前で作られます。
+2. **Cloudflare に設定する**: Pages のプロジェクト → **Settings → Variables and Secrets** に、本番(Production)で次の 2 つを追加し、**Deployments** から最新の本番デプロイを **Retry deployment** して反映させる。
+   - `DISCORD_PUBLIC_KEY`(Text): Discord Developer Portal の **General Information** にある **Public Key**
+   - `GITHUB_TOKEN`(Secret): 1 のトークン
+3. **Discord に受け口を教える**: Developer Portal の **General Information → Interactions Endpoint URL** に `https://fungc.org/api/discord` を入れて **Save Changes**。Discord がその場で疎通を確かめ、2 が反映されていないと保存できません。
+4. **コマンドを登録する**: GitHub の **Actions → Discord のコマンドを登録 → Run workflow**。カレンダー用の `DISCORD_BOT_TOKEN` と `DISCORD_CHANNEL_ID` を使い、そのチャンネルがあるサーバーに `/profile` を登録します。`bot/members/commands.mjs` を変えて main にマージしたときは自動で動きます。
+
+`/profile` を打っても候補に出ないときは、Discord を再読み込み(Ctrl+R)してください。
+
+### 手元で試す
+
+`npx wrangler pages dev out --binding DISCORD_PUBLIC_KEY=… --binding GITHUB_TOKEN=…` で、`npm run build` した `out/` と一緒に受け口を動かせます。入力の組み立てと PR の作り方は `npm test`(`bot/members/*.test.mjs`)で確かめています。
+
+## メダル(これから作る)
+
+メダルは今は運営が `content/members/<ID>.json` の `medals` に手で書きます。Discord から付けられるようにするなら、次の形を考えています。
 
 | コマンド | 誰が | 内容 |
 | --- | --- | --- |
-| `/profile edit` | 全員 | 入力フォーム(モーダル)が開く。表示名、入学年度、担当、自己紹介、好きなゲーム、リンクを入力 |
-| `/profile public` | 全員 | サイトへの掲載を ON / OFF |
-| `/profile show` | 全員 | 自分の登録内容を確認(本人にだけ見える返信) |
-| `/medal give @人 メダル` | 運営ロール | メダルを付与する PR を作る |
+| `/medal give @人 メダル` | 運営ロール | メダルを付与する PR を作る(`/profile` と同じ仕組み) |
 | `/medal list` | 全員 | メダルの一覧と説明 |
 
-- アイコンは Discord のアバターをそのまま使い、`/profile edit` のたびに最新の URL に更新する。
-- 学年は入学年度から自動計算(4 年生で OB・OG 表示)。`src/lib/grade.ts` 参照。
+### 自動判定(将来)
 
-## プライバシー
-
-リポジトリは公開なので、**掲載を OFF にしたメンバーのファイルはリポジトリに置かない**(OFF にしたらファイルを削除する PR を作る)。Discord のユーザー ID はファイル名に使うため、掲載 ON の人の ID は公開される点を `/profile public` の説明に書いておく。
-
-## メダルの自動判定(将来)
-
-条件が決まったら、Workers の **Cron Triggers**(定期実行)で Discord の REST API から発言やイベント参加を集計し、条件を満たした人にメダルを付ける PR をまとめて作る。
+条件が決まったら、GitHub Actions の定期実行で Discord の REST API から発言やイベント参加を集計し、条件を満たした人にメダルを付ける PR をまとめて作る。
 
 - REST API で取れるもの: チャンネルの発言履歴、スケジュールイベントの参加登録、ロール
 - 取れないもの: ボイスチャンネルの滞在時間など、リアルタイムのイベント(常時接続の Gateway が必要)。これを条件に使う場合だけ、常時起動のサーバーを別に考える。
 
-## 必要なもの(作るときに用意する)
-
-- カレンダー用に作った Discord のアプリ(Bot)をそのまま使う。スラッシュコマンド用に、Developer Portal の **Interactions Endpoint URL** に Worker の URL を入れ、招待 URL の scope に `applications.commands` を足す
-- GitHub App「FUNGC Bot」を `fun-gc` 組織に作成し、`hp` リポジトリに Contents と Pull requests の書き込み権限で入れる
-- Worker のシークレット: Discord の公開鍵・Bot トークン、GitHub App の秘密鍵
-
-## 決めること
+### 決めること
 
 - 運営ロールの名前
-- `/profile` の入力項目の最終版
+- メダルの種類と付与の条件
