@@ -1,6 +1,6 @@
 ---
 title: FUNPARTY
-authors: [FUN GC]
+authors: [FUNGC]
 year: 2025
 month: 10
 event: 未来祭 2025

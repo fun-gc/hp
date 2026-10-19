@@ -1,9 +1,9 @@
 // サイト全体の設定。リンクや連絡先を変えるときはここだけ直せばよい。
 export const site = {
-  name: "FUN GC",
-  fullName: "FUN GC(公立はこだて未来大学 ゲーム制作サークル)",
+  name: "FUNGC",
+  fullName: "FUNGC(公立はこだて未来大学 ゲーム制作サークル)",
   description:
-    "公立はこだて未来大学のゲーム制作サークル FUN GC の公式サイト。Unity を使ったゲーム開発講座、新入生歓迎イベント Miraive や未来祭でのゲーム展示、チームでの長期ゲーム開発をしています。",
+    "公立はこだて未来大学のゲーム制作サークル FUNGC の公式サイト。Unity を使ったゲーム開発講座、新入生歓迎イベント Miraive や未来祭でのゲーム展示、チームでの長期ゲーム開発をしています。",
   url: "https://fungc.org",
   university: "公立はこだて未来大学",
   email: "contact@fungc.org",

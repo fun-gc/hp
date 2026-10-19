@@ -9,7 +9,7 @@ export function SiteFooter() {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <LogoMark className="size-8" />
-            <span className="font-display text-lg font-bold tracking-wider">FUN GC</span>
+            <span className="font-display text-lg font-bold tracking-wider">FUNGC</span>
           </div>
           <p className="text-sm text-white/70">{site.university} ゲーム制作サークル</p>
           <p className="text-sm text-white/70">
@@ -43,7 +43,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-white/10">
         <p className="mx-auto max-w-6xl px-4 py-4 font-display text-xs tracking-[0.15em] text-white/50 sm:px-6">
-          © {new Date().getFullYear()} FUN GC
+          © {new Date().getFullYear()} FUNGC
         </p>
       </div>
     </footer>

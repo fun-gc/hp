@@ -47,10 +47,10 @@ Unity 講座 第2回
 
 ### 初回の設定(管理者が 1 回だけ)
 
-1. [Discord Developer Portal](https://discord.com/developers/applications) で **New Application**(名前は「FUN GC Bot」など)。
+1. [Discord Developer Portal](https://discord.com/developers/applications) で **New Application**(名前は「FUNGC Bot」など)。
    - **Bot** タブ → **Reset Token** でトークンをコピーしておく。同じ画面の **Message Content Intent** を ON にして **Save Changes**。
    - **General Information** の **Application ID** をコピーする。
-2. 次の URL の `<Application ID>` を置き換えて開き、FUN GC のサーバーに追加する(権限はチャンネルを見る・メッセージ履歴を読む・リアクションを付けるの 3 つ)。
+2. 次の URL の `<Application ID>` を置き換えて開き、FUNGC のサーバーに追加する(権限はチャンネルを見る・メッセージ履歴を読む・リアクションを付けるの 3 つ)。
    `https://discord.com/oauth2/authorize?client_id=<Application ID>&scope=bot&permissions=66624`
    チャンネルが非公開なら、チャンネルの権限で Bot を追加する。
 3. Discord の **ユーザー設定 → 詳細設定 → 開発者モード** を ON にし、メンバー募集チャンネルを右クリック → **チャンネル ID をコピー**。
@@ -105,7 +105,7 @@ Cloudflare Pages が再ビルド → fungc.org のメンバー欄に反映
 ## 必要なもの(作るときに用意する)
 
 - カレンダー用に作った Discord のアプリ(Bot)をそのまま使う。スラッシュコマンド用に、Developer Portal の **Interactions Endpoint URL** に Worker の URL を入れ、招待 URL の scope に `applications.commands` を足す
-- GitHub App「FUN GC Bot」を `fun-gc` 組織に作成し、`hp` リポジトリに Contents と Pull requests の書き込み権限で入れる
+- GitHub App「FUNGC Bot」を `fun-gc` 組織に作成し、`hp` リポジトリに Contents と Pull requests の書き込み権限で入れる
 - Worker のシークレット: Discord の公開鍵・Bot トークン、GitHub App の秘密鍵
 
 ## 決めること

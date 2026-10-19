@@ -15,7 +15,7 @@ export default function JoinPage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
         title="入部案内"
-        lead={`FUN GC は${site.university}のゲーム制作サークルです。見学はいつでも受け付けています。`}
+        lead={`FUNGC は${site.university}のゲーム制作サークルです。見学はいつでも受け付けています。`}
       />
 
       <section aria-labelledby="join-form-heading" className="mb-12 max-w-3xl">

@@ -1,4 +1,4 @@
-// 講座テンプレートのロゴ(立方体 + FUN GC の文字)を SVG で再現したもの。
+// 講座テンプレートのロゴ(立方体 + FUNGC の文字)を SVG で再現したもの。
 // 正式なロゴデータが手に入ったら public/ に置いて差し替える。
 type Props = { className?: string; title?: string };
 
@@ -33,7 +33,7 @@ export function LogoLetters() {
   );
 }
 
-export function Logo({ className, title = "FUN GC" }: Props) {
+export function Logo({ className, title = "FUNGC" }: Props) {
   return (
     <svg viewBox="0 0 1210 1280" className={className} role="img" aria-label={title}>
       <CubeFaces />

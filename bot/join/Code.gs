@@ -27,7 +27,7 @@ function installJoinAutomation() {
   getInviteUrl_();
   var form = FormApp.getActiveForm();
   if (!form) throw new Error('入部・見学フォームから Apps Script を開いて実行してください。');
-  form.setTitle('FUN GC 入部・見学フォーム').setDescription('公立はこだて未来大学のゲーム制作サークル FUN GC への入部・見学を希望する方のフォームです。\n\n入部・見学のどちらの場合も、メールアドレスが @fun.ac.jp であれば、送信後に学内メール宛てへ Discord サーバーの招待リンクを自動送信します。学内以外のメールアドレスには招待リンクを自動送信しません。ご相談は contact@fungc.org へご連絡ください。\n\n回答内容は、入部・見学の連絡と Discord への参加案内に使用し、サークル運営メンバーが確認します。招待メールが届かない場合は、迷惑メールフォルダーと入力したメールアドレスをご確認ください。');
+  form.setTitle('FUNGC 入部・見学フォーム').setDescription('公立はこだて未来大学のゲーム制作サークル FUNGC への入部・見学を希望する方のフォームです。\n\n入部・見学のどちらの場合も、メールアドレスが @fun.ac.jp であれば、送信後に学内メール宛てへ Discord サーバーの招待リンクを自動送信します。学内以外のメールアドレスには招待リンクを自動送信しません。ご相談は contact@fungc.org へご連絡ください。\n\n回答内容は、入部・見学の連絡と Discord への参加案内に使用し、サークル運営メンバーが確認します。招待メールが届かない場合は、迷惑メールフォルダーと入力したメールアドレスをご確認ください。');
   var purposes = form.getItems(FormApp.ItemType.MULTIPLE_CHOICE).filter(function (item) {
     return item.getTitle() === JOIN_PURPOSE_TITLE;
   });
@@ -86,9 +86,9 @@ function onJoinFormSubmit(event) {
     if (MailApp.getRemainingDailyQuota() < 1) throw new Error('本日のメール送信上限に達しました。翌日以降に該当回答を再送してください。');
     MailApp.sendEmail({
       to: email,
-      subject: '【FUN GC】Discord サーバーへのご案内',
-      body: 'FUN GC への入部・見学のお申し込みありがとうございます。\n\n以下のリンクから Discord サーバーにご参加ください。\n' + invite + '\n\n参加後は、サーバー内の案内をご確認ください。\nこの招待リンクはほかの方へ転送しないでください。\n\nこのメールは入部・見学フォームの回答を受けて自動送信しています。\nお申し込みに心当たりがない場合は、リンクを開かず、このメールを破棄してください。\nご不明な点は contact@fungc.org へご連絡ください。\n\nFUN GC\nhttps://fungc.org',
-      name: 'FUN GC',
+      subject: '【FUNGC】Discord サーバーへのご案内',
+      body: 'FUNGC への入部・見学のお申し込みありがとうございます。\n\n以下のリンクから Discord サーバーにご参加ください。\n' + invite + '\n\n参加後は、サーバー内の案内をご確認ください。\nこの招待リンクはほかの方へ転送しないでください。\n\nこのメールは入部・見学フォームの回答を受けて自動送信しています。\nお申し込みに心当たりがない場合は、リンクを開かず、このメールを破棄してください。\nご不明な点は contact@fungc.org へご連絡ください。\n\nFUNGC\nhttps://fungc.org',
+      name: 'FUNGC',
       replyTo: 'contact@fungc.org'
     });
     // 送信が成功した回答だけを記録する。メールアドレスや回答内容は保存しない。

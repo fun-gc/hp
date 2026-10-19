@@ -15,7 +15,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           <LogoMark className="size-8" />
-          <span className="font-display text-lg font-bold tracking-wider">FUN GC</span>
+          <span className="font-display text-lg font-bold tracking-wider">FUNGC</span>
         </Link>
 
         <nav className="hidden md:block" aria-label="メインメニュー">
