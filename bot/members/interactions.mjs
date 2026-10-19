@@ -1,11 +1,14 @@
 // Discord のスラッシュコマンド /profile の受け口。Discord は Interactions Endpoint URL(https://fungc.org/api/discord)に
 // HTTP でリクエストを送ってくるので、Cloudflare Pages Functions(functions/api/discord.js)からこの関数を呼ぶ。
 //
-//   DISCORD_PUBLIC_KEY  Developer Portal の General Information にある Public Key。リクエストの署名を確かめる
-//   GITHUB_TOKEN        fun-gc/hp の Contents と Pull requests に書き込める GitHub のトークン
-//   GITHUB_REPO         書き込むリポジトリ(省略すると fun-gc/hp)
+//   DISCORD_PUBLIC_KEY      Developer Portal の General Information にある Public Key。リクエストの署名を確かめる
+//   GITHUB_APP_ID           fun-gc/hp に入れた GitHub App の App ID
+//   GITHUB_APP_PRIVATE_KEY  その App の秘密鍵(github-app.mjs)
+//   GITHUB_TOKEN            App の代わりに使う個人のトークン(App を設定するまでの移行用。App があればそちらを使う)
+//   GITHUB_REPO             書き込むリポジトリ(省略すると fun-gc/hp)
 
 import { createGitHub } from "./github.mjs";
+import { installationToken } from "./github-app.mjs";
 import { applyInput, avatarUrl, describe, displayName, EDIT_MODAL, editModal, LINKS_MODAL, linksModal, memberJson, modalValues } from "./profile.mjs";
 
 const DISCORD_API = "https://discord.com/api/v10";
@@ -64,11 +67,18 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
   const reply = (content, extra) => json({ type: CHANNEL_MESSAGE, data: privateMessage(content, extra) });
   const guildId = interaction.guild_id;
   if (!guildId) return reply("FUNGC のサーバーの中で使ってください。");
-  if (!env.GITHUB_TOKEN) return reply("まだ準備中です(サイト側に GITHUB_TOKEN が設定されていません)。運営に知らせてください。");
+  const repo = env.GITHUB_REPO || "fun-gc/hp";
+  const useApp = Boolean(env.GITHUB_APP_ID && env.GITHUB_APP_PRIVATE_KEY);
+  if (!useApp && !env.GITHUB_TOKEN) {
+    return reply("まだ準備中です(サイト側に GitHub App の設定がありません)。運営に知らせてください。");
+  }
 
   const member = interaction.member;
   const user = member?.user ?? interaction.user;
-  const gh = createGitHub({ token: env.GITHUB_TOKEN, repo: env.GITHUB_REPO || "fun-gc/hp", fetch });
+  const token = useApp
+    ? () => installationToken({ appId: env.GITHUB_APP_ID, privateKey: env.GITHUB_APP_PRIVATE_KEY, repo, fetch })
+    : () => env.GITHUB_TOKEN;
+  const gh = createGitHub({ token, repo, fetch });
 
   // 時間のかかる処理は「考え中」と返してから後で書き換える(Discord は 15 分まで待ってくれる)
   const later = (task) => {

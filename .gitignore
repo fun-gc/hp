@@ -45,3 +45,4 @@ next-env.d.ts
 
 # wrangler pages dev で Discord の受け口(functions/)を手元で動かしたときのファイル
 /.wrangler/
+/.dev.vars
