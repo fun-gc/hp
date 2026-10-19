@@ -10,7 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parsePost } from "./parse.mjs";
+import { hostName, parsePost } from "./parse.mjs";
 
 const API = "https://discord.com/api/v10";
 const REACTION = encodeURIComponent("📅");
@@ -19,6 +19,23 @@ const MAX_AGE_MS = 400 * 24 * 60 * 60 * 1000;
 const MAX_PAGES = 10;
 
 export const defaultOut = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../content/discord-events.json");
+const membersDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../content/members");
+
+/** サイトに載っているメンバーの { Discord のユーザー ID: 主催者として出す名前 } */
+export function profileNames(dir = membersDir) {
+  const names = new Map();
+  if (!fs.existsSync(dir)) return names;
+  for (const file of fs.readdirSync(dir)) {
+    if (!file.endsWith(".json") || file.startsWith("_")) continue;
+    try {
+      const member = JSON.parse(fs.readFileSync(path.join(dir, file), "utf8"));
+      if (member.public && member.discordId && member.name) names.set(member.discordId, hostName(member.name));
+    } catch {
+      // 形の崩れたファイルはサイトのビルドで止まるので、ここでは飛ばす
+    }
+  }
+  return names;
+}
 
 async function discord(token, route, method = "GET") {
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -107,9 +124,10 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
     posts.push(...found.map((p) => ({ ...p, guildId: channel.guild_id })));
   }
 
-  // 主催者名はサーバーでのニックネームを優先し、なければ Discord の表示名、ユーザー名の順で使う
-  const hosts = new Map();
-  async function hostName(guildId, author) {
+  // 主催者名は、メンバー欄に載っている人ならプロフィールの名前を使う。
+  // 載っていなければサーバーでのニックネーム、Discord の表示名、ユーザー名の順で使う
+  const hosts = profileNames();
+  async function hostOf(guildId, author) {
     if (!hosts.has(author.id)) {
       const member = guildId ? await discord(token, `/guilds/${guildId}/members/${author.id}`).catch(() => null) : null;
       hosts.set(author.id, String(member?.nick ?? author.global_name ?? author.username).slice(0, 40));
@@ -122,7 +140,7 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
   for (const { channelId, guildId, message, threadName, tags, archived } of posts) {
     if (Date.parse(message.timestamp) < since) continue;
     const found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
-    const host = found.length && message.author ? await hostName(guildId, message.author) : undefined;
+    const host = found.length && message.author ? await hostOf(guildId, message.author) : undefined;
     for (const e of found.map((e) => (host ? { ...e, host } : e))) {
       const key = `${e.date} ${e.title}`;
       if (seen.has(key)) continue;
