@@ -18,23 +18,14 @@ export default function JoinPage() {
         lead={`FUN GC は${site.university}のゲーム制作サークルです。見学はいつでも受け付けています。`}
       />
 
-      <section aria-labelledby="join-form-heading" className="mb-12 max-w-3xl border-2 border-ink bg-white p-6 sm:p-8">
+      <section aria-labelledby="join-form-heading" className="mb-12 max-w-3xl">
         <h2 id="join-form-heading" className="text-2xl font-black">入部・見学を希望する方へ</h2>
-        <p className="mt-4 leading-relaxed">
-          入部・見学のどちらでも、フォームを送信すると<strong>@fun.ac.jp の学内メール宛てに Discord サーバーの招待リンクを自動送信します。</strong>
-          学内メールアドレスをお持ちの方は、そのアドレスを入力してください。
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">
-          学内以外のメールアドレスには、招待リンクを自動送信しません。
-          見学や入部の相談は、下のお問い合わせ先へご連絡ください。
-          招待メールが届かない場合は、迷惑メールフォルダーと入力したアドレスをご確認ください。
-        </p>
         {site.joinFormUrl ? (
-          <a href={site.joinFormUrl} target="_blank" rel="noreferrer" className="mt-6 inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-ink hover:text-white">
-            入部・見学フォームを開く（Google フォーム） ↗
+          <a href={site.joinFormUrl} target="_blank" rel="noreferrer" className="mt-5 inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-ink hover:text-white">
+            入部・見学フォームを開く<span className="inline-block">（Google フォーム） ↗</span>
           </a>
         ) : (
-          <p className="mt-6 font-bold">入部・見学フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
+          <p className="mt-5 font-bold">入部・見学フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
         )}
       </section>
 
