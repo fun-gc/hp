@@ -118,8 +118,8 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
     if (sub === "show") {
       later(async () => {
         const { member: saved, pull } = await gh.loadMember(user.id);
-        if (!saved) return pull ? `掲載の取り下げを、いま運営さんが確認しているよ。${pr(pull)}` : "まだ登録されていないみたい。`/profile edit` から登録できるよ ✨";
-        const state = pull ? `これは運営さんの確認待ちの内容だよ。確認が済んだら ${SITE_MEMBERS} に載るからね。${pr(pull)}` : `${SITE_MEMBERS} にちゃんと載っているよ ✨`;
+        if (!saved) return pull ? `掲載の取り下げを、いま運営さんが確認しているよ。${pr(pull)}` : "まだ登録されていないみたい。`/profile edit` から登録できるよ。";
+        const state = pull ? `これは運営さんの確認待ちの内容だよ。確認が済んだら ${SITE_MEMBERS} に載るからね。${pr(pull)}` : `${SITE_MEMBERS} にちゃんと載っているよ。`;
         return `${describe(saved, now())}\n\n${state}`;
       });
       return json({ type: DEFERRED_CHANNEL_MESSAGE, data: { flags: EPHEMERAL } });
@@ -142,7 +142,7 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
       if (result.status === "withdrawn") return "確認待ちだった登録を取り下げたよ。サイトには載らないから安心してね。";
       return `取り下げを受け付けたよ。運営さんが確認したら、サイトから消えるからね。${pr(result.pull)}`;
     });
-    return json({ type: UPDATE_MESSAGE, data: { content: "ちょっと待っててね…🪄", components: [] } });
+    return json({ type: UPDATE_MESSAGE, data: { content: "ちょっと待っててね…", components: [] } });
   }
 
   if (interaction.type === MODAL_SUBMIT && [EDIT_MODAL, LINKS_MODAL].includes(interaction.data.custom_id)) {
@@ -163,7 +163,7 @@ export async function handleInteraction(request, env, { waitUntil, fetch = globa
       );
       if (result.error) return `${result.error}\nもう一度コマンドからやり直してね。`;
       return [
-        `受け付けたよ ✨ 運営さんが確認したら ${SITE_MEMBERS} に載るからね。`,
+        `受け付けたよ。運営さんが確認したら ${SITE_MEMBERS} に載るからね。`,
         "",
         describe(result.member, now()),
         pr(result.pull),
