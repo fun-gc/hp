@@ -13,6 +13,8 @@
   /* 文字に使うときは少し濃い色にして読みやすくする */
   --color-fun-red-ink: #c4161c;
   --color-fun-green-ink: #157a33;
+  /* カレンダーの印の縁。黄色は白地に埋もれるので、明度を落とした色で囲む */
+  --color-fun-yellow-edge: #c2b400;
 }
 
 @theme inline {

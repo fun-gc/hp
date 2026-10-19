@@ -3,14 +3,15 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { eventKindLabels, type ScheduleEvent } from "@/lib/schema";
 
+// 印はどれも、同じ色の明度を落とした縁で囲む
 const kindStyle: Record<ScheduleEvent["kind"], { dot: string; tag: string }> = {
-  course: { dot: "bg-fun-red", tag: "bg-fun-red text-white" },
-  exhibition: { dot: "bg-fun-green", tag: "bg-fun-green text-white" },
-  event: { dot: "bg-fun-yellow", tag: "bg-fun-yellow text-ink" },
-  other: { dot: "bg-muted", tag: "bg-ink text-white" },
+  course: { dot: "bg-fun-red ring-1 ring-fun-red-ink", tag: "bg-fun-red text-white" },
+  exhibition: { dot: "bg-fun-green ring-1 ring-fun-green-ink", tag: "bg-fun-green text-white" },
+  event: { dot: "bg-fun-yellow ring-1 ring-fun-yellow-edge", tag: "bg-fun-yellow text-ink" },
+  other: { dot: "bg-muted ring-1 ring-ink-2", tag: "bg-ink text-white" },
 };
 
-const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+const weekdays = ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"];
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -110,7 +111,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
                 </span>
                 <span className="flex flex-wrap justify-center gap-1">
                   {dayEvents.map((e, j) => (
-                    <span key={j} className={`size-2 ${kindStyle[e.kind].dot}`} />
+                    <span key={j} className={`size-2.5 ${kindStyle[e.kind].dot}`} />
                   ))}
                 </span>
               </button>
