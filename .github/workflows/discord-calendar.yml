@@ -2,7 +2,7 @@ name: Discord の予定を反映
 
 # 15 分ごとにメンバー募集チャンネルを読み、予定が前回から変わっていたら Cloudflare Pages を再ビルドする。
 # 再ビルドの中でもう一度 Discord を読むので、ここでは変わったかどうかだけを見る(docs/discord-bot.md)。
-# リポジトリの Secrets に DISCORD_BOT_TOKEN と CF_PAGES_DEPLOY_HOOK、Variables に DISCORD_CHANNEL_ID を登録しておく。
+# リポジトリの Secrets に DISCORD_BOT_TOKEN と CF_PAGES_DEPLOY_HOOK、Variables(か Secrets)に DISCORD_CHANNEL_ID を登録しておく。
 on:
   schedule:
     - cron: "*/15 * * * *"
@@ -25,7 +25,7 @@ jobs:
         id: read
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_CHANNEL_ID: ${{ vars.DISCORD_CHANNEL_ID }}
+          DISCORD_CHANNEL_ID: ${{ vars.DISCORD_CHANNEL_ID || secrets.DISCORD_CHANNEL_ID }}
         run: |
           if [ -z "$DISCORD_BOT_TOKEN" ] || [ -z "$DISCORD_CHANNEL_ID" ]; then
             echo "::notice::DISCORD_BOT_TOKEN か DISCORD_CHANNEL_ID が未設定なのでスキップしました"
