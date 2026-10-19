@@ -81,11 +81,12 @@ tags: [アクション]
 
 Discord の `/profile edit` から登録できます(→ [docs/discord-bot.md](./docs/discord-bot.md#メンバー登録profile-コマンド))。送った内容は Bot が PR にするので、運営が確認してマージしてください。手で作るときは `content/members/_example.json` をまねて、`content/members/<DiscordのユーザーID>.json` を作ります。
 
-- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)は運営が手で書き足します。本人が `/profile` で編集しても消えません。
+- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)、並び順(`order`)は運営が手で書き足します。本人が `/profile` で編集しても消えません。
 
 - `admissionYear`(入学年度)を入れると学年が自動で計算され、毎年 4 月に繰り上がります。4 年生になると OB・OG の欄に移ります。
 - 院生などで表示を変えたいときは `"override": { "gradeLabel": "M1", "alumni": false }` を付けます。
 - `"public": false` のメンバーはサイトに表示されません。
+- 部長などを先頭(左上)に出したいときは `"order": 1` を付けます。数字が小さいほど先に並び、付けていない人は学年の高い順に続きます。
 
 ## 連絡先やリンクを変える
 

@@ -31,6 +31,8 @@ export const memberSchema = z.object({
   medals: z.array(z.string()).default([]),
   // 本人がサイト掲載を ON にしたメンバーだけを表示する
   public: z.boolean(),
+  // メンバー欄での並び順。小さいほど先(左上)に出る。部長などを先頭に出すときに運営が付ける。省略すると学年順
+  order: z.number().int().optional(),
   override: z
     .object({
       gradeLabel: z.string().max(16).optional(),

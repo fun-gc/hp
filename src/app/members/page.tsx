@@ -12,7 +12,13 @@ export default function MembersPage() {
   const medals = new Map(getMedals().map((m) => [m.id, m]));
   const members = getMembers()
     .map((m) => ({ member: m, standing: memberStanding(m.admissionYear, now, m.override) }))
-    .sort((a, b) => b.standing.grade - a.standing.grade || a.member.name.localeCompare(b.member.name, "ja"));
+    // order を付けた人(部長など)を先に、残りは学年の高い順・名前順に並べる
+    .sort(
+      (a, b) =>
+        (a.member.order ?? Infinity) - (b.member.order ?? Infinity) ||
+        b.standing.grade - a.standing.grade ||
+        a.member.name.localeCompare(b.member.name, "ja"),
+    );
   const active = members.filter((m) => !m.standing.alumni);
   const alumni = members.filter((m) => m.standing.alumni);
 

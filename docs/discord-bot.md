@@ -80,7 +80,7 @@ Cloudflare Pages が再ビルド → fungc.org/members に反映
 - 受け口はサイトと同じ Cloudflare Pages の中で動きます(`functions/` フォルダ)。別のサーバーや Worker は要りません。サイト本体は今までどおり静的な HTML です。
 - 1 人につき PR は 1 つです。マージ前にもう一度送ると同じ PR に追加され、PR の題も最後の操作に合わせて変わります。
 - 入力に問題があれば PR は作らず、本人にだけ見える返信で伝えます。PR の CI(ビルド)でももう一度検証します。
-- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)は運営が手で入れる項目で、`/profile` で編集しても消えません。
+- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)、並び順(`order`)は運営が手で入れる項目で、`/profile` で編集しても消えません。
 - アイコンは Discord のアバター(サーバー用のアバターがあればそれ)を使い、`/profile edit` か `/profile links` を送るたびに最新にします。
 
 ### コマンド
