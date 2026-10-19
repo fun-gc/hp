@@ -103,15 +103,27 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
     }
     log(`[discord] チャンネル ${channel.id}(種類 ${channel.type})を読みます`);
     // 15: フォーラム、16: メディア。それ以外はテキストチャンネルとして読む
-    posts.push(...([15, 16].includes(channel.type) ? await forumPosts(token, channel, since) : await textChannelPosts(token, channel.id, since)));
+    const found = [15, 16].includes(channel.type) ? await forumPosts(token, channel, since) : await textChannelPosts(token, channel.id, since);
+    posts.push(...found.map((p) => ({ ...p, guildId: channel.guild_id })));
+  }
+
+  // 主催者名はサーバーでのニックネームを優先し、なければ Discord の表示名、ユーザー名の順で使う
+  const hosts = new Map();
+  async function hostName(guildId, author) {
+    if (!hosts.has(author.id)) {
+      const member = guildId ? await discord(token, `/guilds/${guildId}/members/${author.id}`).catch(() => null) : null;
+      hosts.set(author.id, String(member?.nick ?? author.global_name ?? author.username).slice(0, 40));
+    }
+    return hosts.get(author.id);
   }
 
   const seen = new Set();
   const events = [];
-  for (const { channelId, message, threadName, tags, archived } of posts) {
+  for (const { channelId, guildId, message, threadName, tags, archived } of posts) {
     if (Date.parse(message.timestamp) < since) continue;
     const found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
-    for (const e of found) {
+    const host = found.length && message.author ? await hostName(guildId, message.author) : undefined;
+    for (const e of found.map((e) => (host ? { ...e, host } : e))) {
       const key = `${e.date} ${e.title}`;
       if (seen.has(key)) continue;
       seen.add(key);

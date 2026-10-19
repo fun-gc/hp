@@ -44,12 +44,13 @@ Discord のメンバー募集チャンネルに投稿した予定は、自動で
     "title": "Unity 講座 第2回",
     "kind": "course",
     "place": "学内",
-    "note": "ノート PC を持ってきてください"
+    "note": "ノート PC を持ってきてください",
+    "host": "ふぐ太郎"
   }
 ]
 ```
 
-`kind` は `course`(講座・赤)/ `exhibition`(展示・緑)/ `event`(イベント・黄)/ `other`(その他)のどれか。`start`・`end`・`place`・`note` は省略できます。
+`kind` は `course`(講座・赤)/ `exhibition`(展示・緑)/ `event`(イベント・黄)/ `other`(その他)のどれか。`host` は主催者の名前で、予定一覧の右端に出ます。`start`・`end`・`place`・`note`・`host` は省略できます。
 
 ## 作品を追加する
 

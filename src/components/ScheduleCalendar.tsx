@@ -146,13 +146,14 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
                     <p className="font-display text-2xl font-bold leading-none">{Number(e.date.slice(8))}</p>
                     <p className="text-xs text-muted">{weekdays[new Date(`${e.date}T00:00:00Z`).getUTCDay()]}</p>
                   </div>
-                  <div className="space-y-1">
+                  <div className="min-w-0 flex-1 space-y-1">
                     <p className="flex flex-wrap items-center gap-2">
                       <span className={`px-2 py-0.5 text-xs font-bold ${kindStyle[e.kind].tag}`}>{eventKindLabels[e.kind]}</span>
                       <span className="font-bold">{e.title}</span>
                     </p>
-                    <p className="text-sm text-muted">
-                      {[e.start && `${e.start}${e.end ? `〜${e.end}` : "〜"}`, e.place].filter(Boolean).join(" / ")}
+                    <p className="flex flex-wrap justify-between gap-x-4 text-sm text-muted">
+                      <span>{[e.start && `${e.start}${e.end ? `〜${e.end}` : "〜"}`, e.place].filter(Boolean).join(" / ")}</span>
+                      {e.host && <span className="ml-auto">主催: {e.host}</span>}
                     </p>
                     {e.note && <p className="text-sm">{e.note}</p>}
                   </div>
