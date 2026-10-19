@@ -90,6 +90,7 @@ test("編集しても運営が入れた項目(メダル・作品・学年の上�
     links: { github: "https://github.com/fun-gc" },
     medals: ["first-game"],
     public: true,
+    order: 1,
     override: { gradeLabel: "M1", alumni: false },
   };
   const { member } = applyInput(existing, {
@@ -106,6 +107,7 @@ test("編集しても運営が入れた項目(メダル・作品・学年の上�
   assert.deepEqual(member.links, { github: "https://github.com/fun-gc" });
   assert.deepEqual(member.medals, ["first-game"]);
   assert.deepEqual(member.override, { gradeLabel: "M1", alumni: false });
+  assert.equal(member.order, 1);
 });
 
 test("好きなゲームが多すぎるとエラー", () => {

@@ -204,6 +204,7 @@ const KEY_ORDER = [
   "links",
   "medals",
   "public",
+  "order",
   "override",
 ];
 
