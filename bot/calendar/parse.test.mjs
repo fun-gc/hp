@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parsePost } from "./parse.mjs";
+import { hostName, parsePost } from "./parse.mjs";
 
 const postedAt = "2026-10-19T03:00:00Z"; // 日本時間 10/19 12:00
 
@@ -127,4 +127,12 @@ test("見出しの次の行に値を書くフォーラムの投稿", () => {
 test("フォーラムのタグで種類を決める", () => {
   const [e] = parsePost({ content: "日時: 11/30", postedAt, threadName: "作品展", tags: ["展示"] });
   assert.equal(e.kind, "exhibition");
+});
+
+test("主催者名はプロフィールの名前から後ろの括弧書きを外す", () => {
+  assert.equal(hostName("ゆうげつ(26部長)"), "ゆうげつ");
+  assert.equal(hostName("ゆうげつ (副部長)"), "ゆうげつ");
+  assert.equal(hostName("iuchico"), "iuchico");
+  assert.equal(hostName("(仮)ふぐ"), "(仮)ふぐ");
+  assert.equal(hostName("(部長)"), "(部長)");
 });

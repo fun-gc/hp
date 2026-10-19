@@ -148,6 +148,12 @@ const cut = (s, n) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
  * @param {{ content: string, postedAt: string, threadName?: string, tags?: string[] }} post
  *   tags はフォーラムのタグ名。種類(講座・展示など)の判定にだけ使う
  */
+// 主催者名に使うプロフィールの名前。後ろの括弧書き(「ゆうげつ(26部長)」の役職など)は外す
+export function hostName(name) {
+  const base = String(name).replace(/\s*[(（][^()（）]*[)）]\s*$/, "").trim();
+  return (base || String(name).trim()).slice(0, 40);
+}
+
 export function parsePost({ content, postedAt, threadName, tags = [] }) {
   const text = normalize(content);
   if (/非掲載/.test(text)) return [];
