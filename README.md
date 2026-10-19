@@ -13,11 +13,13 @@
 | `content/news/*.md` | お知らせ(Markdown) |
 | `content/works/*.md` | 作品紹介 |
 | `content/schedule.json` | 講座・イベントの日程(講座ページのカレンダーに出る) |
+| `content/discord-events.json` | Discord のメンバー募集チャンネルからビルド時に作る日程(リポジトリには入れない) |
 | `content/members/<DiscordのID>.json` | メンバーのプロフィール(Discord Bot から登録する予定) |
 | `content/medals.json` | メダルの定義(条件は運用を見て決める) |
 | `src/app/` | 各ページ |
 | `src/components/` | 部品(ロゴ、カレンダー、カードなど) |
 | `src/lib/site.ts` | 連絡先やリンクなど、サイト全体の設定 |
+| `bot/` | Discord Bot(`bot/calendar/` は募集チャンネルの予定の読み込み) |
 
 ## 手元で動かす
 
@@ -25,6 +27,7 @@
 npm install
 npm run dev     # http://localhost:3000
 npm run build   # out/ に静的ファイルを書き出す
+npm test        # Discord の投稿から予定を読み取る処理のテスト
 ```
 
 Next.js(App Router)+ Tailwind CSS で作り、`output: "export"` で静的な HTML として書き出して Cloudflare Pages に置いています。

@@ -1,0 +1,70 @@
+name: Discord の予定を反映
+
+# 15 分ごとにメンバー募集チャンネルを読み、予定が前回から変わっていたら Cloudflare Pages を再ビルドする。
+# 再ビルドの中でもう一度 Discord を読むので、ここでは変わったかどうかだけを見る(docs/discord-bot.md)。
+# リポジトリの Secrets に DISCORD_BOT_TOKEN と CF_PAGES_DEPLOY_HOOK、Variables に DISCORD_CHANNEL_ID を登録しておく。
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: discord-calendar
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: Discord の投稿を読む
+        id: read
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_ID: ${{ vars.DISCORD_CHANNEL_ID }}
+        run: |
+          if [ -z "$DISCORD_BOT_TOKEN" ] || [ -z "$DISCORD_CHANNEL_ID" ]; then
+            echo "::notice::DISCORD_BOT_TOKEN か DISCORD_CHANNEL_ID が未設定なのでスキップしました"
+            exit 0
+          fi
+          node bot/calendar/sync.mjs --react --out "$RUNNER_TEMP/discord-events.json"
+          echo "hash=$(sha256sum "$RUNNER_TEMP/discord-events.json" | cut -c1-16)" >> "$GITHUB_OUTPUT"
+
+      # 前回再ビルドしたときの予定のハッシュを、Actions のキャッシュに残しておく
+      - name: 前回の予定を取り出す
+        if: steps.read.outputs.hash
+        uses: actions/cache/restore@v4
+        with:
+          path: .discord-last
+          key: discord-last-${{ github.run_id }}
+          restore-keys: discord-last-
+
+      - name: 変わっていたら再ビルドを依頼
+        id: deploy
+        if: steps.read.outputs.hash
+        env:
+          HASH: ${{ steps.read.outputs.hash }}
+          HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ "$(cat .discord-last 2>/dev/null)" = "$HASH" ]; then
+            echo "予定に変化はありません"
+            exit 0
+          fi
+          if [ -z "$HOOK" ]; then
+            echo "::warning::CF_PAGES_DEPLOY_HOOK が未設定なので再ビルドできません"
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK"
+          echo "$HASH" > .discord-last
+          echo "saved=true" >> "$GITHUB_OUTPUT"
+
+      - name: 今回の予定を記録する
+        if: steps.deploy.outputs.saved
+        uses: actions/cache/save@v4
+        with:
+          path: .discord-last
+          key: discord-last-${{ github.run_id }}

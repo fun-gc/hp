@@ -84,12 +84,13 @@ export function getNews(): News[] {
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
+// content/schedule.json(手で書く予定)と content/discord-events.json(ビルド時に Discord から作る予定)をまとめる
 export function getSchedule(): ScheduleEvent[] {
-  const file = path.join(contentDir, "schedule.json");
-  if (!fs.existsSync(file)) return [];
-  return parseOrThrow(
-    z.array(scheduleEventSchema),
-    JSON.parse(fs.readFileSync(file, "utf8")),
-    "content/schedule.json",
-  ).sort((a, b) => (a.date + (a.start ?? "")).localeCompare(b.date + (b.start ?? "")));
+  return ["schedule.json", "discord-events.json"]
+    .flatMap((name) => {
+      const file = path.join(contentDir, name);
+      if (!fs.existsSync(file)) return [];
+      return parseOrThrow(z.array(scheduleEventSchema), JSON.parse(fs.readFileSync(file, "utf8")), `content/${name}`);
+    })
+    .sort((a, b) => (a.date + (a.start ?? "")).localeCompare(b.date + (b.start ?? "")));
 }
