@@ -42,6 +42,21 @@ body {
   background: linear-gradient(transparent 58%, var(--color-fun-yellow) 58%);
 }
 
+/* ヘッダー下の「開催中」の帯。中身を 2 回並べ、半分まで流してつなぎ目なく繰り返す */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 30s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    animation: none;
+  }
+}
+
 /* お知らせ本文(Markdown)の見た目 */
 .prose-fun {
   line-height: 1.9;
