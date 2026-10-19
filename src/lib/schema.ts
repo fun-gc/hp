@@ -95,5 +95,7 @@ export const scheduleEventSchema = z.object({
   kind: z.enum(eventKinds).default("course"),
   place: z.string().optional(),
   note: z.string().optional(),
+  // 主催者の名前(Discord から読んだ予定では投稿者のサーバーでの表示名)
+  host: z.string().max(40).optional(),
 });
 export type ScheduleEvent = z.infer<typeof scheduleEventSchema>;
