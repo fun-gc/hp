@@ -1,6 +1,6 @@
 ---
 title: トラブルシューティング
-authors: [FUN GC]
+authors: [FUNGC]
 year: 2026
 month: 10
 event: 未来祭 2026

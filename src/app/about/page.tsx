@@ -33,7 +33,7 @@ export default function AboutPage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
         title="活動紹介"
-        lead={`FUN GC は${site.university}のゲーム制作サークルです。活動の拠点は Discord と学内です。`}
+        lead={`FUNGC は${site.university}のゲーム制作サークルです。活動の拠点は Discord と学内です。`}
       />
 
       <ol className="divide-y divide-line border-y border-line">
@@ -61,9 +61,9 @@ export default function AboutPage() {
 
       <section className="mt-16 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="text-2xl font-black">FUGU から FUN GC へ</h2>
+          <h2 className="text-2xl font-black">FUGU から FUNGC へ</h2>
           <p className="leading-relaxed text-muted">
-            以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUN GC として活動を続けています。
+            以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUNGC として活動を続けています。
           </p>
         </div>
         <div className="space-y-4">

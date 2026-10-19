@@ -41,7 +41,7 @@ export function InteractiveLogo({ className }: { className?: string }) {
       <svg
         viewBox="0 0 1210 1280"
         role="img"
-        aria-label="FUN GC のロゴ"
+        aria-label="FUNGC のロゴ"
         className="h-full w-full overflow-visible transition-transform duration-200 ease-out motion-reduce:transition-none"
         style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
       >
