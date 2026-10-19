@@ -119,6 +119,11 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, `${JSON.stringify(events, null, 2)}\n`);
   log(`[discord] ${posts.length} 件の投稿から ${events.length} 件の予定を読み込みました`);
+  // Actions のログは公開されるので、本文は出さず件数だけ出す
+  const empty = posts.filter(({ message }) => !message.content).length;
+  if (empty) {
+    log(`[discord] 本文が空の投稿が ${empty} 件あります(Developer Portal の Message Content Intent が OFF だと本文が読めません)`);
+  }
   return events;
 }
 
