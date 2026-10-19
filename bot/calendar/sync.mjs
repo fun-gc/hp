@@ -10,6 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createFlyerReader, looksLikeFlyer } from "./flyer.mjs";
 import { hostName, parsePost } from "./parse.mjs";
 
 const API = "https://discord.com/api/v10";
@@ -135,32 +136,59 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
     return hosts.get(author.id);
   }
 
+  // 本文から日時が読めない投稿は、講座のお知らせのチラシ画像が付いていればそこから読む
+  const flyers = createFlyerReader();
+  const flyerCount = { read: 0, found: 0 };
+  async function fromFlyer(message, threadName, tags) {
+    const image = message.attachments?.find(looksLikeFlyer);
+    if (!image) return [];
+    try {
+      const res = await fetch(image.url);
+      if (!res.ok) throw new Error(`画像を取得できませんでした(${res.status})`);
+      const text = await flyers.read(Buffer.from(await res.arrayBuffer()));
+      flyerCount.read++;
+      // テンプレートは講座のお知らせなので、色は講座にする
+      const found = text ? parsePost({ content: `${message.content ?? ""}\n${text}`, postedAt: message.timestamp, threadName, tags: [...tags, "講座"] }) : [];
+      if (found.length) flyerCount.found++;
+      return found;
+    } catch (err) {
+      log(`[discord] チラシ画像を読めませんでした: ${err.message}`);
+      return [];
+    }
+  }
+
   const seen = new Set();
   const events = [];
-  for (const { channelId, guildId, message, threadName, tags, archived } of posts) {
-    if (Date.parse(message.timestamp) < since) continue;
-    const found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
-    const host = found.length && message.author ? await hostOf(guildId, message.author) : undefined;
-    for (const e of found.map((e) => (host ? { ...e, host } : e))) {
-      const key = `${e.date} ${e.title}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      events.push(e);
+  try {
+    for (const { channelId, guildId, message, threadName, tags = [], archived } of posts) {
+      if (Date.parse(message.timestamp) < since) continue;
+      let found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
+      if (!found.length) found = await fromFlyer(message, threadName, tags);
+      const host = found.length && message.author ? await hostOf(guildId, message.author) : undefined;
+      for (const e of found.map((e) => (host ? { ...e, host } : e))) {
+        const key = `${e.date} ${e.title}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        events.push(e);
+      }
+      // アーカイブ済みのスレッドにはリアクションを付けられない。付けられなくても予定の反映は止めない
+      if (react && found.length && !archived && !message.reactions?.some((r) => r.me && r.emoji.name === "📅")) {
+        await discord(token, `/channels/${channelId}/messages/${message.id}/reactions/${REACTION}/@me`, "PUT").catch((err) =>
+          log(`[discord] リアクションを付けられませんでした: ${err.message}`),
+        );
+      }
     }
-    // アーカイブ済みのスレッドにはリアクションを付けられない。付けられなくても予定の反映は止めない
-    if (react && found.length && !archived && !message.reactions?.some((r) => r.me && r.emoji.name === "📅")) {
-      await discord(token, `/channels/${channelId}/messages/${message.id}/reactions/${REACTION}/@me`, "PUT").catch((err) =>
-        log(`[discord] リアクションを付けられませんでした: ${err.message}`),
-      );
-    }
+  } finally {
+    await flyers.close();
   }
   events.sort((a, b) => (a.date + (a.start ?? "") + a.title).localeCompare(b.date + (b.start ?? "") + b.title));
 
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, `${JSON.stringify(events, null, 2)}\n`);
   log(`[discord] ${posts.length} 件の投稿から ${events.length} 件の予定を読み込みました`);
-  // Actions のログは公開されるので、本文は出さず件数だけ出す
-  const empty = posts.filter(({ message }) => !message.content).length;
+  // Actions のログは公開されるので、本文や読み取った文字は出さず件数だけ出す
+  if (flyerCount.read) log(`[discord] チラシ画像 ${flyerCount.read} 枚を読み、${flyerCount.found} 枚から予定を見つけました`);
+  const empty = posts.filter(({ message }) => !message.content && !message.attachments?.length).length;
   if (empty) {
     log(`[discord] 本文が空の投稿が ${empty} 件あります(Developer Portal の Message Content Intent が OFF だと本文が読めません)`);
   }

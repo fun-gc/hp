@@ -12,11 +12,14 @@
   },
   "dependencies": {
     "@fontsource/line-seed-jp": "5.3.1",
+    "@tesseract.js-data/jpn": "1.0.0",
     "gray-matter": "^4.0.3",
     "marked": "^18.1.1",
     "next": "16.4.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "sharp": "0.35.5",
+    "tesseract.js": "7.0.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
