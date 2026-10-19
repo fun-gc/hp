@@ -9,6 +9,8 @@ export const site = {
   email: "contact@fungc.org",
   // Google フォームの URL が決まったら入れる。空のままならボタンは出ない。
   contactFormUrl: "",
+  // 入部希望フォーム。自動返信の設定と動作確認を終えてから公開する。
+  joinFormUrl: "",
   // 講座資料のリポジトリ。公開されるまでは courseRepoPublic を false にしておく。
   courseRepoUrl: "https://github.com/yugetu12/fungc-unity-course/tree/unity-base-0",
   courseRepoPublic: false,
