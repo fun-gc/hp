@@ -78,7 +78,7 @@ async function forumPosts(token, channel, since) {
   for (const t of threads) {
     const message = await discord(token, `/channels/${t.id}/messages/${t.id}`);
     const tags = (t.applied_tags ?? []).map((id) => channel.available_tags?.find((tag) => tag.id === id)?.name).filter(Boolean);
-    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags });
+    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags, archived: t.thread_metadata?.archived });
   }
   return posts;
 }
@@ -108,7 +108,7 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
 
   const seen = new Set();
   const events = [];
-  for (const { channelId, message, threadName, tags } of posts) {
+  for (const { channelId, message, threadName, tags, archived } of posts) {
     if (Date.parse(message.timestamp) < since) continue;
     const found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
     for (const e of found) {
@@ -117,8 +117,11 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
       seen.add(key);
       events.push(e);
     }
-    if (react && found.length && !message.reactions?.some((r) => r.me && r.emoji.name === "📅")) {
-      await discord(token, `/channels/${channelId}/messages/${message.id}/reactions/${REACTION}/@me`, "PUT");
+    // アーカイブ済みのスレッドにはリアクションを付けられない。付けられなくても予定の反映は止めない
+    if (react && found.length && !archived && !message.reactions?.some((r) => r.me && r.emoji.name === "📅")) {
+      await discord(token, `/channels/${channelId}/messages/${message.id}/reactions/${REACTION}/@me`, "PUT").catch((err) =>
+        log(`[discord] リアクションを付けられませんでした: ${err.message}`),
+      );
     }
   }
   events.sort((a, b) => (a.date + (a.start ?? "") + a.title).localeCompare(b.date + (b.start ?? "") + b.title));
