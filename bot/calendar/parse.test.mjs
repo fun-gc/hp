@@ -90,3 +90,41 @@ test("メンションやカスタム絵文字は消す", () => {
   const [e] = parsePost({ content: "<:fugu:123456> 交流会 <@&987654>\n日時: 11/12 18:00", postedAt });
   assert.equal(e.title, "交流会");
 });
+
+test("見出しの次の行に値を書くフォーラムの投稿", () => {
+  const content = [
+    "<@&123456789012345678>",
+    "【内容】",
+    "<#987654321098765432> と同じ",
+    "",
+    "【日時】",
+    "**4/27(月)18:00~19:30**",
+    "",
+    "【場所】",
+    "**365予定**",
+    "",
+    "【持ち物】",
+    "PC(必須)",
+    "",
+    "【備考】",
+    "参加希望の方はリアクションお願いします",
+  ].join("\n");
+  assert.deepEqual(
+    parsePost({ content, postedAt: "2026-04-24T02:34:00Z", threadName: "【第1.5回】続・Unityで3Dジャンプアクションゲームを作ってみよう" }),
+    [
+      {
+        date: "2026-04-27",
+        title: "【第1.5回】続・Unityで3Dジャンプアクションゲームを作ってみよう",
+        kind: "course",
+        start: "18:00",
+        end: "19:30",
+        place: "365予定",
+      },
+    ],
+  );
+});
+
+test("フォーラムのタグで種類を決める", () => {
+  const [e] = parsePost({ content: "日時: 11/30", postedAt, threadName: "作品展", tags: ["展示"] });
+  assert.equal(e.kind, "exhibition");
+});

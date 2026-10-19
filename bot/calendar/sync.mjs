@@ -77,7 +77,8 @@ async function forumPosts(token, channel, since) {
   const posts = [];
   for (const t of threads) {
     const message = await discord(token, `/channels/${t.id}/messages/${t.id}`);
-    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name });
+    const tags = (t.applied_tags ?? []).map((id) => channel.available_tags?.find((tag) => tag.id === id)?.name).filter(Boolean);
+    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags });
   }
   return posts;
 }
@@ -93,17 +94,23 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
   const since = Date.now() - MAX_AGE_MS;
   const posts = [];
   for (const id of channelIds) {
-    const channel = await discord(token, `/channels/${id}`);
+    let channel = await discord(token, `/channels/${id}`);
     if (!channel) throw new Error(`チャンネル ${id} が見つかりません(ID か、Bot がサーバーにいるかを確認してください)`);
+    // フォーラムの投稿(スレッド)の ID が指定されたときは、親のフォーラムごと読む
+    if ([11, 12].includes(channel.type) && channel.parent_id) {
+      const parent = await discord(token, `/channels/${channel.parent_id}`);
+      if (parent && [15, 16].includes(parent.type)) channel = parent;
+    }
+    log(`[discord] チャンネル ${channel.id}(種類 ${channel.type})を読みます`);
     // 15: フォーラム、16: メディア。それ以外はテキストチャンネルとして読む
-    posts.push(...([15, 16].includes(channel.type) ? await forumPosts(token, channel, since) : await textChannelPosts(token, id, since)));
+    posts.push(...([15, 16].includes(channel.type) ? await forumPosts(token, channel, since) : await textChannelPosts(token, channel.id, since)));
   }
 
   const seen = new Set();
   const events = [];
-  for (const { channelId, message, threadName } of posts) {
+  for (const { channelId, message, threadName, tags } of posts) {
     if (Date.parse(message.timestamp) < since) continue;
-    const found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName });
+    const found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
     for (const e of found) {
       const key = `${e.date} ${e.title}`;
       if (seen.has(key)) continue;
