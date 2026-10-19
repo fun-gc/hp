@@ -20,6 +20,7 @@ function fromBase64(base64) {
   return new TextDecoder().decode(Uint8Array.from(binary, (c) => c.charCodeAt(0)));
 }
 
+/** token はトークンを返す関数(GitHub App のトークンは期限があるので、使うたびに聞く) */
 export function createGitHub({ token, repo, fetch = globalThis.fetch }) {
   const owner = repo.split("/")[0];
 
@@ -27,7 +28,7 @@ export function createGitHub({ token, repo, fetch = globalThis.fetch }) {
     const res = await fetch(`${API}/repos/${repo}${route}`, {
       method,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${await token()}`,
         Accept: "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "User-Agent": "FUNGC-site-members",
@@ -38,7 +39,7 @@ export function createGitHub({ token, repo, fetch = globalThis.fetch }) {
     if (res.status === 404) return null;
     const data = res.status === 204 ? null : await res.json().catch(() => null);
     if (!res.ok) {
-      const hint = { 401: "トークンが正しくないか期限切れです", 403: "トークンに書き込みの権限がありません" }[res.status];
+      const hint = { 401: "トークンが正しくないか期限切れです", 403: "Contents と Pull requests の書き込みの権限がありません" }[res.status];
       const err = new Error(`GitHub API ${method} ${route} が ${res.status} を返しました${hint ? `(${hint})` : ""}`);
       err.status = res.status;
       throw err;

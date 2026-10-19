@@ -72,7 +72,7 @@ Discord で `/profile edit` を使うと、入力フォームが開きます。�
    ↓ Discord が HTTP で通知(Interactions Endpoint URL: https://fungc.org/api/discord)
 Cloudflare Pages Functions(functions/api/discord.js → bot/members/interactions.mjs)
    ↓ 署名を確かめ、src/lib/schema.ts と同じ zod スキーマで入力を検証
-GitHub にブランチ member/<ユーザーID> と PR を作る(bot/members/github.mjs)
+GitHub App としてブランチ member/<ユーザーID> と PR を作る(bot/members/github.mjs、github-app.mjs)
    ↓ 運営が PR を確認してマージ
 Cloudflare Pages が再ビルド → fungc.org/members に反映
 ```
@@ -103,14 +103,21 @@ Cloudflare Pages が再ビルド → fungc.org/members に反映
 
 カレンダー用に作った Discord のアプリ(Bot)をそのまま使います。サーバーに入れ直す必要はありません。
 
-1. **GitHub のトークンを作る**: GitHub の **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
-   - Resource owner: `fun-gc`、Repository access: **Only select repositories** で `hp`
-   - Permissions: **Contents** と **Pull requests** を **Read and write**
-   - 期限は組織のルールで決まります。切れたら作り直して 2 の `GITHUB_TOKEN` を差し替えます。組織で承認が必要な設定なら、`fun-gc` の **Settings → Personal access tokens → Pending requests** で承認します。
-   - PR はこのトークンを作った人の名前で作られます。
-2. **Cloudflare に設定する**: Pages のプロジェクト → **Settings → Variables and Secrets** に、本番(Production)で次の 2 つを追加し、**Deployments** から最新の本番デプロイを **Retry deployment** して反映させる。
+1. **GitHub App を作る**: GitHub の `fun-gc` 組織 → **Settings → Developer settings → GitHub Apps → New GitHub App**
+   - **GitHub App name**: 「fungc-site-bot」など(GitHub 全体で重ならない名前)。PR やコミットはこの名前で作られます。
+   - **Homepage URL**: `https://fungc.org`
+   - **Webhook** の **Active** のチェックを外す(Bot は GitHub からの通知を受け取らないので要りません)
+   - **Repository permissions**: **Contents** と **Pull requests** を **Read and write**(Metadata は自動で Read-only になります)
+   - **Where can this GitHub App be installed?**: **Only on this account**
+   - **Create GitHub App** を押したら、画面上部の **App ID** を控え、下の **Private keys → Generate a private key** で `.pem` ファイルをダウンロードする。
+   - 左のメニューの **Install App** → `fun-gc` の **Install** → **Only select repositories** で `hp` を選ぶ。
+   - App の鍵には期限がないので、毎年の作り直しは要りません。鍵が漏れたときだけ、同じ画面で新しい鍵を作って古い鍵を消し、2 を差し替えます。
+2. **Cloudflare に設定する**: Pages のプロジェクト → **Settings → Variables and Secrets** に、本番(Production)で次の 3 つを追加し、**Deployments** から最新の本番デプロイを **Retry deployment** して反映させる。
    - `DISCORD_PUBLIC_KEY`(Text): Discord Developer Portal の **General Information** にある **Public Key**
-   - `GITHUB_TOKEN`(Secret): 1 のトークン
+   - `GITHUB_APP_ID`(Text): 1 の App ID
+   - `GITHUB_APP_PRIVATE_KEY`(Secret): 1 でダウンロードした `.pem` ファイルをテキストエディタで開き、`-----BEGIN` から `-----END RSA PRIVATE KEY-----` までを丸ごと貼る
+
+個人の fine-grained トークンを `GITHUB_TOKEN` に入れても動きます(App を設定するまでの移行用)。App の 2 つが設定されていればそちらを使うので、App に切り替えたら `GITHUB_TOKEN` は Cloudflare から消し、GitHub のトークンも削除してください。
 3. **Discord に受け口を教える**: Developer Portal の **General Information → Interactions Endpoint URL** に `https://fungc.org/api/discord` を入れて **Save Changes**。Discord がその場で疎通を確かめ、2 が反映されていないと保存できません。
 4. **コマンドを登録する**: GitHub の **Actions → Discord のコマンドを登録 → Run workflow**。カレンダー用の `DISCORD_BOT_TOKEN` と `DISCORD_CHANNEL_ID` を使い、そのチャンネルがあるサーバーに `/profile` を登録します。`bot/members/commands.mjs` を変えて main にマージしたときは自動で動きます。
 
@@ -118,7 +125,7 @@ Cloudflare Pages が再ビルド → fungc.org/members に反映
 
 ### 手元で試す
 
-`npx wrangler pages dev out --binding DISCORD_PUBLIC_KEY=… --binding GITHUB_TOKEN=…` で、`npm run build` した `out/` と一緒に受け口を動かせます。入力の組み立てと PR の作り方は `npm test`(`bot/members/*.test.mjs`)で確かめています。
+`.dev.vars` に `DISCORD_PUBLIC_KEY` と `GITHUB_APP_ID`、`GITHUB_APP_PRIVATE_KEY` を書いて `npx wrangler pages dev out` を実行すると、`npm run build` した `out/` と一緒に受け口が動きます(`.dev.vars` はリポジトリに入れません)。入力の組み立てと PR の作り方は `npm test`(`bot/members/*.test.mjs`)で確かめています。
 
 ## メダル(これから作る)
 
