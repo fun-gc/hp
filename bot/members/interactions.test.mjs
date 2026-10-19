@@ -148,7 +148,7 @@ test("登録から編集、取り下げまで", async () => {
   // 送信すると PR ができ、本人には結果が返る
   assert.equal((await send(services, editSubmit("ふぐ太郎"))).type, 5);
   assert.equal(services.pulls.length, 1);
-  assert.match(services.replies.at(-1), /受け付けました[\s\S]*ふぐ太郎[\s\S]*pull\/1/);
+  assert.match(services.replies.at(-1), /受け付けたよ[\s\S]*ふぐ太郎[\s\S]*pull\/1/);
   const saved = JSON.parse(services.branches.get(`member/${user.id}`).get(path));
   assert.ok(memberSchema.safeParse(saved).success);
   assert.equal(saved.public, true);
@@ -161,9 +161,9 @@ test("登録から編集、取り下げまで", async () => {
   assert.match(services.replies.at(-1), /ふぐ次郎[\s\S]*確認待ち/);
 
   // まだ載っていないうちに取り下げると PR を閉じる
-  assert.match((await send(services, command("delete"))).data.content, /よろしいですか/);
+  assert.match((await send(services, command("delete"))).data.content, /ほんとうにいい/);
   assert.equal((await send(services, { type: 3, data: { custom_id: "profile:delete" } })).type, 7);
-  assert.match(services.replies.at(-1), /取り下げました/);
+  assert.match(services.replies.at(-1), /取り下げたよ/);
   assert.equal(services.pulls[0].state, "closed");
   // GitHub へは App のインストールトークンで書き込む
   assert.deepEqual([...services.authorizations], ["Bearer installation-token"]);
@@ -197,12 +197,12 @@ test("載っている人の編集はメダルを残し、取り下げはファ�
   assert.equal(services.branches.get(`member/${user.id}`).has(path), false);
   assert.equal(services.pulls.length, 1);
   assert.match(services.pulls[0].title, /掲載をやめる/);
-  assert.match(services.replies.at(-1), /受け付けました/);
+  assert.match(services.replies.at(-1), /受け付けたよ/);
 });
 
 test("入力に問題があれば PR を作らずに伝える", async () => {
   const services = fakeServices();
   await send(services, editSubmit(""));
   assert.equal(services.pulls.length, 0);
-  assert.match(services.replies.at(-1), /入力を確かめてください/);
+  assert.match(services.replies.at(-1), /入力をもう一度見てみてね/);
 });

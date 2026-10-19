@@ -16,14 +16,14 @@ const GUILD = 0;
 export const commands = [
   {
     name: "profile",
-    description: "サイトのメンバー欄に載せるプロフィール",
+    description: "サイトのメンバー欄に載せるプロフィールだよ",
     type: 1,
     contexts: [GUILD],
     options: [
-      { type: SUB_COMMAND, name: "edit", description: "プロフィールを登録・編集する(名前と Discord のユーザー ID が公開されます)" },
-      { type: SUB_COMMAND, name: "links", description: "X・GitHub・Web サイトへのリンクを登録する" },
-      { type: SUB_COMMAND, name: "show", description: "登録した内容を確認する(自分にだけ見えます)" },
-      { type: SUB_COMMAND, name: "delete", description: "サイトへの掲載をやめ、登録した内容を消す" },
+      { type: SUB_COMMAND, name: "edit", description: "プロフィールを登録・編集するよ(名前と Discord のユーザー ID が公開されるからね)" },
+      { type: SUB_COMMAND, name: "links", description: "X・GitHub・Web サイトへのリンクを登録するよ" },
+      { type: SUB_COMMAND, name: "show", description: "登録した内容を確認するよ(自分にだけ見えるからね)" },
+      { type: SUB_COMMAND, name: "delete", description: "サイトへの掲載をやめて、登録した内容を消すよ" },
     ],
   },
 ];

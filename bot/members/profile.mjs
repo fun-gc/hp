@@ -68,18 +68,18 @@ export function editModal({ existing, name, now }) {
       label(
         "名前",
         textInput("name", { value: existing?.name ?? name, maxLength: 32, required: true }),
-        "サイトに公開されます。本名でなくてかまいません",
+        "サイトに公開されるよ。本名じゃなくても大丈夫だからね",
       ),
       label("入学年度", {
         type: STRING_SELECT,
         custom_id: "admissionYear",
-        placeholder: "入学した年度を選ぶ(学年は自動で計算します)",
+        placeholder: "入学した年度を選んでね(学年は自動で計算するよ)",
         options: admissionYearOptions(now, existing?.admissionYear),
       }),
       label("担当", {
         type: STRING_SELECT,
         custom_id: "roles",
-        placeholder: "いくつでも選べます",
+        placeholder: "いくつでも選べるよ",
         required: false,
         min_values: 0,
         max_values: roleIds.length,
@@ -96,7 +96,7 @@ export function editModal({ existing, name, now }) {
           style: PARAGRAPH,
           value: existing?.favoriteGames?.join("\n"),
           maxLength: 260,
-          placeholder: "1 行に 1 つ、5 つまで",
+          placeholder: "1 行に 1 つ、5 つまで書いてね",
         }),
       ),
     ],
@@ -110,8 +110,8 @@ export function linksModal({ existing }) {
     custom_id: LINKS_MODAL,
     title: "リンクの登録",
     components: [
-      label("X", textInput("x", { value: links.x, maxLength: 200, placeholder: "@fungc や https://x.com/… の形" })),
-      label("GitHub", textInput("github", { value: links.github, maxLength: 200, placeholder: "ユーザー名か URL" })),
+      label("X", textInput("x", { value: links.x, maxLength: 200, placeholder: "@fungc や https://x.com/… の形で書いてね" })),
+      label("GitHub", textInput("github", { value: links.github, maxLength: 200, placeholder: "ユーザー名か URL を書いてね" })),
       label("Web サイト", textInput("website", { value: links.website, maxLength: 200, placeholder: "https://…" })),
     ],
   };
@@ -165,12 +165,12 @@ export function applyInput(existing, { kind, values, discordId, avatar }) {
       .split(/\r?\n|[、,]/)
       .map(clean)
       .filter(Boolean);
-    if (games.length > 5) return { error: "好きなゲームは 5 つまでにしてください。" };
+    if (games.length > 5) return { error: "好きなゲームは 5 つまでにしてね。" };
     const long = games.find((g) => g.length > 50);
-    if (long) return { error: `好きなゲームは 1 つ 50 文字までです(「${long.slice(0, 20)}…」)。` };
+    if (long) return { error: `好きなゲームは 1 つ 50 文字までにしてね(「${long.slice(0, 20)}…」)。` };
     next.favoriteGames = games.length ? games : undefined;
   } else if (kind === LINKS_MODAL) {
-    if (!existing) return { error: "先に `/profile edit` でプロフィールを登録してください。" };
+    if (!existing) return { error: "先に `/profile edit` でプロフィールを登録してね。" };
     const links = {};
     for (const [key, name] of [
       ["x", "X"],
@@ -178,7 +178,7 @@ export function applyInput(existing, { kind, values, discordId, avatar }) {
       ["website", "Web サイト"],
     ]) {
       const url = normalizeLink(key, values[key]);
-      if (url === null) return { error: `${name} のリンクが URL として読めませんでした。` };
+      if (url === null) return { error: `${name} のリンクが URL として読めなかったみたい。` };
       if (url) links[key] = url;
     }
     next.links = Object.keys(links).length ? links : undefined;
@@ -187,7 +187,7 @@ export function applyInput(existing, { kind, values, discordId, avatar }) {
   next.public = true;
 
   const result = memberSchema.safeParse(next);
-  if (!result.success) return { error: `入力を確かめてください。\n${z.prettifyError(result.error)}` };
+  if (!result.success) return { error: `入力をもう一度見てみてね。\n${z.prettifyError(result.error)}` };
   return { member: ordered(next) };
 }
 
