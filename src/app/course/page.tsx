@@ -27,7 +27,13 @@ export default function CoursePage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
         title="ゲーム開発講座"
-        lead="Unity をメインにしたゲーム開発講座です。初めての方も気軽にお声かけください。"
+        lead={
+          <>
+            Unity をメインにしたゲーム開発講座です。
+            <br />
+            初めての方も気軽にお声かけください。
+          </>
+        }
       />
 
       <section id="schedule" className="mb-20 scroll-mt-24 space-y-6">
