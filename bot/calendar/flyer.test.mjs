@@ -36,6 +36,20 @@ test("チラシの日時と場所の欄を読む", async () => {
   }
 });
 
+test("表の位置が違うチラシでも、四角の印から欄を探して読む", async () => {
+  // 別のチラシ。見出しが短く、表が上にある。年は書かれていない
+  const image = fs.readFileSync(new URL("./fixtures/flyer-2.png", import.meta.url));
+  const reader = createFlyerReader();
+  try {
+    const flyer = await reader.read(image);
+    assert.equal(flyer, "【日時】10月22日(木) 18:15〜19:45企画説明会\n【場所】365");
+    const [e] = parsePost({ content: flyer, postedAt: "2026-10-15T03:00:00Z", threadName: "自作ゲーム制作演習 受講者募集" });
+    assert.deepEqual([e.date, e.start, e.end, e.place], ["2026-10-22", "18:15", "19:45", "365"]);
+  } finally {
+    await reader.close();
+  }
+});
+
 test("日時の欄が空なら何も返さない", async () => {
   const reader = createFlyerReader();
   try {
