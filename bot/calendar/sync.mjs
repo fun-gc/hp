@@ -72,7 +72,7 @@ async function forumPosts(token, channel, since) {
   for (const t of threads) {
     const message = await discord(token, `/channels/${t.id}/messages/${t.id}`);
     const tags = (t.applied_tags ?? []).map((id) => channel.available_tags?.find((tag) => tag.id === id)?.name).filter(Boolean);
-    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags, archived: t.thread_metadata?.archived });
+    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags, archived: t.thread_metadata?.archived, thread: true });
   }
   return posts;
 }
@@ -136,12 +136,14 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
   const seen = new Set();
   const events = [];
   try {
-    for (const { channelId, guildId, message, threadName, tags = [], archived } of posts) {
+    for (const { channelId, guildId, message, threadName, tags = [], archived, thread } of posts) {
       if (Date.parse(message.timestamp) < since) continue;
       let found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
       if (!found.length) found = await fromFlyer(message, threadName, tags);
       const host = found.length && message.author ? await hostOf(guildId, message.author) : undefined;
-      for (const e of found.map((e) => (host ? { ...e, host } : e))) {
+      // フォーラムの投稿は、Discord に掲示するときにスレッドへのリンクを付けられるよう ID を残す
+      const extra = { ...(host && { host }), ...(thread && { discordThreadId: channelId }) };
+      for (const e of found.map((e) => ({ ...e, ...extra }))) {
         const key = `${e.date} ${e.title}`;
         if (seen.has(key)) continue;
         seen.add(key);

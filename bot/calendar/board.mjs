@@ -41,8 +41,10 @@ function line(e, today) {
   const [y, m, d] = e.date.split("-").map(Number);
   const weekday = weekdays[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
   const time = e.start ? ` ${e.start}${e.end ? `〜${e.end}` : "〜"}` : "";
+  // フォーラムから読んだ予定は、スレッドへのリンク(Discord ではスレッド名で表示される)にする
+  const what = e.discordThreadId ? `<#${e.discordThreadId}>` : `【${kindLabels[e.kind] ?? kindLabels.other}】${e.title}`;
   const place = e.place ? ` @${e.place}` : "";
-  const text = `**${m}/${d}(${weekday})**${time} 【${kindLabels[e.kind] ?? kindLabels.other}】${e.title}${place}`;
+  const text = `**${m}/${d}(${weekday})**${time}：${what}${place}`;
   // 終わった予定は打ち消し線、今日の予定は印を付ける
   if (e.date < today) return `~~${text.replaceAll("~~", "")}~~`;
   return e.date === today ? `${text} ← 今日` : text;
