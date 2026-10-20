@@ -10,10 +10,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { discord } from "./discord.mjs";
 import { createFlyerReader, looksLikeFlyer } from "./flyer.mjs";
 import { hostName, parsePost } from "./parse.mjs";
 
-const API = "https://discord.com/api/v10";
 const REACTION = encodeURIComponent("📅");
 // これより古い投稿は読まない
 const MAX_AGE_MS = 400 * 24 * 60 * 60 * 1000;
@@ -36,30 +36,6 @@ export function profileNames(dir = membersDir) {
     }
   }
   return names;
-}
-
-async function discord(token, route, method = "GET") {
-  for (let attempt = 0; attempt < 5; attempt++) {
-    const res = await fetch(`${API}${route}`, {
-      method,
-      headers: { Authorization: `Bot ${token}`, "User-Agent": "FUNGC-site-calendar (https://fungc.org, 1.0)" },
-    });
-    if (res.status === 429) {
-      const { retry_after = 1 } = await res.json().catch(() => ({}));
-      await new Promise((r) => setTimeout(r, Math.ceil(retry_after * 1000) + 100));
-      continue;
-    }
-    if (res.status === 404) return null;
-    if (!res.ok) {
-      const hint = {
-        401: "トークンが正しくありません",
-        403: "Bot にチャンネルの閲覧・メッセージ履歴の権限がありません",
-      }[res.status];
-      throw new Error(`Discord API ${method} ${route} が ${res.status} を返しました${hint ? `(${hint})` : ""}`);
-    }
-    return res.status === 204 ? null : res.json();
-  }
-  throw new Error(`Discord API ${route} のレート制限が解けませんでした`);
 }
 
 // 返信や Bot の投稿は予定として扱わない(type 0 が通常の投稿)
