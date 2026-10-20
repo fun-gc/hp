@@ -2,6 +2,7 @@ name: Discord の予定を反映
 
 # 15 分ごとにメンバー募集チャンネルを読み、予定が前回から変わっていたら Cloudflare Pages を再ビルドする。
 # 再ビルドの中でもう一度 Discord を読むので、ここでは変わったかどうかだけを見る(docs/discord-bot.md)。
+# あわせて、サイトと同じ予定を Discord の掲示用チャンネルに「今月の予定」として掲示する(bot/calendar/board.mjs)。
 # リポジトリの Secrets に DISCORD_BOT_TOKEN と CF_PAGES_DEPLOY_HOOK、Variables(か Secrets)に DISCORD_CHANNEL_ID を登録しておく。
 on:
   schedule:
@@ -20,6 +21,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
+          cache: npm
+      # チラシ画像の OCR(sharp、tesseract.js)を使うので依存を入れる
+      - run: npm ci
 
       - name: Discord の投稿を読む
         id: read
@@ -68,3 +72,11 @@ jobs:
         with:
           path: .discord-last
           key: discord-last-${{ github.run_id }}
+
+      # 予定が変わっていなくても、月が変わったときや日付が進んだときに掲示を直すため毎回動かす
+      - name: Discord に今月の予定を掲示する
+        if: steps.read.outputs.hash
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_BOARD_CHANNEL_ID: ${{ vars.DISCORD_BOARD_CHANNEL_ID || '1101000649342210049' }}
+        run: node bot/calendar/board.mjs --events "$RUNNER_TEMP/discord-events.json"

@@ -50,7 +50,7 @@ Discord のメンバー募集チャンネルに投稿した予定は、自動で
 ]
 ```
 
-`kind` は `course`(講座・赤)/ `exhibition`(展示・緑)/ `event`(イベント・黄)/ `other`(その他)のどれか。`host` は主催者の名前で、予定一覧の右端に出ます。`start`・`end`・`place`・`note`・`host` は省略できます。
+`kind` は `course`(講座・赤)/ `exhibition`(展示・緑)/ `event`(イベント・黄)/ `other`(その他)のどれか。`host` は主催者の名前で、予定一覧の右端に出ます。`start`・`end`・`place`・`note`・`host` は省略できます。Discord から読んだ予定には、元のフォーラムのスレッドの ID(`discordThreadId`)も入ります。手で書く予定には要りません。
 
 ## 作品を追加する
 

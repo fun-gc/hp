@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --test bot/**/*.test.mjs",
-    "discord:sync": "node bot/calendar/sync.mjs"
+    "discord:sync": "node bot/calendar/sync.mjs",
+    "discord:board": "node bot/calendar/board.mjs"
   },
   "dependencies": {
     "@fontsource/line-seed-jp": "5.3.1",

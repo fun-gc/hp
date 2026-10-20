@@ -99,5 +99,7 @@ export const scheduleEventSchema = z.object({
   note: z.string().optional(),
   // 主催者の名前(Discord から読んだ予定では投稿者のサーバーでの表示名)
   host: z.string().max(40).optional(),
+  // Discord のフォーラムから読んだ予定の、元のスレッドの ID(Discord への掲示でリンクにする)
+  discordThreadId: z.string().regex(/^\d+$/).optional(),
 });
 export type ScheduleEvent = z.infer<typeof scheduleEventSchema>;

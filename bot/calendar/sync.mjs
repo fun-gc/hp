@@ -10,10 +10,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { discord } from "./discord.mjs";
 import { createFlyerReader, looksLikeFlyer } from "./flyer.mjs";
 import { hostName, parsePost } from "./parse.mjs";
 
-const API = "https://discord.com/api/v10";
 const REACTION = encodeURIComponent("📅");
 // これより古い投稿は読まない
 const MAX_AGE_MS = 400 * 24 * 60 * 60 * 1000;
@@ -36,30 +36,6 @@ export function profileNames(dir = membersDir) {
     }
   }
   return names;
-}
-
-async function discord(token, route, method = "GET") {
-  for (let attempt = 0; attempt < 5; attempt++) {
-    const res = await fetch(`${API}${route}`, {
-      method,
-      headers: { Authorization: `Bot ${token}`, "User-Agent": "FUNGC-site-calendar (https://fungc.org, 1.0)" },
-    });
-    if (res.status === 429) {
-      const { retry_after = 1 } = await res.json().catch(() => ({}));
-      await new Promise((r) => setTimeout(r, Math.ceil(retry_after * 1000) + 100));
-      continue;
-    }
-    if (res.status === 404) return null;
-    if (!res.ok) {
-      const hint = {
-        401: "トークンが正しくありません",
-        403: "Bot にチャンネルの閲覧・メッセージ履歴の権限がありません",
-      }[res.status];
-      throw new Error(`Discord API ${method} ${route} が ${res.status} を返しました${hint ? `(${hint})` : ""}`);
-    }
-    return res.status === 204 ? null : res.json();
-  }
-  throw new Error(`Discord API ${route} のレート制限が解けませんでした`);
 }
 
 // 返信や Bot の投稿は予定として扱わない(type 0 が通常の投稿)
@@ -96,7 +72,7 @@ async function forumPosts(token, channel, since) {
   for (const t of threads) {
     const message = await discord(token, `/channels/${t.id}/messages/${t.id}`);
     const tags = (t.applied_tags ?? []).map((id) => channel.available_tags?.find((tag) => tag.id === id)?.name).filter(Boolean);
-    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags, archived: t.thread_metadata?.archived });
+    if (isPost(message)) posts.push({ channelId: t.id, message, threadName: t.name, tags, archived: t.thread_metadata?.archived, thread: true });
   }
   return posts;
 }
@@ -160,12 +136,14 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
   const seen = new Set();
   const events = [];
   try {
-    for (const { channelId, guildId, message, threadName, tags = [], archived } of posts) {
+    for (const { channelId, guildId, message, threadName, tags = [], archived, thread } of posts) {
       if (Date.parse(message.timestamp) < since) continue;
       let found = parsePost({ content: message.content ?? "", postedAt: message.timestamp, threadName, tags });
       if (!found.length) found = await fromFlyer(message, threadName, tags);
       const host = found.length && message.author ? await hostOf(guildId, message.author) : undefined;
-      for (const e of found.map((e) => (host ? { ...e, host } : e))) {
+      // フォーラムの投稿は、Discord に掲示するときにスレッドへのリンクを付けられるよう ID を残す
+      const extra = { ...(host && { host }), ...(thread && { discordThreadId: channelId }) };
+      for (const e of found.map((e) => ({ ...e, ...extra }))) {
         const key = `${e.date} ${e.title}`;
         if (seen.has(key)) continue;
         seen.add(key);
