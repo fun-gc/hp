@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { Breakout } from "./Breakout";
 import { LogoLetters } from "./Logo";
 
 type Face = "top" | "left" | "right";
 
 // トップページのロゴ。マウスに合わせて少し傾き、立方体の面を押すと飛び出す。
+// 赤・黄・緑の面をどれも 1 回以上押すと、ブロック崩しが始まる(隠し要素)。
 const faces: { id: Face; points: string; color: string; push: string; label: string }[] = [
   { id: "top", points: "610,160 1062,402 610,646 158,402", color: "var(--color-fun-red)", push: "translate(0px,-60px)", label: "赤い面" },
   { id: "left", points: "158,402 610,646 610,1140 158,898", color: "var(--color-fun-green)", push: "translate(-52px,30px)", label: "緑の面" },
@@ -16,6 +18,9 @@ export function InteractiveLogo({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [popped, setPopped] = useState<Face | null>(null);
+  const [pressed, setPressed] = useState<Set<Face>>(new Set());
+  const [playing, setPlaying] = useState(false);
+  const closeGame = useCallback(() => setPlaying(false), []);
 
   function handleMove(e: React.PointerEvent<HTMLDivElement>) {
     if (e.pointerType !== "mouse") return;
@@ -28,6 +33,13 @@ export function InteractiveLogo({ className }: { className?: string }) {
 
   function toggle(face: Face) {
     setPopped((current) => (current === face ? null : face));
+    const next = new Set(pressed).add(face);
+    if (next.size === faces.length) {
+      setPressed(new Set());
+      setPlaying(true);
+    } else {
+      setPressed(next);
+    }
   }
 
   return (
@@ -71,6 +83,7 @@ export function InteractiveLogo({ className }: { className?: string }) {
           <LogoLetters />
         </g>
       </svg>
+      {playing && <Breakout onClose={closeGame} />}
     </div>
   );
 }
