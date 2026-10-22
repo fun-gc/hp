@@ -20,7 +20,7 @@ GitHub (fun-gc/hp)
 4. **Framework preset** に **Next.js (Static HTML Export)** を選ぶ(Build command `npx next build`、Build output directory `out` が自動で入る)
 5. **Save and Deploy**
 
-Node.js のバージョンはリポジトリの `.node-version`(22)で指定しています。
+Node.js のバージョンはリポジトリの `.node-version` でパッチまで固定しています(Cloudflare Pages と GitHub Actions の両方がこれを読む)。`22` のようにメジャーだけにすると、Cloudflare Pages の既定(22.16.0)や Actions のランナーにキャッシュされた古いパッチが使われることがあるためです。[Node.js のセキュリティリリース](https://nodejs.org/en/blog/vulnerability)が出たら、同じメジャーの最新パッチに上げてください。Node.js 22 のサポートは 2027 年 4 月 30 日までなので、それまでに 24 へ移ります。
 
 ### 2. 独自ドメイン fungc.org
 
