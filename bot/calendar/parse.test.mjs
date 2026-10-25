@@ -129,6 +129,14 @@ test("フォーラムのタグで種類を決める", () => {
   assert.equal(e.kind, "exhibition");
 });
 
+test("スレッド名に「イベント」とあればイベントにする", () => {
+  // チラシから読んだ予定は「講座」のタグが付くが、スレッド名を優先する
+  const [e] = parsePost({ content: "【日時】11月7日(土) 12:00〜18:00\n【場所】Discord", postedAt, threadName: "256モデルをつくろう【イベント】", tags: ["講座"] });
+  assert.equal(e.kind, "event");
+  const [f] = parsePost({ content: "日時: 11/30", postedAt, threadName: "第3回 もくもく会", tags: [] });
+  assert.equal(f.kind, "course");
+});
+
 test("主催者名はプロフィールの名前から後ろの括弧書きを外す", () => {
   assert.equal(hostName("ゆうげつ(26部長)"), "ゆうげつ");
   assert.equal(hostName("ゆうげつ (副部長)"), "ゆうげつ");

@@ -197,7 +197,8 @@ export function parsePost({ content, postedAt, threadName, tags = [] }) {
 
   const event = {
     title,
-    kind: kindOf([title, ...tags, ...lines].join("\n")),
+    // スレッド名に「イベント」とあれば、本文やチラシの内容より優先してイベントにする
+    kind: /イベント/.test(threadName ?? "") ? "event" : kindOf([title, ...tags, ...lines].join("\n")),
     ...time,
     ...(fields.place[0] && { place: cut(fields.place[0], 60) }),
     ...(fields.note.length && { note: cut(fields.note.join(" "), 120) }),
