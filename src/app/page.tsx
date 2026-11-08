@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { HeroLetters } from "@/components/HeroLetters";
 import { LeadLines } from "@/components/LeadLines";
-import { Annot, ArrowLine, Crosshair, DotGrid, NightBackdrop, PosterPhoto, RollNumber, Slashes, Tri } from "@/components/Poster";
+import { Annot, ArrowLine, CircleRow, CrossTriangles, Crosshair, DotGrid, NightBackdrop, PosterPhoto, RollNumber, Slashes, Tri } from "@/components/Poster";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Poster } from "@/components/WorkCard";
 import { getMemberCount, getNews, getSchedule, getWorks } from "@/lib/content";
@@ -183,6 +183,22 @@ export default function Home() {
           >
             make — play — show
           </span>
+
+          {/* 右上の飾り。元にしたポスターから、重ねた三角、丸と半円の並び、点の格子を借りる */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-10 top-5 flex w-24 flex-col gap-2 text-ink sm:w-28 md:right-14 md:top-10 md:w-36"
+          >
+            <div className="anim-fade flex items-center justify-between" style={delay(0.8)}>
+              <span className="font-mono text-[11px] leading-none">↔</span>
+              <CircleRow className="h-2.5 md:h-3" />
+            </div>
+            <CrossTriangles className="anim-wipe w-full" style={delay(0.9)} />
+            <div className="anim-fade flex items-end justify-between" style={delay(1.1)}>
+              <Tri className="size-3" />
+              <DotGrid cols={5} rows={3} className="opacity-70" />
+            </div>
+          </div>
         </div>
 
         {/* JOIN US へ視線を運ぶ、ぼやけた黒い線 */}

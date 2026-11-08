@@ -147,6 +147,28 @@ export function Slashes({ count = 6, className = "" }: { count?: number; classNa
   );
 }
 
+/** 上向きと下向きの三角を、同じ幅で重ねた線の印。真ん中のひし形に点を打つ */
+export function CrossTriangles({ className = "w-28", style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 120 112" className={className} style={style} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth={1}>
+      <polygon points="60,4 116,108 4,108" />
+      <polygon points="4,4 116,4 60,108" />
+      <circle cx="60" cy="56" r="3" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+/** 丸と、半円 2 つの並び(●◗◗) */
+export function CircleRow({ className = "h-3" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 38 12" className={className} aria-hidden="true" fill="currentColor">
+      <circle cx="6" cy="6" r="6" />
+      <path d="M17 0a6 6 0 0 1 0 12z" />
+      <path d="M30 0a6 6 0 0 1 0 12z" />
+    </svg>
+  );
+}
+
 /** 十字の目印 */
 export function Crosshair({ className = "size-4" }: { className?: string }) {
   return (
