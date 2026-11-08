@@ -95,6 +95,10 @@ body {
 .hero-letter.is-loose {
   z-index: 20;
 }
+/* 崩れた文字は、元の場所にはめた文字(カーソルから逃げて動いていても)より上に出し、いつでもつかめるようにする */
+.hero-letter.is-down {
+  z-index: 21;
+}
 /* 崩れて寝ている文字は、ふだんの揺れを止める */
 .hero-letter.is-down .letter-float {
   animation-play-state: paused;
