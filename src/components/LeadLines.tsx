@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-// ヒーローに引く、ぼやけた黒い線。どちらも「JOIN US」のボタンのそばを通り、写真の側(右)から順に引いて、
-// 視線をボタンへ運ぶ。線の位置はボタンの位置から計算するので、画面の幅が変わってもボタンのところで交わる。
+// ヒーローに引く、ぼやけた黒い線。どちらも「JOIN US」のボタンのそばを通り、視線をボタンへ運ぶ。
+// 線の位置はボタンの位置から計算するので、画面の幅が変わってもボタンのところで交わる。
 // ボタンには data-lead-target、ボタンを含む文章の箱には data-lead-copy を付けておく。
 
 type Line = {
@@ -66,7 +66,7 @@ export function LeadLines() {
         const ty = dy === 0 ? [-Infinity, Infinity] : [(0 - py) / dy, (height - py) / dy].sort((a, b) => a - b);
         const enter = Math.max(tx[0], ty[0]) - OVERRUN;
         const exit = Math.min(tx[1], ty[1]) + OVERRUN;
-        // 右側の端から左へ向けて引く
+        // 右側の端を起点に、左へ向けて伸ばす
         el.style.left = `${px + dx * exit}px`;
         el.style.top = `${py + dy * exit}px`;
         el.style.width = `${exit - enter}px`;

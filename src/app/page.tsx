@@ -114,7 +114,7 @@ export default function Home() {
               className="anim-rise max-w-md border-l border-ink pl-4 text-base leading-relaxed text-muted sm:text-lg md:pointer-events-auto"
               style={delay(0.45)}
             >
-              Discord と学内を拠点に、Unity の講座、展示、チーム開発をしています。
+              Discord と学内を拠点として、Unity の講座、展示、チーム開発をしています。
             </p>
             <div className="anim-rise flex w-fit flex-wrap gap-3 md:pointer-events-auto" style={delay(0.55)}>
               <Link

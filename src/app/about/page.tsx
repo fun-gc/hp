@@ -8,21 +8,21 @@ export const metadata: Metadata = { title: "About" };
 
 const activities = [
   {
-    title: "Game Development Course",
+    title: "ゲーム開発講座",
     text: "Unity をメインにしたゲーム開発講座を定期的に開いています。1 回 90 分で、先に動かして体験し、あとから用語と仕組みを学ぶ流れです。",
     link: { href: "/course/", label: "COURSE & SCHEDULE" },
   },
   {
-    title: `Exhibition at ${site.events.welcomeEn}`,
+    title: `新入生歓迎イベント ${site.events.welcome} での展示`,
     text: "春の新入生歓迎イベントで、メンバーがつくったゲームを展示します。",
   },
   {
-    title: `Exhibition at ${site.events.festivalEn}`,
+    title: `学校祭「${site.events.festival}」での展示`,
     text: "毎年の学校祭で、1 年間の成果となるゲームを展示しています。過去の展示作品は作品ページで遊べます。",
     link: { href: "/works/", label: "PAST WORKS" },
   },
   {
-    title: "Team Development",
+    title: "チームでの長期開発",
     text: "企画・プログラム・グラフィック・サウンドを分担し、ひとつのゲームを長い期間かけてつくっています。",
     id: "team",
   },
