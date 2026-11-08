@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { eventKindLabels, type ScheduleEvent } from "@/lib/schema";
+import { eventKindEn, monthsEn, weekdaysEn as weekdays } from "@/lib/en";
+import type { ScheduleEvent } from "@/lib/schema";
 
 // 印はどれも、同じ色の明度を落とした縁で囲む
 const kindStyle: Record<ScheduleEvent["kind"], { dot: string; tag: string }> = {
@@ -11,7 +12,6 @@ const kindStyle: Record<ScheduleEvent["kind"], { dot: string; tag: string }> = {
   other: { dot: "bg-muted ring-1 ring-ink-2", tag: "bg-ink text-white" },
 };
 
-const weekdays = ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"];
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -76,7 +76,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
             →
           </button>
         </div>
-        <div className="grid grid-cols-7 text-center text-xs font-bold text-muted">
+        <div className="grid grid-cols-7 text-center font-mono text-[11px] font-bold tracking-wider text-muted">
           {weekdays.map((w, i) => (
             <div key={w} className={`py-2 ${i === 0 ? "text-fun-red-ink" : ""}`}>
               {w}
@@ -122,7 +122,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
           {(Object.keys(kindStyle) as ScheduleEvent["kind"][]).map((k) => (
             <span key={k} className="flex items-center gap-1.5">
               <span className={`size-2.5 ${kindStyle[k].dot}`} />
-              {eventKindLabels[k]}
+              {eventKindEn[k]}
             </span>
           ))}
         </div>
@@ -131,12 +131,12 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
       {/* PC では一覧の高さをカレンダーに合わせ、入りきらない分は一覧の中でスクロールする */}
       <div className="lg:relative">
         <div className="flex flex-col lg:absolute lg:inset-0">
-          <p className="mb-3 shrink-0 font-bold">
-            {selected ? `${Number(selected.slice(5, 7))}月${Number(selected.slice(8))}日の予定` : `${mon}月の予定`}
+          <p className="mb-3 shrink-0 font-mono text-sm font-bold tracking-[0.2em]">
+            {selected ? `${monthsEn[Number(selected.slice(5, 7)) - 1]} ${selected.slice(8)}` : `${monthsEn[mon - 1]} ${year}`}
           </p>
           {listed.length === 0 ? (
-            <p className="border border-dashed border-line px-4 py-8 text-center text-sm text-muted">
-              この月の予定はまだありません。決まりしだい追加します。
+            <p className="border border-dashed border-ink/40 px-4 py-8 text-center font-mono text-xs tracking-wider text-muted">
+              NO EVENTS YET THIS MONTH.
             </p>
           ) : (
             <ul className="max-h-[32rem] min-h-0 divide-y divide-line overflow-y-auto overscroll-contain border-y border-line lg:max-h-none lg:flex-1">
@@ -144,16 +144,16 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
                 <li key={`${e.date}-${i}`} className="flex gap-4 py-4">
                   <div className="w-14 shrink-0 text-center">
                     <p className="font-poster text-3xl font-light leading-none">{Number(e.date.slice(8))}</p>
-                    <p className="text-xs text-muted">{weekdays[new Date(`${e.date}T00:00:00Z`).getUTCDay()]}</p>
+                    <p className="font-mono text-[10px] tracking-wider text-muted">{weekdays[new Date(`${e.date}T00:00:00Z`).getUTCDay()]}</p>
                   </div>
                   <div className="min-w-0 flex-1 space-y-1">
                     <p className="flex flex-wrap items-center gap-2">
-                      <span className={`px-2 py-0.5 text-xs font-bold ${kindStyle[e.kind].tag}`}>{eventKindLabels[e.kind]}</span>
+                      <span className={`px-2 py-0.5 font-mono text-[11px] font-bold tracking-wider ${kindStyle[e.kind].tag}`}>{eventKindEn[e.kind]}</span>
                       <span className="font-bold">{e.title}</span>
                     </p>
                     <p className="flex flex-wrap justify-between gap-x-4 text-sm text-muted">
-                      <span>{[e.start && `${e.start}${e.end ? `〜${e.end}` : "〜"}`, e.place].filter(Boolean).join(" / ")}</span>
-                      {e.host && <span className="ml-auto">主催: {e.host}</span>}
+                      <span>{[e.start && `${e.start}${e.end ? `–${e.end}` : "–"}`, e.place].filter(Boolean).join(" / ")}</span>
+                      {e.host && <span className="ml-auto font-mono text-xs">HOST: {e.host}</span>}
                     </p>
                     {e.note && <p className="text-sm">{e.note}</p>}
                   </div>

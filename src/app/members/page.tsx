@@ -4,7 +4,7 @@ import { PageHeading } from "@/components/SectionLabel";
 import { getMedals, getMembers } from "@/lib/content";
 import { memberStanding } from "@/lib/grade";
 
-export const metadata: Metadata = { title: "メンバー" };
+export const metadata: Metadata = { title: "Members" };
 
 export default function MembersPage() {
   // 学年はビルドした日を基準に計算する。毎年 4 月 1 日に自動で再ビルドして繰り上げる。
@@ -39,20 +39,23 @@ export default function MembersPage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
         en="MEMBERS"
-        title="メンバー"
-        lead="プロフィールは FUNGC の Discord で /profile edit から登録できます。掲載を希望したメンバーだけを表示しています。"
+        lead={
+          <>
+            Profiles are added with <code className="bg-paper-2 px-1 font-mono text-[0.9em]">/profile edit</code> on our Discord. Only members who opted in are listed.
+          </>
+        }
       />
 
       {members.length === 0 ? (
         <p className="border border-dashed border-line px-4 py-16 text-center text-muted">
-          メンバー紹介は準備中です。
+          COMING SOON.
         </p>
       ) : (
         <div className="space-y-16">
           {active.length > 0 && renderGrid(active)}
           {alumni.length > 0 && (
             <section className="space-y-6">
-              <h2 className="text-2xl font-black">OB・OG</h2>
+              <h2 className="font-poster text-4xl font-light">Alumni</h2>
               {renderGrid(alumni)}
             </section>
           )}

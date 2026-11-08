@@ -19,9 +19,9 @@ export function SiteFooter() {
             <LogoMark className="size-8" />
             <span className="font-display text-lg font-bold tracking-wider">FUNGC</span>
           </div>
-          <p className="text-sm text-white/70">{site.university} ゲーム制作サークル</p>
-          <p className="text-sm text-white/70">
-            お問い合わせ:{" "}
+          <p className="font-mono text-xs tracking-wider text-white/70">GAME CREATION CIRCLE — {site.universityEn.toUpperCase()}</p>
+          <p className="font-mono text-xs tracking-wider text-white/70">
+            CONTACT:{" "}
             <a href={`mailto:${site.email}`} className="underline underline-offset-4 hover:bg-fun-yellow hover:text-ink">
               {site.email}
             </a>
@@ -33,14 +33,14 @@ export function SiteFooter() {
           </div>
         </div>
         <nav aria-label="フッターメニュー">
-          <ul className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm sm:grid-cols-3">
+          <ul className="grid grid-cols-2 gap-x-10 gap-y-2 font-display text-sm tracking-[0.12em] sm:grid-cols-3">
             {navItems.map((item, i) => (
               <li key={item.href}>
                 <Link href={item.href} className="group flex items-baseline gap-2 text-white/80 hover:text-white">
                   <span className="font-mono text-[10px] text-white/40 group-hover:text-fun-yellow" aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  {item.label}
+                  {item.en}
                 </Link>
               </li>
             ))}

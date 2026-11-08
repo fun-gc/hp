@@ -36,10 +36,10 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
                       active ? "bg-fun-yellow text-ink" : "text-ink hover:bg-ink hover:text-paper"
                     }`}
                   >
-                    <span className="font-mono text-[9px] tracking-[0.2em] opacity-70" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}/{item.en}
+                    <span className="font-mono text-[9px] tracking-[0.2em] opacity-60" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-sm font-bold">{item.label}</span>
+                    <span className="font-display text-sm font-bold tracking-[0.12em]">{item.en}</span>
                   </Link>
                 </li>
               );
@@ -73,10 +73,10 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-baseline justify-between border-b border-ink/20 py-3 font-bold last:border-0"
+                  className="flex items-baseline justify-between border-b border-ink/20 py-3 last:border-0"
                 >
-                  {item.label}
-                  <span className="font-mono text-xs tracking-[0.18em] text-muted">{item.en}</span>
+                  <span className="font-poster text-3xl font-light capitalize">{item.en.toLowerCase()}</span>
+                  <span className="font-mono text-xs tracking-[0.18em] text-muted">{String(navItems.indexOf(item) + 1).padStart(2, "0")}</span>
                 </Link>
               </li>
             ))}

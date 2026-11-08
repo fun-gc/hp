@@ -1,46 +1,42 @@
 import Link from "next/link";
 import { InteractiveLogo } from "@/components/InteractiveLogo";
-import { Annot, ArrowLine, coordinates, Crosshair, CubeStack, DotGrid, Slashes, Tri } from "@/components/Poster";
+import { Annot, ArrowLine, coordinates, Crosshair, DotGrid, PosterPhoto, Slashes, Tri } from "@/components/Poster";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Poster } from "@/components/WorkCard";
 import { getMembers, getNews, getSchedule, getWorks } from "@/lib/content";
-import { eventKindLabels } from "@/lib/schema";
+import { eventKindEn } from "@/lib/en";
 import { site } from "@/lib/site";
 import { workPoster } from "@/lib/work";
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
-/** トップページの各セクションの見出し。英字を大きく置き、日本語の見出しを添える */
+/** トップページの各セクションの見出し。細い英字を大きく置く */
 function SectionHead({
   index,
   en,
-  title,
   href,
   linkLabel,
   invert = false,
 }: {
   index: number;
   en: string;
-  title: string;
   href?: string;
   linkLabel?: string;
   invert?: boolean;
 }) {
+  const word = en
+    .split(" ")
+    .map((w) => w.charAt(0) + w.slice(1).toLowerCase())
+    .join(" ");
   return (
     <div className="mb-8 space-y-3">
       <SectionLabel index={index} invert={invert}>
         {en}
       </SectionLabel>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-2">
-          <p
-            aria-hidden="true"
-            className={`font-poster text-5xl font-light capitalize leading-none tracking-tight sm:text-7xl ${invert ? "text-white" : "text-ink"}`}
-          >
-            {en.toLowerCase()}
-          </p>
-          <h2 className="text-xl font-black sm:text-2xl">{title}</h2>
-        </div>
+        <h2 className={`font-poster text-5xl font-light leading-none tracking-tight sm:text-7xl ${invert ? "text-white" : "text-ink"}`}>
+          {word}
+        </h2>
         {href && (
           <Link
             href={href}
@@ -84,28 +80,35 @@ export default function Home() {
 
           <div className="mt-10 max-w-xl space-y-6 md:mt-16">
             <div className="flex items-center gap-3">
-              <span className="tag-yellow shrink-0 px-2 py-0.5 font-bold">ゲーム制作</span>
-              <ArrowLine length="3rem" className="shrink-0" />
-              <Annot className="text-muted">Unity / 講座 / 展示 / チーム開発</Annot>
+              <span className="tag-yellow shrink-0 px-2 py-0.5 font-mono text-xs font-bold tracking-[0.2em]">GAME DEV</span>
+              <ArrowLine length="2rem" className="shrink-0" />
+              <Annot className="text-muted">UNITY / COURSE / EXHIBITION / TEAM</Annot>
             </div>
-            <h1 className="text-[1.7rem] font-black leading-[1.4] tracking-tight sm:text-5xl sm:leading-[1.3]">
-              {site.university}の
-              <br />
-              <span className="marker">ゲーム制作サークル</span>です。
+            <h1 className="font-poster text-[3rem] font-normal leading-[0.95] tracking-tight sm:text-7xl">
+              <span className="block">
+                <span className="marker">Game</span> creation
+              </span>
+              <span className="block">circle.</span>
+              <span className="mt-4 block font-mono text-xs font-medium tracking-[0.25em] text-muted sm:text-sm">
+                @ {site.universityEn.toUpperCase()}
+              </span>
             </h1>
             <p className="max-w-md border-l border-ink pl-4 text-base leading-relaxed text-muted sm:text-lg">
-              Discord と学内を拠点に、Unity の講座、展示、チーム開発をしています。
+              Based on Discord and campus. Unity courses, exhibitions, and team development.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/join/"
-                className="group flex items-center gap-3 bg-ink px-6 py-3 font-bold text-white transition hover:bg-fun-yellow hover:text-ink"
+                className="group flex items-center gap-3 bg-ink px-6 py-3 font-mono text-sm font-bold tracking-[0.15em] text-white transition hover:bg-fun-yellow hover:text-ink"
               >
-                入部案内を見る
+                JOIN US
                 <ArrowLine length="1.5rem" />
               </Link>
-              <Link href="/works/" className="border border-ink bg-paper/70 px-6 py-3 font-bold transition hover:bg-fun-yellow">
-                作品を見る
+              <Link
+                href="/works/"
+                className="border border-ink bg-paper/70 px-6 py-3 font-mono text-sm font-bold tracking-[0.15em] transition hover:bg-fun-yellow"
+              >
+                WORKS
               </Link>
             </div>
             <dl className="flex gap-6 pt-4 font-mono text-ink">
@@ -125,8 +128,8 @@ export default function Home() {
 
         {/* 建物と大文字。スマホでは文章の下に置き、PC では右側の背景に敷く */}
         <div className="relative h-[26rem] border-t border-ink sm:h-[32rem] md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-[62%] md:border-t-0">
-          <CubeStack className="absolute inset-0 size-full" />
-          <div className="absolute inset-0 hidden bg-gradient-to-r from-paper via-paper/20 to-transparent md:block" aria-hidden="true" />
+          <PosterPhoto name="hero" sizes="(min-width: 768px) 62vw, 100vw" eager className="absolute inset-0 size-full object-cover" />
+          <div className="absolute inset-0 hidden bg-gradient-to-r from-paper via-paper/10 to-transparent md:block" aria-hidden="true" />
 
           {/* 細い線と弧 */}
           <svg className="pointer-events-none absolute inset-0 size-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -149,7 +152,7 @@ export default function Home() {
           </div>
 
           {/* 注記 */}
-          <div className="pointer-events-none absolute left-[4%] top-[58%] hidden text-ink sm:block">
+          <div className="pointer-events-none absolute bottom-[5%] left-[5%] hidden text-ink sm:block">
             <Annot className="block bg-paper/80 px-1">[0–100]</Annot>
             <Annot className="mt-1 block bg-paper/80 px-1">structural completeness</Annot>
             <Annot className="mt-3 block bg-paper/80 px-1">
@@ -174,7 +177,7 @@ export default function Home() {
             <InteractiveLogo className="aspect-[1210/1280] w-full" />
             <figcaption className="mt-1 flex items-center justify-between font-mono text-[10px] text-muted">
               <span>FIG.01</span>
-              <span>面を押してみよう</span>
+              <span>PRESS A FACE</span>
             </figcaption>
           </figure>
         </div>
@@ -182,7 +185,7 @@ export default function Home() {
 
       {/* ---- 作品 ---- */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <SectionHead index={2} en="WORKS" title="作品" href="/works/" linkLabel="一覧" />
+        <SectionHead index={2} en="WORKS" href="/works/" linkLabel="ALL" />
         <ul className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">
           {works.map((w, i) => (
             <li key={w.slug} className={i % 2 === 1 ? "md:translate-y-8" : ""}>
@@ -211,15 +214,17 @@ export default function Home() {
           <Crosshair className="size-5" />
         </div>
         <div>
-          <SectionHead index={3} en="SCHEDULE" title="これからの予定" href="/course/#schedule" linkLabel="カレンダー" />
+          <SectionHead index={3} en="SCHEDULE" href="/course/#schedule" linkLabel="CALENDAR" />
           {upcoming.length === 0 ? (
-            <p className="border border-dashed border-ink/40 px-4 py-8 text-center text-sm text-muted">次の予定は準備中です。</p>
+            <p className="border border-dashed border-ink/40 px-4 py-8 text-center font-mono text-xs tracking-wider text-muted">
+              NO UPCOMING EVENTS YET.
+            </p>
           ) : (
             <ul className="border-t border-ink">
               {upcoming.map((e, i) => (
                 <li key={i} className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-ink/25 py-4">
                   <span className="w-24 shrink-0 font-mono text-sm font-bold">{e.date.replaceAll("-", ".")}</span>
-                  <span className="bg-ink px-2 py-0.5 text-xs font-bold text-white">{eventKindLabels[e.kind]}</span>
+                  <span className="bg-ink px-2 py-0.5 font-mono text-[11px] font-bold tracking-wider text-white">{eventKindEn[e.kind]}</span>
                   <span className="font-bold">{e.title}</span>
                 </li>
               ))}
@@ -227,7 +232,7 @@ export default function Home() {
           )}
         </div>
         <div>
-          <SectionHead index={4} en="NEWS" title="お知らせ" href="/news/" linkLabel="一覧" />
+          <SectionHead index={4} en="NEWS" href="/news/" linkLabel="ALL" />
           <ul className="border-t border-ink">
             {news.map((n) => (
               <li key={n.slug} className="border-b border-ink/25">
@@ -246,22 +251,22 @@ export default function Home() {
       {/* ---- 部員募集 ---- */}
       <section className="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
         <div className="relative overflow-hidden bg-ink px-6 py-12 text-white sm:px-12 sm:py-16">
-          <CubeStack size={9} className="absolute -right-24 top-0 hidden h-full w-[60%] opacity-40 mix-blend-luminosity sm:block" />
-          <p
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-2 bottom-0 hidden font-poster text-[9rem] font-medium leading-[0.75] text-fun-yellow sm:block lg:text-[12rem]"
-          >
-            JOIN
-          </p>
+          {/* 夜の建物。パネルの穴から黄色い明かりがもれる */}
+          <PosterPhoto name="night" sizes="(min-width: 1152px) 1152px, 100vw" className="absolute inset-0 size-full object-cover object-right" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-ink/0" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent sm:hidden" aria-hidden="true" />
           <div className="relative z-10 max-w-xl space-y-5">
-            <SectionHead index={5} en="JOIN US" title="部員募集中" invert />
-            <p className="leading-relaxed text-white/75">見学はいつでも受け付けています。</p>
-            <div className="flex items-center gap-5">
-              <Link href="/join/" className="inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-white">
-                入部案内へ
+            <SectionHead index={5} en="JOIN US" invert />
+            <p className="leading-relaxed text-white/80">Visitors welcome anytime. The lights are on.</p>
+            <div className="flex flex-wrap items-center gap-5">
+              <Link
+                href="/join/"
+                className="inline-block whitespace-nowrap bg-fun-yellow px-6 py-3 font-mono text-sm font-bold tracking-[0.15em] text-ink transition hover:bg-white"
+              >
+                HOW TO JOIN
               </Link>
               <Tri className="size-5 text-fun-yellow" />
-              <Annot className="text-white/50">visit anytime_</Annot>
+              <Annot className="hidden text-white/60 sm:inline">visit anytime_</Annot>
             </div>
           </div>
         </div>

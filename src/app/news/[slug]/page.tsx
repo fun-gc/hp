@@ -28,8 +28,8 @@ export default async function NewsArticle({ params }: PageProps<"/news/[slug]">)
       </header>
       {/* 本文は content/news の Markdown をビルド時に HTML にしたもの(リポジトリ内の文章だけを表示する) */}
       <div className="prose-fun" dangerouslySetInnerHTML={{ __html: item.html }} />
-      <Link href="/news/" className="mt-12 inline-block font-bold hover:text-fun-red-ink">
-        ← お知らせ一覧へ
+      <Link href="/news/" className="mt-12 inline-block font-mono text-sm font-bold tracking-wider hover:bg-fun-yellow">
+        ← ALL NEWS
       </Link>
     </article>
   );

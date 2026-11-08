@@ -3,7 +3,7 @@ import { PageHeading } from "@/components/SectionLabel";
 import { WorkCard } from "@/components/WorkCard";
 import { getWorks } from "@/lib/content";
 
-export const metadata: Metadata = { title: "作品" };
+export const metadata: Metadata = { title: "Works" };
 
 export default function WorksPage() {
   const works = getWorks();
@@ -15,7 +15,7 @@ export default function WorksPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeading en="WORKS" title="作品" />
+      <PageHeading en="WORKS" />
       <div className="space-y-16">
         {[...groups.entries()].map(([event, items]) => (
           <section key={event} className="space-y-6">

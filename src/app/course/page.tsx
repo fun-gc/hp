@@ -5,19 +5,19 @@ import { PageHeading } from "@/components/SectionLabel";
 import { getSchedule } from "@/lib/content";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "ゲーム開発講座" };
+export const metadata: Metadata = { title: "Course" };
 
 // 講座テンプレートの「90分の配分の目安」
 const flow = [
-  { title: "導入", text: "今日のゴール・流れ・前回のふりかえり", min: 10 },
-  { title: "章 1", text: "体験 → 解説 → つまずき", min: 15 },
-  { title: "章 2", text: "体験 → 解説 → つまずき", min: 15 },
-  { title: "章 3", text: "体験 → 解説 → ここだけは覚える", min: 15 },
-  { title: "演習・解答例", text: "ゴールと手順を見て、自分で書く", min: 25 },
-  { title: "まとめ・次回予告", text: "3 つの学びの振り返りと NEXT", min: 10 },
+  { title: "Intro", text: "Today's goal, the plan, a look back", min: 10 },
+  { title: "Chapter 1", text: "Try → Explain → Pitfalls", min: 15 },
+  { title: "Chapter 2", text: "Try → Explain → Pitfalls", min: 15 },
+  { title: "Chapter 3", text: "Try → Explain → Remember this", min: 15 },
+  { title: "Exercise", text: "Write it yourself from the goal and steps", min: 25 },
+  { title: "Wrap-up", text: "Three takeaways and what's NEXT", min: 10 },
 ];
 
-const firstSession = ["エディタの見方", "GameObject と Component", "初めてのスクリプト", "C# の最低限の文法", "演習:キューブを動かす"];
+const firstSession = ["Reading the editor", "GameObject & Component", "Your first script", "Just enough C#", "Exercise: move a cube"];
 
 export default function CoursePage() {
   const events = getSchedule();
@@ -27,40 +27,43 @@ export default function CoursePage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
         en="COURSE"
-        title="ゲーム開発講座"
         lead={
           <>
-            Unity をメインにしたゲーム開発講座です。
+            Game development courses, mainly in Unity.
             <br />
-            初めての方も気軽にお声かけください。
+            Beginners welcome — just drop in.
           </>
         }
       />
 
       <section id="schedule" className="mb-20 scroll-mt-24 space-y-6">
         <div className="space-y-3">
-          <h2 className="text-3xl font-black">講座・イベントの日程</h2>
-          <p className="text-muted">日付を押すと、その日の予定だけを表示します。</p>
+          <h2 className="font-poster text-5xl font-light">Schedule</h2>
+          <p className="font-mono text-xs tracking-wider text-muted">TAP A DATE TO FILTER.</p>
         </div>
         <ScheduleCalendar events={events} buildDate={buildDate} />
       </section>
 
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-5">
-          <h2 className="text-2xl font-black">1 回の流れ(90 分)</h2>
+          <h2 className="flex items-baseline gap-3 font-poster text-4xl font-light">
+            One session <span className="font-mono text-xs tracking-[0.2em] text-muted">90 MIN</span>
+          </h2>
           <ul className="divide-y divide-ink/20 border-y border-ink">
             {flow.map((f, i) => (
               <li key={f.title} className="flex items-center gap-4 py-3">
                 <Cube color={cubeCycle[i % 3]} className="size-6 shrink-0" />
                 <span className="w-24 shrink-0 font-bold sm:w-36">{f.title}</span>
                 <span className="flex-1 text-sm text-muted">{f.text}</span>
-                <span className="font-mono font-bold">{f.min}分</span>
+                <span className="font-mono font-bold">{f.min}<span className="text-[10px] font-normal text-muted"> MIN</span></span>
               </li>
             ))}
           </ul>
         </div>
         <div className="space-y-5">
-          <h2 className="text-2xl font-black">たとえば第 1 回では</h2>
+          <h2 className="flex items-baseline gap-3 font-poster text-4xl font-light">
+            Session 01 <span className="font-mono text-xs tracking-[0.2em] text-muted">FOR EXAMPLE</span>
+          </h2>
           <ol className="space-y-3">
             {firstSession.map((t, i) => (
               <li key={t} className="flex items-center gap-4 border border-ink/25 bg-paper-2 px-4 py-3">
@@ -76,10 +79,10 @@ export default function CoursePage() {
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-ink px-5 py-3 font-bold text-white hover:bg-fun-yellow hover:text-ink"
             >
-              講座資料(GitHub) →
+              MATERIALS (GitHub) →
             </a>
           ) : (
-            <p className="text-sm text-muted">講座資料は GitHub で公開する準備をしています。</p>
+            <p className="font-mono text-xs tracking-wider text-muted">MATERIALS — COMING SOON ON GITHUB.</p>
           )}
         </div>
       </section>

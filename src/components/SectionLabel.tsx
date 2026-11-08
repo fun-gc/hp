@@ -1,5 +1,5 @@
 import { navItems } from "@/lib/site";
-import { Annot, coordinates, CubeStack, DotGrid, Tri } from "./Poster";
+import { Annot, ArrowLine, coordinates, DotGrid, PosterPhoto, Tri, type PhotoName } from "./Poster";
 
 // 見出しの上に置く英字ラベル。ポスター風に「▲ [番号] 英字 ———」の形で、細い線を右へ伸ばす。
 export function SectionLabel({
@@ -22,46 +22,62 @@ export function SectionLabel({
   );
 }
 
-/** 各ページの一番上の見出し。英字を大きく敷き、日本語の見出しを重ねる */
-export function PageHeading({ title, lead, en }: { title: string; lead?: React.ReactNode; en?: string }) {
+// ページごとに、建物のレンダー画像のどこを見せるかを変える
+const headingPhoto: Record<string, { name: PhotoName; position: string }> = {
+  ABOUT: { name: "detail", position: "35% 40%" },
+  COURSE: { name: "detail2", position: "55% 30%" },
+  WORKS: { name: "detail", position: "85% 70%" },
+  MEMBERS: { name: "detail2", position: "15% 70%" },
+  NEWS: { name: "detail", position: "60% 15%" },
+  JOIN: { name: "detail2", position: "85% 45%" },
+};
+
+/** 各ページの一番上の見出し。細い英字を大きく置き、右側に建物の写真をのぞかせる */
+export function PageHeading({ en, lead }: { en: string; lead?: React.ReactNode }) {
   const nav = navItems.findIndex((n) => n.en === en);
   const no = String(nav >= 0 ? nav + 1 : 0).padStart(2, "0");
+  const total = String(navItems.length).padStart(2, "0");
+  const word = en.charAt(0) + en.slice(1).toLowerCase();
+  const photo = headingPhoto[en] ?? headingPhoto.ABOUT;
   return (
     <header className="relative mb-14 border-b border-ink pb-10">
-      {/* 右側にグレーの立方体の塊をのぞかせ、細い線と三角を重ねる */}
-      <div className="pointer-events-none absolute -top-2 bottom-0 right-0 hidden w-[44%] md:block" aria-hidden="true">
-        <CubeStack size={8} className="absolute inset-0 size-full" />
-        <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/40 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-paper to-transparent" />
+      {/* PC: 右側に写真を敷き、細い線と三角を重ねる */}
+      <div className="pointer-events-none absolute -top-2 bottom-0 right-0 hidden w-[46%] md:block" aria-hidden="true">
+        <PosterPhoto name={photo.name} position={photo.position} sizes="46vw" eager className="absolute inset-0 size-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/25 to-transparent" />
         <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-paper to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-paper to-transparent" />
         <div className="absolute right-10 top-10 flex flex-col items-end gap-4 text-ink">
           <Tri className="size-14" filled={false} />
           <DotGrid cols={7} rows={4} className="text-ink/70" />
         </div>
-        {en && (
-          <span className="absolute bottom-8 right-0 font-mono text-[11px] tracking-[0.3em] text-ink [writing-mode:vertical-rl]">
-            {en} / {coordinates}
-          </span>
-        )}
+        <span className="absolute bottom-8 right-0 font-mono text-[11px] tracking-[0.3em] text-ink [writing-mode:vertical-rl]">
+          {en} / {coordinates}
+        </span>
       </div>
+
       <div className="relative mb-6 flex items-center justify-between gap-4 text-muted">
-        <Annot>No[{no}] — FUNGC / {en ?? "PAGE"}</Annot>
-      </div>
-      {en && (
-        <p
-          aria-hidden="true"
-          className="relative -ml-1 font-poster text-[clamp(3.5rem,13vw,10rem)] font-light capitalize leading-[0.85] tracking-tight text-ink/85"
-        >
-          {en.toLowerCase()}
-        </p>
-      )}
-      <div className="relative mt-4 flex flex-wrap items-end gap-x-6 gap-y-4">
-        <h1 className="tag-yellow inline-block px-3 py-1 text-3xl font-black tracking-tight sm:text-5xl">{title}</h1>
-        <Annot className="pb-1 text-muted">
-          ↳ {en ? `/${en.toLowerCase()}/` : ""} [0–{no}]
+        <Annot>
+          No[{no}] — FUNGC / {en}
         </Annot>
       </div>
-      {lead && <p className="relative mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">{lead}</p>}
+      <h1 className="relative -ml-1 font-poster text-[clamp(3.75rem,14vw,10rem)] font-light leading-[0.85] tracking-tight text-ink">
+        {word}
+      </h1>
+      <div className="relative mt-5 flex flex-wrap items-center gap-x-4 gap-y-2" aria-hidden="true">
+        <span className="tag-yellow px-2 py-0.5 font-mono text-xs font-bold tracking-[0.2em]">
+          No.{no} / {total}
+        </span>
+        <ArrowLine length="3rem" />
+        <Annot className="text-muted">/{en.toLowerCase()}/</Annot>
+      </div>
+      {lead && <p className="relative mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{lead}</p>}
+
+      {/* スマホ: 見出しの下に写真の帯を入れる */}
+      <div className="relative mt-8 h-36 overflow-hidden md:hidden" aria-hidden="true">
+        <PosterPhoto name={photo.name} position={photo.position} sizes="100vw" eager className="size-full object-cover" />
+        <Annot className="tag-yellow absolute bottom-2 left-2 px-1">FIG.{no}</Annot>
+      </div>
       <span className="absolute -bottom-px right-0 h-1 w-24 bg-fun-yellow" aria-hidden="true" />
     </header>
   );

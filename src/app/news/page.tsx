@@ -3,13 +3,13 @@ import Link from "next/link";
 import { PageHeading } from "@/components/SectionLabel";
 import { getNews } from "@/lib/content";
 
-export const metadata: Metadata = { title: "お知らせ" };
+export const metadata: Metadata = { title: "News" };
 
 export default function NewsPage() {
   const news = getNews();
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeading en="NEWS" title="お知らせ" />
+      <PageHeading en="NEWS" />
       <ul className="divide-y divide-ink/20 border-y border-ink">
         {news.map((n) => (
           <li key={n.slug}>

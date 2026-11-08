@@ -6,6 +6,7 @@ export const site = {
     "公立はこだて未来大学のゲーム制作サークル FUNGC の公式サイト。Unity を使ったゲーム開発講座、新入生歓迎イベント Miraive や未来祭でのゲーム展示、チームでの長期ゲーム開発をしています。",
   url: "https://fungc.org",
   university: "公立はこだて未来大学",
+  universityEn: "Future University Hakodate",
   email: "contact@fungc.org",
   // Google フォームの URL が決まったら入れる。空のままならボタンは出ない。
   contactFormUrl: "",
@@ -21,6 +22,8 @@ export const site = {
   events: {
     welcome: "Miraive(ミライブ)",
     festival: "未来祭",
+    welcomeEn: "Miraive",
+    festivalEn: "Mirai-sai",
   },
 } as const;
 
