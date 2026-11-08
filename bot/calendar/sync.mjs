@@ -1,4 +1,5 @@
 // メンバー募集チャンネルの投稿を Discord の REST API で読み、予定を content/discord-events.json に書き出す。
+// あわせて、サーバーの参加人数(アプリを除く)を content/discord-stats.json に書き出す(bot/members/count.mjs)。
 // サイトのビルド時(next.config.ts)と、変更を見張る GitHub Actions(.github/workflows/discord-calendar.yml)から呼ぶ。
 //
 //   DISCORD_BOT_TOKEN   Bot のトークン。未設定なら何もしない(CI や手元のビルド用)
@@ -10,6 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { syncMemberCount } from "../members/count.mjs";
 import { discord } from "./discord.mjs";
 import { createFlyerReader, looksLikeFlyer } from "./flyer.mjs";
 import { hostName, parsePost } from "./parse.mjs";
@@ -87,6 +89,7 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
 
   const since = Date.now() - MAX_AGE_MS;
   const posts = [];
+  const guildIds = new Set();
   for (const id of channelIds) {
     let channel = await discord(token, `/channels/${id}`);
     if (!channel) throw new Error(`チャンネル ${id} が見つかりません(ID か、Bot がサーバーにいるかを確認してください)`);
@@ -99,7 +102,12 @@ export async function syncDiscordEvents({ out = defaultOut, react = false, log =
     // 15: フォーラム、16: メディア。それ以外はテキストチャンネルとして読む
     const found = [15, 16].includes(channel.type) ? await forumPosts(token, channel, since) : await textChannelPosts(token, channel.id, since);
     posts.push(...found.map((p) => ({ ...p, guildId: channel.guild_id })));
+    guildIds.add(channel.guild_id);
   }
+
+  // トップの MEMBERS に出す、サーバーの参加人数(アプリを除く)。予定の隣に discord-stats.json として書き出す
+  const [guildId] = guildIds;
+  if (guildId) await syncMemberCount({ token, guildId, out: path.join(path.dirname(out), "discord-stats.json"), log });
 
   // 主催者名は、メンバー欄に載っている人ならプロフィールの名前を使う。
   // 載っていなければサーバーでのニックネーム、Discord の表示名、ユーザー名の順で使う

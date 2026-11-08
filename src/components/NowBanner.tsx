@@ -56,7 +56,7 @@ export function NowBanner({ events }: { events: ScheduleEvent[] }) {
   const live = now ? events.filter((e) => isLive(e, now)) : [];
   if (!live.length) return null;
 
-  const messages = live.map((e) => `${e.place ? `${e.place}で` : ""}開催中！ ${e.title}`);
+  const messages = live.map((e) => `LIVE NOW${e.place ? ` @ ${e.place}` : ""} — ${e.title}`);
   // 画面の幅より長くなるよう同じ並びを繰り返し、半分の位置まで流して継ぎ目なくループさせる
   const repeat = Math.max(2, Math.ceil(120 / messages.join("").length));
   const group = Array.from({ length: repeat }, () => messages).flat();
@@ -65,7 +65,7 @@ export function NowBanner({ events }: { events: ScheduleEvent[] }) {
   return (
     <div className="flex h-9 items-stretch overflow-hidden bg-ink text-sm font-bold text-paper">
       <p className="sr-only" role="status">
-        {messages.join("、")}
+        {messages.join(" / ")}
       </p>
       <span
         className="relative z-10 flex shrink-0 items-center bg-fun-yellow pr-6 pl-4 font-display tracking-[0.2em] text-ink [clip-path:polygon(0_0,100%_0,calc(100%-12px)_100%,0_100%)] sm:pl-6"

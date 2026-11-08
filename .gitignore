@@ -42,7 +42,11 @@ next-env.d.ts
 
 # Discord のメンバー募集チャンネルからビルド時に作る(bot/calendar/sync.mjs)
 /content/discord-events.json
+/content/discord-stats.json
 
 # wrangler pages dev で Discord の受け口(functions/)を手元で動かしたときのファイル
 /.wrangler/
 /.dev.vars
+
+# 建物レンダー用の Python 環境(tools/poster-render/README.md)
+/.venv-render

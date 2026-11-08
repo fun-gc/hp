@@ -19,7 +19,7 @@ export function Cube({
   face?: Face;
   className?: string;
 }) {
-  const fill = (f: Face) => (f === face ? colorVar[color] : f === "top" ? "#ecebe6" : "#dddcd6");
+  const fill = (f: Face) => (f === face ? colorVar[color] : f === "top" ? "var(--color-cube-top)" : f === "left" ? "var(--color-cube-left)" : "var(--color-cube-right)");
   return (
     <svg viewBox="0 0 40 44" className={className} aria-hidden="true">
       <polygon points="20,2 38,12 20,22 2,12" fill={fill("top")} />

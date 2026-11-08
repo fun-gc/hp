@@ -103,3 +103,9 @@ export const scheduleEventSchema = z.object({
   discordThreadId: z.string().regex(/^\d+$/).optional(),
 });
 export type ScheduleEvent = z.infer<typeof scheduleEventSchema>;
+
+/** content/discord-stats.json(ビルドのたびに bot/members/count.mjs が書き出す)。トップの MEMBERS に出す */
+export const discordStatsSchema = z.object({
+  /** Discord サーバーの参加人数。Bot などのアプリは数えない */
+  memberCount: z.number().int().nonnegative(),
+});

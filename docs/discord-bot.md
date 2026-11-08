@@ -57,7 +57,7 @@ Unity 講座 第2回
 ### 初回の設定(管理者が 1 回だけ)
 
 1. [Discord Developer Portal](https://discord.com/developers/applications) で **New Application**(名前は「FUNGC Bot」など)。
-   - **Bot** タブ → **Reset Token** でトークンをコピーしておく。同じ画面の **Message Content Intent** を ON にして **Save Changes**。
+   - **Bot** タブ → **Reset Token** でトークンをコピーしておく。同じ画面の **Message Content Intent** と **Server Members Intent**(トップの参加人数を数えるため)を ON にして **Save Changes**。
    - **General Information** の **Application ID** をコピーする。
 2. 次の URL の `<Application ID>` を置き換えて開き、FUNGC のサーバーに追加する(権限はチャンネルを見る・メッセージ履歴を読む・リアクションを付けるの 3 つ)。
    `https://discord.com/oauth2/authorize?client_id=<Application ID>&scope=bot&permissions=66624`
@@ -71,6 +71,14 @@ Unity 講座 第2回
 設定したら GitHub の **Actions → Discord の予定を反映 → Run workflow** で一度動かすと、すぐ反映されます。
 
 公開リポジトリの定期実行は、リポジトリに 60 日間変更がないと GitHub に止められます。止まったときはメールが来るので、Actions の画面から再開してください。
+
+### トップの参加人数(MEMBERS)
+
+トップの「MEMBERS」には、Discord サーバーの参加人数から Bot などのアプリを除いた数を出します(`bot/members/count.mjs`)。
+
+- 予定と同じく、ビルドの最初に `bot/calendar/sync.mjs` が数え、`content/discord-stats.json`(`{ "memberCount": 人数 }`)に書き出します。ビルドのたびに作り直すので、リポジトリには入れません(`.gitignore`)。
+- 15 分ごとの見張りは、予定に加えて人数も比べ、変わっていたら再ビルドします。
+- メンバーの一覧を読むので、Developer Portal の **Bot** タブで **Server Members Intent** を ON にしておきます。OFF のときや読めなかったときはビルドを止めず、メンバー欄に載っている人数を出します。
 
 ### Discord への掲示(今月の予定)
 

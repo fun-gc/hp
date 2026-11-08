@@ -1,5 +1,5 @@
 import type { Medal, Member } from "@/lib/schema";
-import { roleLabels } from "@/lib/schema";
+import { gradeEn, roleEn } from "@/lib/en";
 import type { MemberStanding } from "@/lib/grade";
 
 const medalColor: Record<Medal["color"], string> = {
@@ -19,7 +19,7 @@ export function MemberCard({
   medals: Medal[];
 }) {
   return (
-    <article className="flex flex-col gap-4 border border-line bg-white p-5">
+    <article data-reveal className="corner-ticks flex flex-col gap-4 border border-ink/20 bg-paper-2 p-5">
       <div className="flex items-center gap-4">
         {member.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- Discord のアバター画像をそのまま表示する
@@ -31,15 +31,15 @@ export function MemberCard({
         )}
         <div className="min-w-0">
           <p className="truncate text-lg font-black">{member.name}</p>
-          <p className="text-sm text-muted">{standing.label}</p>
+          <p className="font-mono text-xs tracking-wider text-muted">{gradeEn(standing, member.override)}</p>
         </div>
       </div>
 
       {member.roles.length > 0 && (
         <ul className="flex flex-wrap gap-2 text-xs">
           {member.roles.map((r) => (
-            <li key={r} className="border border-line px-2 py-0.5 font-bold">
-              {roleLabels[r]}
+            <li key={r} className="border border-ink/30 px-2 py-0.5 font-mono text-[11px] font-bold tracking-wider">
+              {roleEn[r]}
             </li>
           ))}
         </ul>
@@ -49,7 +49,8 @@ export function MemberCard({
 
       {member.favoriteGames && member.favoriteGames.length > 0 && (
         <p className="text-sm">
-          <span className="font-bold">好きなゲーム:</span> {member.favoriteGames.join("、")}
+          <span className="block font-mono text-[10px] tracking-[0.2em] text-muted">FAVORITE GAMES</span>
+          {member.favoriteGames.join(" / ")}
         </p>
       )}
 
@@ -64,7 +65,7 @@ export function MemberCard({
       )}
 
       {member.links && (
-        <p className="mt-auto flex gap-4 text-sm font-bold">
+        <p className="mt-auto flex gap-4 font-mono text-xs font-bold tracking-wider">
           {member.links.x && (
             <a href={member.links.x} target="_blank" rel="noreferrer" className="hover:text-fun-red-ink">
               X
