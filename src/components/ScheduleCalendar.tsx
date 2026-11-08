@@ -135,8 +135,8 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
             {selected ? `${monthsEn[Number(selected.slice(5, 7)) - 1]} ${selected.slice(8)}` : `${monthsEn[mon - 1]} ${year}`}
           </p>
           {listed.length === 0 ? (
-            <p className="border border-dashed border-ink/40 px-4 py-8 text-center font-mono text-xs tracking-wider text-muted">
-              NO EVENTS YET THIS MONTH.
+            <p className="border border-dashed border-ink/40 px-4 py-8 text-center text-sm text-muted">
+              この月の予定はまだありません。決まりしだい追加します。
             </p>
           ) : (
             <ul className="max-h-[32rem] min-h-0 divide-y divide-line overflow-y-auto overscroll-contain border-y border-line lg:max-h-none lg:flex-1">

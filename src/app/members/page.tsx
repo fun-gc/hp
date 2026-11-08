@@ -37,18 +37,11 @@ export default function MembersPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeading
-        en="MEMBERS"
-        lead={
-          <>
-            Profiles are added with <code className="bg-paper-2 px-1 font-mono text-[0.9em]">/profile edit</code> on our Discord. Only members who opted in are listed.
-          </>
-        }
-      />
+      <PageHeading en="MEMBERS" />
 
       {members.length === 0 ? (
         <p className="border border-dashed border-line px-4 py-16 text-center text-muted">
-          COMING SOON.
+          メンバー紹介は準備中です。
         </p>
       ) : (
         <div className="space-y-16">

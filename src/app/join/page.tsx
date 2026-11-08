@@ -5,15 +5,15 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = { title: "Join" };
 
 const steps = [
-  { title: "Apply with the form", text: "Choose join or visit, then enter your name and email. Questions are welcome via the contact below, too." },
-  { title: "Check your email, join Discord", text: "Addresses ending in @fun.ac.jp get a Discord invite sent to their university email automatically." },
-  { title: "Join courses and teams", text: "Learn the Unity basics in the courses, then take part in exhibitions and team projects." },
+  { title: "Apply with the form", text: "入部・見学フォームで希望する内容を選び、名前とメールアドレスを入力してください。相談は下の連絡先でも受け付けています。" },
+  { title: "Check your email, join Discord", text: "メールアドレスが @fun.ac.jp の場合、学内メール宛てに Discord サーバーの招待リンクを自動送信します。届いたメールから参加してください。" },
+  { title: "Join courses and teams", text: "講座で Unity の基本を学びながら、展示やチーム開発に参加できます。" },
 ];
 
 export default function JoinPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeading en="JOIN" lead={`FUNGC is the game creation circle of ${site.universityEn}. Visitors welcome anytime.`} />
+      <PageHeading en="JOIN" lead={`FUNGC は${site.university}のゲーム制作サークルです。見学はいつでも受け付けています。`} />
 
       <section aria-labelledby="join-form-heading" className="mb-12 max-w-3xl">
         <h2 id="join-form-heading" className="font-poster text-4xl font-light">Join / Visit</h2>
@@ -22,7 +22,7 @@ export default function JoinPage() {
             OPEN THE FORM <span className="inline-block font-mono text-xs font-normal">(Google Forms) ↗</span>
           </a>
         ) : (
-          <p className="mt-5 font-bold">The form is coming soon. Please use the contact below.</p>
+          <p className="mt-5 font-bold">入部・見学フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
         )}
       </section>
 
@@ -46,7 +46,7 @@ export default function JoinPage() {
       <section id="contact" className="mt-20 scroll-mt-24 bg-ink px-6 py-10 text-white sm:px-10">
         <div className="space-y-4">
           <h2 className="font-poster text-4xl font-light sm:text-5xl">Contact</h2>
-          <p className="text-white/75">Joining, visiting, exhibitions, interviews — ask us anything.</p>
+          <p className="text-white/75">入部や見学の相談、展示・取材のご依頼などはこちらからどうぞ。</p>
           <div className="flex flex-wrap gap-3 pt-2">
             {site.contactFormUrl && (
               <a

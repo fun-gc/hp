@@ -94,7 +94,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="max-w-md border-l border-ink pl-4 text-base leading-relaxed text-muted sm:text-lg">
-              Based on Discord and campus. Unity courses, exhibitions, and team development.
+              Discord と学内を拠点に、Unity の講座、展示、チーム開発をしています。
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
@@ -216,9 +216,7 @@ export default function Home() {
         <div>
           <SectionHead index={3} en="SCHEDULE" href="/course/#schedule" linkLabel="CALENDAR" />
           {upcoming.length === 0 ? (
-            <p className="border border-dashed border-ink/40 px-4 py-8 text-center font-mono text-xs tracking-wider text-muted">
-              NO UPCOMING EVENTS YET.
-            </p>
+            <p className="border border-dashed border-ink/40 px-4 py-8 text-center text-sm text-muted">次の予定は準備中です。</p>
           ) : (
             <ul className="border-t border-ink">
               {upcoming.map((e, i) => (
@@ -257,7 +255,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent sm:hidden" aria-hidden="true" />
           <div className="relative z-10 max-w-xl space-y-5">
             <SectionHead index={5} en="JOIN US" invert />
-            <p className="leading-relaxed text-white/80">Visitors welcome anytime. The lights are on.</p>
+            <p className="leading-relaxed text-white/80">見学はいつでも受け付けています。</p>
             <div className="flex flex-wrap items-center gap-5">
               <Link
                 href="/join/"
