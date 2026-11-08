@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { marked } from "marked";
 import { z } from "zod";
 import {
+  discordStatsSchema,
   medalSchema,
   memberSchema,
   newsSchema,
@@ -47,6 +48,16 @@ export function getMembers(): Member[] {
       return member;
     })
     .filter((m) => m.public);
+}
+
+/**
+ * トップの MEMBERS に出す人数。Discord サーバーの参加人数(アプリを除く)を、ビルドの最初に数えて
+ * content/discord-stats.json に書いておく(bot/members/count.mjs)。数えられなかったときは、メンバー欄に載っている人数を出す
+ */
+export function getMemberCount(): number {
+  const file = path.join(contentDir, "discord-stats.json");
+  if (!fs.existsSync(file)) return getMembers().length;
+  return parseOrThrow(discordStatsSchema, JSON.parse(fs.readFileSync(file, "utf8")), "content/discord-stats.json").memberCount;
 }
 
 export function getMedals(): Medal[] {

@@ -5,7 +5,7 @@ import { LeadLines } from "@/components/LeadLines";
 import { Annot, ArrowLine, Crosshair, DotGrid, NightBackdrop, PosterPhoto, RollNumber, Slashes, Tri } from "@/components/Poster";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Poster } from "@/components/WorkCard";
-import { getMembers, getNews, getSchedule, getWorks } from "@/lib/content";
+import { getMemberCount, getNews, getSchedule, getWorks } from "@/lib/content";
 import { eventKindEn } from "@/lib/en";
 import { delay } from "@/lib/motion";
 import { site } from "@/lib/site";
@@ -64,7 +64,7 @@ export default function Home() {
   const buildDate = new Date().toISOString().slice(0, 10);
   const upcomingAll = getSchedule().filter((e) => e.date >= buildDate);
   const upcoming = upcomingAll.slice(0, 3);
-  const memberCount = getMembers().length;
+  const memberCount = getMemberCount();
 
   return (
     <>
