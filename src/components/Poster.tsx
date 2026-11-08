@@ -40,6 +40,25 @@ export function PosterPhoto({
 }
 /* eslint-enable @next/next/no-img-element */
 
+/**
+ * 夜の建物の写真と、文字を読みやすくする墨色のグラデーション。親の箱は relative overflow-hidden bg-ink にし、
+ * 中身は relative z-10 で上に重ねる。トップの「Join us」と入部ページの「Contact」で使う
+ */
+export function NightBackdrop() {
+  return (
+    <>
+      {/* パネルの穴から黄色い明かりがもれる夜の建物。スクロールに合わせて少しずらす */}
+      <PosterPhoto
+        name="night"
+        sizes="(min-width: 1152px) 1152px, 100vw"
+        className="parallax-y absolute inset-0 size-full object-cover object-right"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-ink/0" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent sm:hidden" aria-hidden="true" />
+    </>
+  );
+}
+
 /** 公立はこだて未来大学のおおよその位置。注記の飾りとして使う */
 export const coordinates = `41°50'30"N 140°46'01"E`;
 

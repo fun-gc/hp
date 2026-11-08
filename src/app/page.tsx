@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { HeroLetters } from "@/components/HeroLetters";
 import { InteractiveLogo } from "@/components/InteractiveLogo";
-import { Annot, ArrowLine, Crosshair, DotGrid, PosterPhoto, RollNumber, Slashes, Tri } from "@/components/Poster";
+import { Annot, ArrowLine, Crosshair, DotGrid, NightBackdrop, PosterPhoto, RollNumber, Slashes, Tri } from "@/components/Poster";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Poster } from "@/components/WorkCard";
 import { getMembers, getNews, getSchedule, getWorks } from "@/lib/content";
@@ -265,14 +265,7 @@ export default function Home() {
       {/* ---- 部員募集 ---- */}
       <section className="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
         <div data-reveal className="relative overflow-hidden bg-ink px-6 py-12 text-white sm:px-12 sm:py-16">
-          {/* 夜の建物。パネルの穴から黄色い明かりがもれる。スクロールに合わせて少しずらす */}
-          <PosterPhoto
-            name="night"
-            sizes="(min-width: 1152px) 1152px, 100vw"
-            className="parallax-y absolute inset-0 size-full object-cover object-right"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-ink/0" aria-hidden="true" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent sm:hidden" aria-hidden="true" />
+          <NightBackdrop />
           <div className="relative z-10 max-w-xl space-y-5">
             <SectionHead index={5} en="JOIN US" invert reveal={false} />
             <p className="leading-relaxed text-white/80">見学はいつでも受け付けています。</p>
