@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HeroLetters } from "@/components/HeroLetters";
 import { InteractiveLogo } from "@/components/InteractiveLogo";
+import { LeadLines } from "@/components/LeadLines";
 import { Annot, ArrowLine, Crosshair, DotGrid, NightBackdrop, PosterPhoto, RollNumber, Slashes, Tri } from "@/components/Poster";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Poster } from "@/components/WorkCard";
@@ -84,7 +85,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-10 max-w-xl space-y-6 md:mt-16">
+          <div className="mt-10 max-w-xl space-y-6 md:mt-16" data-lead-copy>
             <div className="anim-rise flex w-fit items-center gap-3" style={delay(0.15)}>
               <span className="tag-yellow shrink-0 px-2 py-0.5 font-mono text-xs font-bold tracking-[0.2em]">GAME DEV</span>
               <ArrowLine length="2rem" className="anim-wipe shrink-0" />
@@ -118,6 +119,7 @@ export default function Home() {
             <div className="anim-rise flex w-fit flex-wrap gap-3 md:pointer-events-auto" style={delay(0.55)}>
               <Link
                 href="/join/"
+                data-lead-target
                 className="group flex items-center gap-3 bg-ink px-6 py-3 font-mono text-sm font-bold tracking-[0.15em] text-white transition hover:bg-fun-yellow hover:text-ink"
               >
                 JOIN US
@@ -183,18 +185,21 @@ export default function Home() {
             make — play — show
           </span>
 
-          {/* 押せるロゴ。図版のキャプションのように枠で囲む */}
+          {/* 押せるロゴ。背景は敷かず、図版のように四隅の線だけで囲む */}
           <figure
-            className="corner-ticks anim-rise absolute bottom-6 left-4 w-36 bg-paper/90 p-2 text-ink sm:w-44 md:bottom-auto md:left-auto md:right-12 md:top-10 md:w-48"
+            className="corner-ticks anim-rise absolute bottom-6 left-4 w-32 p-2 text-ink md:bottom-auto md:left-auto md:right-12 md:top-10"
             style={delay(0.8)}
           >
             <InteractiveLogo className="aspect-[1210/1280] w-full" />
-            <figcaption className="mt-1 flex items-center justify-between font-mono text-[10px] text-muted">
-              <span>FIG.01</span>
-              <span>PRESS A FACE</span>
+            <figcaption className="mt-1 flex items-center justify-between gap-1 whitespace-nowrap font-mono text-[9px] leading-tight">
+              <span className="bg-paper/80 px-0.5">FIG.01</span>
+              <span className="bg-paper/80 px-0.5">PRESS A FACE</span>
             </figcaption>
           </figure>
         </div>
+
+        {/* JOIN US へ視線を運ぶ、ぼやけた黒い線 */}
+        <LeadLines />
       </section>
 
       {/* ---- 作品 ---- */}
