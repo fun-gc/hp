@@ -64,12 +64,12 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-      <div className="border border-line bg-white">
+      <div className="corner-ticks border border-ink/30 bg-paper-2 p-px">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <button type="button" onClick={() => shift(-1)} className="px-3 py-1 font-bold hover:text-fun-red-ink" aria-label="前の月">
             ←
           </button>
-          <p className="font-display text-xl font-bold tracking-wider" aria-live="polite">
+          <p className="font-mono text-xl font-bold tracking-wider" aria-live="polite">
             {year}.{pad(mon)}
           </p>
           <button type="button" onClick={() => shift(1)} className="px-3 py-1 font-bold hover:text-fun-red-ink" aria-label="次の月">
@@ -143,7 +143,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
               {listed.map((e, i) => (
                 <li key={`${e.date}-${i}`} className="flex gap-4 py-4">
                   <div className="w-14 shrink-0 text-center">
-                    <p className="font-display text-2xl font-bold leading-none">{Number(e.date.slice(8))}</p>
+                    <p className="font-poster text-3xl font-light leading-none">{Number(e.date.slice(8))}</p>
                     <p className="text-xs text-muted">{weekdays[new Date(`${e.date}T00:00:00Z`).getUTCDay()]}</p>
                   </div>
                   <div className="min-w-0 flex-1 space-y-1">

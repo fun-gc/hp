@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Chakra_Petch, JetBrains_Mono } from "next/font/google";
+import { Chakra_Petch, JetBrains_Mono, Raleway } from "next/font/google";
 // 日本語フォントは next/font/google だと Cloudflare のビルドで失敗するため、npm パッケージから自前で配信する
 import "@fontsource/line-seed-jp/400.css";
 import "@fontsource/line-seed-jp/700.css";
 import "@fontsource/line-seed-jp/800.css";
 import { NowBanner } from "@/components/NowBanner";
+import { PosterRails } from "@/components/Poster";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getSchedule } from "@/lib/content";
@@ -20,6 +21,15 @@ const chakraPetch = Chakra_Petch({
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+// ポスター風の大きな英字(細めの幾何学的なサンセリフ)
+const raleway = Raleway({
+  variable: "--font-raleway",
+  weight: ["300", "400", "500"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -48,7 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ja"
-      className={`${chakraPetch.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${chakraPetch.variable} ${jetbrainsMono.variable} ${raleway.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
         <SiteHeader>
@@ -56,6 +66,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </SiteHeader>
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <PosterRails />
       </body>
     </html>
   );

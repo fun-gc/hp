@@ -14,6 +14,7 @@ export default function JoinPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
+        en="JOIN"
         title="入部案内"
         lead={`FUNGC は${site.university}のゲーム制作サークルです。見学はいつでも受け付けています。`}
       />
@@ -35,7 +36,7 @@ export default function JoinPage() {
           <ol className="space-y-4">
             {steps.map((s, i) => (
               <li key={s.title} className="flex gap-4">
-                <span className="grid size-10 shrink-0 place-items-center bg-ink font-display font-bold text-white">{i + 1}</span>
+                <span className="grid size-10 shrink-0 place-items-center bg-ink font-mono font-bold text-white">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <p className="font-bold">{s.title}</p>
                   <p className="text-sm leading-relaxed text-muted">{s.text}</p>

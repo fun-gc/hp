@@ -25,7 +25,7 @@ export function WorkCard({ work }: { work: Work }) {
   const poster = workPoster(work);
 
   return (
-    <article className="flex flex-col border border-line bg-white">
+    <article className="corner-ticks flex flex-col border border-ink/20 bg-paper-2 p-1.5 text-ink">
       <div className="relative aspect-video overflow-hidden bg-ink">
         {work.youtubeId && playing ? (
           <iframe
@@ -59,16 +59,16 @@ export function WorkCard({ work }: { work: Work }) {
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex flex-wrap gap-2 text-xs">
           {work.event && <span className="bg-ink px-2 py-0.5 font-bold text-white">{work.event}</span>}
           {work.tags.map((t) => (
-            <span key={t} className="border border-line px-2 py-0.5 text-muted">
+            <span key={t} className="border border-ink/30 px-2 py-0.5 font-mono text-[11px] text-muted">
               {t}
             </span>
           ))}
         </div>
-        <h3 className="text-lg font-black leading-snug">{work.title}</h3>
+        <h3 className="text-lg font-black leading-snug text-ink">{work.title}</h3>
         <p className="text-sm text-muted">{work.authors.join("、")}</p>
         <p className="flex-1 text-sm leading-relaxed">{work.body}</p>
         {work.playUrl && (
@@ -76,7 +76,7 @@ export function WorkCard({ work }: { work: Work }) {
             href={work.playUrl}
             target="_blank"
             rel="noreferrer"
-            className="mt-2 inline-flex w-fit items-center gap-2 bg-ink px-4 py-2 text-sm font-bold text-white transition hover:bg-fun-red"
+            className="mt-2 inline-flex w-fit items-center gap-2 bg-ink px-4 py-2 text-sm font-bold text-white transition hover:bg-fun-yellow hover:text-ink"
           >
             {work.playLabel ?? "遊んでみる"} <span aria-hidden="true">→</span>
           </a>

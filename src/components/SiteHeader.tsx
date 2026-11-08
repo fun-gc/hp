@@ -12,26 +12,34 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-ink bg-paper/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           <LogoMark className="size-8" />
           <span className="font-display text-lg font-bold tracking-wider">FUNGC</span>
+          <span className="hidden font-mono text-[10px] leading-tight text-muted lg:block" aria-hidden="true">
+            No[00]
+            <br />
+            GAME CIRCLE
+          </span>
         </Link>
 
         <nav className="hidden md:block" aria-label="メインメニュー">
-          <ul className="flex items-center gap-1">
-            {navItems.map((item) => {
+          <ul className="flex items-stretch">
+            {navItems.map((item, i) => {
               const active = pathname.startsWith(item.href);
               return (
-                <li key={item.href}>
+                <li key={item.href} className="border-l border-ink/20 first:border-l-0">
                   <Link
                     href={item.href}
-                    className={`relative px-3 py-2 text-sm font-bold transition-colors hover:text-fun-red-ink ${
-                      active ? "text-ink after:absolute after:inset-x-3 after:-bottom-[13px] after:h-1 after:bg-fun-red" : "text-muted"
+                    className={`flex flex-col px-3 py-1 leading-tight transition-colors lg:px-4 ${
+                      active ? "bg-fun-yellow text-ink" : "text-ink hover:bg-ink hover:text-paper"
                     }`}
                   >
-                    {item.label}
+                    <span className="font-mono text-[9px] tracking-[0.2em] opacity-70" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}/{item.en}
+                    </span>
+                    <span className="text-sm font-bold">{item.label}</span>
                   </Link>
                 </li>
               );
@@ -58,17 +66,17 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
       {children}
 
       {open && (
-        <nav id="mobile-menu" className="border-t border-line bg-paper md:hidden" aria-label="メインメニュー">
+        <nav id="mobile-menu" className="border-t border-ink bg-paper md:hidden" aria-label="メインメニュー">
           <ul className="mx-auto max-w-6xl px-4 py-2">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-baseline justify-between border-b border-line py-3 font-bold last:border-0"
+                  className="flex items-baseline justify-between border-b border-ink/20 py-3 font-bold last:border-0"
                 >
                   {item.label}
-                  <span className="font-display text-xs tracking-[0.18em] text-muted">{item.en}</span>
+                  <span className="font-mono text-xs tracking-[0.18em] text-muted">{item.en}</span>
                 </Link>
               </li>
             ))}

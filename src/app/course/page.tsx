@@ -26,6 +26,7 @@ export default function CoursePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
+        en="COURSE"
         title="ゲーム開発講座"
         lead={
           <>
@@ -47,13 +48,13 @@ export default function CoursePage() {
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-5">
           <h2 className="text-2xl font-black">1 回の流れ(90 分)</h2>
-          <ul className="divide-y divide-line border-y border-line">
+          <ul className="divide-y divide-ink/20 border-y border-ink">
             {flow.map((f, i) => (
               <li key={f.title} className="flex items-center gap-4 py-3">
                 <Cube color={cubeCycle[i % 3]} className="size-6 shrink-0" />
                 <span className="w-24 shrink-0 font-bold sm:w-36">{f.title}</span>
                 <span className="flex-1 text-sm text-muted">{f.text}</span>
-                <span className="font-display font-bold">{f.min}分</span>
+                <span className="font-mono font-bold">{f.min}分</span>
               </li>
             ))}
           </ul>
@@ -62,8 +63,8 @@ export default function CoursePage() {
           <h2 className="text-2xl font-black">たとえば第 1 回では</h2>
           <ol className="space-y-3">
             {firstSession.map((t, i) => (
-              <li key={t} className="flex items-center gap-4 border border-line bg-white px-4 py-3">
-                <span className="font-display text-lg font-bold">{String(i + 1).padStart(2, "0")}</span>
+              <li key={t} className="flex items-center gap-4 border border-ink/25 bg-paper-2 px-4 py-3">
+                <span className="font-mono text-sm text-muted">{String(i + 1).padStart(2, "0")}</span>
                 <span className="font-bold">{t}</span>
               </li>
             ))}
@@ -73,7 +74,7 @@ export default function CoursePage() {
               href={site.courseRepoUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-ink px-5 py-3 font-bold text-white hover:bg-fun-red"
+              className="inline-flex items-center gap-2 bg-ink px-5 py-3 font-bold text-white hover:bg-fun-yellow hover:text-ink"
             >
               講座資料(GitHub) →
             </a>

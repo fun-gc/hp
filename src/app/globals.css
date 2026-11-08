@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
-/* 色は講座テンプレート(FUN GC 講座テンプレート.pdf)から取った値 */
+/* 色は講座テンプレート(FUN GC 講座テンプレート.pdf)から取った値。
+   ポスター風の試作では、紙の色をコンクリートのグレーに、文字を青みのある墨色に寄せている */
 @theme {
-  --color-paper: #fafaf6;
-  --color-ink: #17181c;
-  --color-ink-2: #26282e;
-  --color-line: #deddd6;
-  --color-muted: #5b5d63;
+  --color-paper: #e4e5e1;
+  --color-paper-2: #f0f1ee;
+  --color-ink: #1c242b;
+  --color-ink-2: #2a333b;
+  --color-line: #b3b7b4;
+  --color-muted: #4b535a;
   --color-fun-red: #ed1c24;
   --color-fun-green: #22b14c;
   --color-fun-yellow: #fff200;
@@ -15,11 +17,17 @@
   --color-fun-green-ink: #157a33;
   /* カレンダーの印の縁。黄色は白地に埋もれるので、明度を落とした色で囲む */
   --color-fun-yellow-edge: #c2b400;
+  /* 立方体の建物(CubeStack)の面の色 */
+  --color-cube-top: #eef0ed;
+  --color-cube-left: #a7adb0;
+  --color-cube-right: #6c757c;
+  --color-cube-edge: #59626a;
 }
 
 @theme inline {
   --font-sans: "LINE Seed JP", system-ui, sans-serif;
   --font-display: var(--font-chakra-petch), "LINE Seed JP", sans-serif;
+  --font-poster: var(--font-raleway), "LINE Seed JP", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
@@ -28,8 +36,44 @@ html {
 }
 
 body {
-  background: var(--color-paper);
+  /* コンクリートの地に、図面のような細い方眼を薄く敷く */
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, rgb(28 36 43 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(28 36 43 / 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
   color: var(--color-ink);
+}
+
+/* 黄色の帯で文字を囲む(文字は墨色のまま) */
+.tag-yellow {
+  background: var(--color-fun-yellow);
+  color: var(--color-ink);
+}
+
+/* 細い線の四隅だけを描く枠(図面のトンボ) */
+.corner-ticks {
+  --tick: currentColor;
+  background-image:
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick));
+  background-position:
+    top left, top left, top right, top right,
+    bottom left, bottom left, bottom right, bottom right;
+  background-size:
+    12px 1px, 1px 12px, 12px 1px, 1px 12px,
+    12px 1px, 1px 12px, 12px 1px, 1px 12px;
+  background-repeat: no-repeat;
+}
+
+/* ヒーローの斜めに崩した大文字 */
+.poster-letter {
+  font-family: var(--font-poster);
+  font-weight: 500;
+  line-height: 0.8;
+  color: var(--color-fun-yellow);
 }
 
 ::selection {
@@ -66,7 +110,7 @@ body {
 }
 .prose-fun h2 {
   margin-top: 2em;
-  border-left: 6px solid var(--color-fun-red);
+  border-left: 6px solid var(--color-fun-yellow);
   padding-left: 0.6em;
   font-size: 1.4rem;
   font-weight: 900;
@@ -91,7 +135,7 @@ body {
 }
 .prose-fun code {
   font-family: var(--font-mono);
-  background: #ecebe6;
+  background: var(--color-paper-2);
   padding: 0.1em 0.35em;
   font-size: 0.9em;
 }

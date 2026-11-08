@@ -19,7 +19,7 @@ export function MemberCard({
   medals: Medal[];
 }) {
   return (
-    <article className="flex flex-col gap-4 border border-line bg-white p-5">
+    <article className="corner-ticks flex flex-col gap-4 border border-ink/20 bg-paper-2 p-5">
       <div className="flex items-center gap-4">
         {member.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- Discord のアバター画像をそのまま表示する
@@ -31,14 +31,14 @@ export function MemberCard({
         )}
         <div className="min-w-0">
           <p className="truncate text-lg font-black">{member.name}</p>
-          <p className="text-sm text-muted">{standing.label}</p>
+          <p className="font-mono text-xs text-muted">{standing.label}</p>
         </div>
       </div>
 
       {member.roles.length > 0 && (
         <ul className="flex flex-wrap gap-2 text-xs">
           {member.roles.map((r) => (
-            <li key={r} className="border border-line px-2 py-0.5 font-bold">
+            <li key={r} className="border border-ink/30 px-2 py-0.5 font-bold">
               {roleLabels[r]}
             </li>
           ))}

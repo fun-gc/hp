@@ -32,20 +32,21 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading
+        en="ABOUT"
         title="活動紹介"
         lead={`FUNGC は${site.university}のゲーム制作サークルです。活動の拠点は Discord と学内です。`}
       />
 
-      <ol className="divide-y divide-line border-y border-line">
+      <ol className="divide-y divide-ink/20 border-y border-ink">
         {activities.map((a, i) => (
-          <li key={a.title} id={a.id} className="grid scroll-mt-24 gap-4 py-8 sm:grid-cols-[auto_4rem_1fr]">
+          <li key={a.title} id={a.id} className="grid scroll-mt-24 gap-4 py-8 sm:grid-cols-[auto_5rem_1fr]">
             <Cube color={cubeCycle[i % 3]} className="hidden size-8 sm:block" />
-            <span className="font-display text-3xl font-bold leading-none">{String(i + 1).padStart(2, "0")}</span>
+            <span className="font-poster text-5xl font-light leading-none">{String(i + 1).padStart(2, "0")}</span>
             <div className="space-y-3">
               <h2 className="text-xl font-black sm:text-2xl">{a.title}</h2>
               <p className="max-w-3xl leading-relaxed text-muted">{a.text}</p>
               {a.id === "team" && (
-                <p className="max-w-3xl border-l-4 border-fun-yellow bg-white px-5 py-4 font-bold">
+                <p className="max-w-3xl border-l-4 border-fun-yellow bg-paper-2 px-5 py-4 font-bold">
                   いまはメトロイドヴァニアを開発しています。
                 </p>
               )}
