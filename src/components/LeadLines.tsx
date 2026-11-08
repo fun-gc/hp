@@ -22,9 +22,9 @@ type Line = {
 
 const LINES: Line[] = [
   // 右上の写真から、ボタンの中心を抜けて左下へ
-  { angle: -36, at: [0.5, 0.5], shiftY: 0, width: 1, opacity: 0.32 },
+  { angle: -36, at: [0.5, 0.5], shiftY: 0, width: 0.5, opacity: 0.5 },
   // 右端から、ボタンのすぐ上をかすめて左端へ
-  { angle: 3.8, at: [0.5, 0], shiftY: -6, width: 0.8, opacity: 0.28 },
+  { angle: 3.8, at: [0.5, 0], shiftY: -6, width: 0.4, opacity: 0.45 },
 ];
 
 // 線の端がぼやけて見えないよう、枠の外まで少し伸ばす(はみ出した分は枠で切れる)
@@ -92,7 +92,7 @@ export function LeadLines() {
     <svg
       ref={svgRef}
       aria-hidden="true"
-      className="anim-wipe pointer-events-none absolute inset-0 z-[5] size-full blur-[0.5px]"
+      className="anim-wipe pointer-events-none absolute inset-0 z-[5] size-full blur-[0.3px]"
       style={delay(0.4)}
     >
       {LINES.map((line, i) => (

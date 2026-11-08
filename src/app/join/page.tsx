@@ -14,7 +14,7 @@ const steps = [
 export default function JoinPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeading en="JOIN" lead={`FUNGC は${site.university}のゲーム制作サークルです。Google フォームから入部、見学を受け付けています。`} />
+      <PageHeading en="JOIN" lead="Google フォームから入部、見学を受け付けています。" />
 
       <section aria-labelledby="join-form-heading" data-reveal className="mb-12 max-w-3xl">
         <h2 id="join-form-heading" className="font-poster text-4xl font-light">Join / Visit</h2>
