@@ -87,36 +87,6 @@ body {
   cursor: grabbing;
   text-shadow: 0 18px 24px rgb(28 36 43 / 0.4);
 }
-/* ヒーローのぼやけた黒い線(LeadLines)。JOIN US のボタンのところで交わり、視線をボタンへ運ぶ */
-.lead-line {
-  display: none;
-  position: absolute;
-  height: 40px;
-  margin-top: -20px;
-  transform-origin: 0 50%;
-  background: linear-gradient(
-    to bottom,
-    transparent calc(50% - var(--w) / 2),
-    var(--color-ink) calc(50% - var(--w) / 2) calc(50% + var(--w) / 2),
-    transparent calc(50% + var(--w) / 2)
-  );
-  filter: blur(var(--blur));
-  opacity: var(--o);
-}
-.lead-line[data-on] {
-  display: block;
-}
-/* 細く、薄く、さりげなく。手前の線を少しだけ太くする */
-.lead-line-a {
-  --w: 2px;
-  --blur: 1.5px;
-  --o: 0.32;
-}
-.lead-line-b {
-  --w: 1.5px;
-  --blur: 1px;
-  --o: 0.26;
-}
 /* ふだんはゆっくり揺らしておく */
 @keyframes letter-float {
   0%,

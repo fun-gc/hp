@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { delay } from "@/lib/motion";
 
-// ヒーローに引く、ぼやけた黒い線。どちらも「JOIN US」のボタンのそばを通り、視線をボタンへ運ぶ。
+// ヒーローに引く、細くぼやけた黒い線。どちらも「JOIN US」のボタンのそばを通り、視線をボタンへ運ぶ。
+// 目立ち方は、FUNGC の後ろの斜めの細い線と同じくらいにする。出し方もその線と同じで、
+// 同じ時間に左から引いていく(globals.css の anim-wipe)。
 // 線の位置はボタンの位置から計算するので、画面の幅が変わってもボタンのところで交わる。
 // ボタンには data-lead-target、ボタンを含む文章の箱には data-lead-copy を付けておく。
 
@@ -12,17 +15,20 @@ type Line = {
   /** ボタンのどこを通るか(左上が 0,0、右下が 1,1)と、そこからの上下のずれ(px) */
   at: [number, number];
   shiftY: number;
+  /** 線の太さ(px)と濃さ */
+  width: number;
+  opacity: number;
 };
 
 const LINES: Line[] = [
   // 右上の写真から、ボタンの中心を抜けて左下へ
-  { angle: -36, at: [0.5, 0.5], shiftY: 0 },
+  { angle: -36, at: [0.5, 0.5], shiftY: 0, width: 1, opacity: 0.32 },
   // 右端から、ボタンのすぐ上をかすめて左端へ
-  { angle: 3.8, at: [0.5, 0], shiftY: -6 },
+  { angle: 3.8, at: [0.5, 0], shiftY: -6, width: 0.8, opacity: 0.28 },
 ];
 
 // 線の端がぼやけて見えないよう、枠の外まで少し伸ばす(はみ出した分は枠で切れる)
-const OVERRUN = 40;
+const OVERRUN = 8;
 
 /** 変形(アニメーション中の移動など)を無視した、root から見た要素の位置 */
 function layoutBox(el: HTMLElement, root: HTMLElement) {
@@ -38,19 +44,19 @@ function layoutBox(el: HTMLElement, root: HTMLElement) {
 }
 
 export function LeadLines() {
-  const layerRef = useRef<HTMLDivElement>(null);
-  const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const lineRefs = useRef<(SVGLineElement | null)[]>([]);
 
   useEffect(() => {
-    const layer = layerRef.current;
-    const section = layer?.parentElement;
+    const svg = svgRef.current;
+    const section = svg?.parentElement;
     const target = section?.querySelector<HTMLElement>("[data-lead-target]");
     const copy = section?.querySelector<HTMLElement>("[data-lead-copy]");
-    if (!layer || !section || !target) return;
+    if (!svg || !section || !target) return;
 
     const place = () => {
-      const width = layer.clientWidth;
-      const height = layer.clientHeight;
+      const width = section.clientWidth;
+      const height = section.clientHeight;
       const box = layoutBox(target, section);
       if (!width || !height || !box.w) return;
       LINES.forEach((line, i) => {
@@ -66,34 +72,40 @@ export function LeadLines() {
         const ty = dy === 0 ? [-Infinity, Infinity] : [(0 - py) / dy, (height - py) / dy].sort((a, b) => a - b);
         const enter = Math.max(tx[0], ty[0]) - OVERRUN;
         const exit = Math.min(tx[1], ty[1]) + OVERRUN;
-        // 右側の端を起点に、左へ向けて伸ばす
-        el.style.left = `${px + dx * exit}px`;
-        el.style.top = `${py + dy * exit}px`;
-        el.style.width = `${exit - enter}px`;
-        el.style.transform = `rotate(${line.angle + 180}deg)`;
-        el.setAttribute("data-on", "");
+        el.setAttribute("x1", String(px + dx * enter));
+        el.setAttribute("y1", String(py + dy * enter));
+        el.setAttribute("x2", String(px + dx * exit));
+        el.setAttribute("y2", String(py + dy * exit));
       });
     };
 
+    // ボタン自体の大きさの変化(カーソルを乗せたときに矢印が伸びるなど)では引き直さない。
+    // 引き直すのは、ヒーローや文章の箱の大きさが変わったときと、文字の読み込みが終わったときだけ
     const ro = new ResizeObserver(place);
-    ro.observe(layer);
-    ro.observe(target);
+    ro.observe(section);
     if (copy) ro.observe(copy);
     document.fonts?.ready.then(place);
     return () => ro.disconnect();
   }, []);
 
   return (
-    <div ref={layerRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-[5] overflow-hidden">
-      {LINES.map((_, i) => (
-        <span
+    <svg
+      ref={svgRef}
+      aria-hidden="true"
+      className="anim-wipe pointer-events-none absolute inset-0 z-[5] size-full blur-[0.5px]"
+      style={delay(0.4)}
+    >
+      {LINES.map((line, i) => (
+        <line
           key={i}
           ref={(el) => {
             lineRefs.current[i] = el;
           }}
-          className={`lead-line ${i === 0 ? "lead-line-a" : "lead-line-b"}`}
+          stroke="var(--color-ink)"
+          strokeWidth={line.width}
+          strokeOpacity={line.opacity}
         />
       ))}
-    </div>
+    </svg>
   );
 }
