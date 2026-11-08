@@ -67,12 +67,42 @@ export function Tri({ className = "size-6", filled = true }: { className?: strin
   );
 }
 
-/** 細い線の矢印。length は CSS の長さ */
-export function ArrowLine({ className = "", length = "6rem" }: { className?: string; length?: string }) {
+/** 細い線の矢印。length は CSS の長さ。grow を付けると、親(group)にカーソルを乗せたときに伸びる */
+export function ArrowLine({ className = "", length = "6rem", grow = false }: { className?: string; length?: string; grow?: boolean }) {
   return (
-    <span aria-hidden="true" className={`relative inline-block h-px bg-current align-middle ${className}`} style={{ width: length }}>
+    <span
+      aria-hidden="true"
+      className={`relative inline-block h-px w-(--len) bg-current align-middle ${
+        grow ? "transition-[width] duration-300 ease-out group-hover:w-[calc(var(--len)*1.7)] motion-reduce:transition-none" : ""
+      } ${className}`}
+      style={{ "--len": length } as React.CSSProperties}
+    >
       <span className="absolute -right-px -top-[3px] size-[7px] rotate-45 border-r border-t border-current" />
     </span>
+  );
+}
+
+/** 数字を、スロットのように 0 から回して止める(globals.css の roll-*)。読み上げには数字そのものを渡す */
+export function RollNumber({ value, delay = 0 }: { value: string; delay?: number }) {
+  return (
+    <>
+      <span className="sr-only">{value}</span>
+      <span aria-hidden="true" className="inline-flex">
+        {value.split("").map((ch, i) =>
+          /\d/.test(ch) ? (
+            <span key={i} className="roll-digit">
+              <span className="roll-strip" style={{ "--n": Number(ch), "--d": `${delay + i * 0.12}s` } as React.CSSProperties}>
+                {"0123456789".split("").map((n) => (
+                  <span key={n}>{n}</span>
+                ))}
+              </span>
+            </span>
+          ) : (
+            <span key={i}>{ch}</span>
+          ),
+        )}
+      </span>
+    </>
   );
 }
 

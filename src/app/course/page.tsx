@@ -24,11 +24,13 @@ export default function CoursePage() {
       />
 
       <section id="schedule" className="scroll-mt-24 space-y-6">
-        <div className="space-y-3">
+        <div data-reveal className="space-y-3">
           <h2 className="font-poster text-5xl font-light">Schedule</h2>
           <p className="text-muted">日付を押すと、その日の予定だけを表示します。</p>
         </div>
-        <ScheduleCalendar events={events} buildDate={buildDate} />
+        <div data-reveal>
+          <ScheduleCalendar events={events} buildDate={buildDate} />
+        </div>
         {/* 講座資料のリポジトリを公開したら(site.courseRepoPublic)、ここにリンクを出す */}
         {site.courseRepoPublic && (
           <a

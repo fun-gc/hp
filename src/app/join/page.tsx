@@ -15,7 +15,7 @@ export default function JoinPage() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <PageHeading en="JOIN" lead={`FUNGC は${site.university}のゲーム制作サークルです。見学はいつでも受け付けています。`} />
 
-      <section aria-labelledby="join-form-heading" className="mb-12 max-w-3xl">
+      <section aria-labelledby="join-form-heading" data-reveal className="mb-12 max-w-3xl">
         <h2 id="join-form-heading" className="font-poster text-4xl font-light">Join / Visit</h2>
         {site.joinFormUrl ? (
           <a href={site.joinFormUrl} target="_blank" rel="noreferrer" className="mt-5 inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-ink hover:text-white">
@@ -28,10 +28,12 @@ export default function JoinPage() {
 
       <section className="max-w-3xl">
         <div className="space-y-5">
-          <h2 className="font-poster text-4xl font-light">How to join</h2>
+          <h2 data-reveal className="font-poster text-4xl font-light">
+            How to join
+          </h2>
           <ol className="space-y-4">
             {steps.map((s, i) => (
-              <li key={s.title} className="flex gap-4">
+              <li key={s.title} data-reveal className="flex gap-4">
                 <span className="grid size-10 shrink-0 place-items-center bg-ink font-mono font-bold text-white">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <p className="font-bold">{s.title}</p>
@@ -43,7 +45,7 @@ export default function JoinPage() {
         </div>
       </section>
 
-      <section id="contact" className="mt-20 scroll-mt-24 bg-ink px-6 py-10 text-white sm:px-10">
+      <section id="contact" data-reveal className="mt-20 scroll-mt-24 bg-ink px-6 py-10 text-white sm:px-10">
         <div className="space-y-4">
           <h2 className="font-poster text-4xl font-light sm:text-5xl">Contact</h2>
           <p className="text-white/75">入部や見学の相談、展示・取材のご依頼などはこちらからどうぞ。</p>

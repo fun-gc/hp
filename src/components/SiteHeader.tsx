@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { delay } from "@/lib/motion";
 import { navItems } from "@/lib/site";
 import { LogoMark } from "./Logo";
 
@@ -66,23 +67,26 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
       {children}
 
       {open && (
-        <nav id="mobile-menu" className="border-t border-ink bg-paper md:hidden" aria-label="メインメニュー">
+        <nav id="mobile-menu" className="anim-menu border-t border-ink bg-paper md:hidden" aria-label="メインメニュー">
           <ul className="mx-auto max-w-6xl px-4 py-2">
-            {navItems.map((item) => (
-              <li key={item.href}>
+            {navItems.map((item, i) => (
+              <li key={item.href} className="anim-menu" style={delay(0.04 * (i + 1))}>
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className="flex items-baseline justify-between border-b border-ink/20 py-3 last:border-0"
                 >
                   <span className="font-poster text-3xl font-light capitalize">{item.en.toLowerCase()}</span>
-                  <span className="font-mono text-xs tracking-[0.18em] text-muted">{String(navItems.indexOf(item) + 1).padStart(2, "0")}</span>
+                  <span className="font-mono text-xs tracking-[0.18em] text-muted">{String(i + 1).padStart(2, "0")}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
       )}
+
+      {/* ページをどこまで読んだかを、下端の黄色い線で出す(スクロールに連動する CSS。対応ブラウザのみ) */}
+      <span aria-hidden="true" className="scroll-progress pointer-events-none absolute inset-x-0 -bottom-px h-0.5 bg-fun-yellow" />
     </header>
   );
 }

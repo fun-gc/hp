@@ -9,7 +9,7 @@ export function SiteFooter() {
       {/* 大きく切れた英字。ポスターの下端のように画面からはみ出させる */}
       <p
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-[0.18em] -right-[0.04em] select-none font-poster text-[clamp(6rem,24vw,20rem)] font-light leading-none tracking-tight text-white/[0.06]"
+        className="footer-word pointer-events-none absolute -bottom-[0.18em] -right-[0.04em] select-none font-poster text-[clamp(6rem,24vw,20rem)] font-light leading-none tracking-tight text-white/[0.06]"
       >
         FUNGC
       </p>
@@ -60,7 +60,9 @@ export function SiteFooter() {
       <div className="relative border-t border-white/15">
         <p className="mx-auto flex max-w-6xl justify-between px-4 py-4 font-mono text-[11px] tracking-[0.15em] text-white/50 sm:px-6">
           <span>© {new Date().getFullYear()} FUNGC</span>
-          <span aria-hidden="true" className="italic">end of page_</span>
+          <span aria-hidden="true" className="italic">
+            end of page<span className="blink">_</span>
+          </span>
         </p>
       </div>
     </footer>

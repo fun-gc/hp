@@ -19,7 +19,7 @@ export default function WorksPage() {
       <div className="space-y-16">
         {[...groups.entries()].map(([event, items]) => (
           <section key={event} className="space-y-6">
-            <h2 className="flex items-center gap-3 text-2xl font-black">
+            <h2 data-reveal className="flex items-center gap-3 text-2xl font-black">
               <span className="h-6 w-1.5 bg-fun-yellow" aria-hidden="true" />
               {event}
             </h2>

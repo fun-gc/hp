@@ -8,13 +8,20 @@ import { workPoster } from "@/lib/work";
 /* eslint-disable @next/next/no-img-element -- GIF や外部サムネイルをそのまま表示する */
 export function Poster({ src, contain = false }: { src: string; contain?: boolean }) {
   if (!contain) {
-    return <img src={src} alt="" loading="lazy" className="size-full object-cover opacity-90 transition group-hover:opacity-100" />;
+    return (
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        className="size-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.04] group-hover:opacity-100"
+      />
+    );
   }
   // タイトル画面などが切れないよう全体を表示し、余白には同じ画像をぼかして敷く
   return (
     <>
       <img src={src} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 size-full scale-110 object-cover opacity-60 blur-xl" />
-      <img src={src} alt="" loading="lazy" className="relative size-full object-contain" />
+      <img src={src} alt="" loading="lazy" className="relative size-full object-contain transition duration-500 group-hover:scale-[1.03]" />
     </>
   );
 }
@@ -27,7 +34,7 @@ export function WorkCard({ work }: { work: Work }) {
   const play = playLinkEn(work);
 
   return (
-    <article className="corner-ticks flex flex-col border border-ink/20 bg-paper-2 p-1.5 text-ink">
+    <article data-reveal className="corner-ticks flex flex-col border border-ink/20 bg-paper-2 p-1.5 text-ink">
       <div className="relative aspect-video overflow-hidden bg-ink">
         {work.youtubeId && playing ? (
           <iframe

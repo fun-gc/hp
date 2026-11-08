@@ -19,7 +19,7 @@ export function MemberCard({
   medals: Medal[];
 }) {
   return (
-    <article className="corner-ticks flex flex-col gap-4 border border-ink/20 bg-paper-2 p-5">
+    <article data-reveal className="corner-ticks flex flex-col gap-4 border border-ink/20 bg-paper-2 p-5">
       <div className="flex items-center gap-4">
         {member.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- Discord のアバター画像をそのまま表示する

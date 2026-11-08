@@ -12,7 +12,7 @@ export default function NewsPage() {
       <PageHeading en="NEWS" />
       <ul className="divide-y divide-ink/20 border-y border-ink">
         {news.map((n) => (
-          <li key={n.slug}>
+          <li key={n.slug} data-reveal>
             <Link href={`/news/${n.slug}/`} className="group flex flex-col gap-2 py-6 sm:flex-row sm:gap-6">
               <span className="w-28 shrink-0 font-mono text-sm text-muted">
                 {n.date.toISOString().slice(0, 10).replaceAll("-", ".")}

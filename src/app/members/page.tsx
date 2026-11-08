@@ -40,7 +40,7 @@ export default function MembersPage() {
       <PageHeading en="MEMBERS" />
 
       {members.length === 0 ? (
-        <p className="border border-dashed border-line px-4 py-16 text-center text-muted">
+        <p data-reveal className="border border-dashed border-line px-4 py-16 text-center text-muted">
           メンバー紹介は準備中です。
         </p>
       ) : (
@@ -48,7 +48,9 @@ export default function MembersPage() {
           {active.length > 0 && renderGrid(active)}
           {alumni.length > 0 && (
             <section className="space-y-6">
-              <h2 className="font-poster text-4xl font-light">Alumni</h2>
+              <h2 data-reveal className="font-poster text-4xl font-light">
+                Alumni
+              </h2>
               {renderGrid(alumni)}
             </section>
           )}

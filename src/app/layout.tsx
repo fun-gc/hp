@@ -6,9 +6,11 @@ import "@fontsource/line-seed-jp/700.css";
 import "@fontsource/line-seed-jp/800.css";
 import { NowBanner } from "@/components/NowBanner";
 import { PosterRails } from "@/components/Poster";
+import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getSchedule } from "@/lib/content";
+import { motionBootScript } from "@/lib/motion";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -56,10 +58,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const upcoming = getSchedule().filter((e) => e.date >= buildDate);
 
   return (
+    // head のスクリプトが html に data-motion を足すので、その差は hydration で警告しない
     <html
       lang="ja"
       className={`${chakraPetch.variable} ${jetbrainsMono.variable} ${raleway.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* スクロールで出てくる要素を、最初の描画の前に隠しておく(src/lib/motion.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: motionBootScript }} />
+      </head>
       <body className="flex min-h-full flex-col font-sans">
         <SiteHeader>
           <NowBanner events={upcoming} />
@@ -67,6 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="flex-1">{children}</main>
         <SiteFooter />
         <PosterRails />
+        <RevealOnScroll />
       </body>
     </html>
   );

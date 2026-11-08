@@ -35,7 +35,7 @@ export default function AboutPage() {
 
       <ol className="divide-y divide-ink/20 border-y border-ink">
         {activities.map((a, i) => (
-          <li key={a.title} id={a.id} className="grid scroll-mt-24 gap-4 py-8 sm:grid-cols-[auto_5rem_1fr]">
+          <li key={a.title} id={a.id} data-reveal className="grid scroll-mt-24 gap-4 py-8 sm:grid-cols-[auto_5rem_1fr]">
             <Cube color={cubeCycle[i % 3]} className="hidden size-8 sm:block" />
             <span className="font-poster text-5xl font-light leading-none">{String(i + 1).padStart(2, "0")}</span>
             <div className="space-y-3">
@@ -58,13 +58,13 @@ export default function AboutPage() {
       </ol>
 
       <section className="mt-16 grid gap-8 md:grid-cols-2">
-        <div className="space-y-4">
+        <div data-reveal className="space-y-4">
           <h2 className="font-poster text-4xl font-light">FUGU → FUNGC</h2>
           <p className="leading-relaxed text-muted">
             以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUNGC として活動を続けています。
           </p>
         </div>
-        <div className="space-y-4">
+        <div data-reveal className="space-y-4">
           <h2 className="font-poster text-4xl font-light">Where we work</h2>
           <dl className="divide-y divide-ink/20 border-y border-ink/40">
             <div className="flex flex-wrap gap-x-4 py-3">
