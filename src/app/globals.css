@@ -74,6 +74,16 @@ body {
   line-height: 0.8;
   color: var(--color-fun-yellow);
 }
+/* 文字の元の場所(HeroLetters)。背景と同じ色で、線(LeadLines)より上、文字より下に置く */
+.letter-slot {
+  z-index: 6;
+  color: var(--color-paper);
+  transition: color 0.2s ease-out;
+}
+/* 崩れた文字をつかんで元の場所に近づけたら、戻り先を白く光らせる */
+.letter-slot.is-near {
+  color: #fff;
+}
 /* つかんで投げられる FUNGC(HeroLetters)。つかんでいる間は影を伸ばし、持ち上げたように見せる */
 .hero-letter {
   /* JOIN US へ引いた線(LeadLines、z-index 5)より、いつも上に出す */
@@ -84,6 +94,14 @@ body {
 }
 .hero-letter.is-loose {
   z-index: 20;
+}
+/* 崩れた文字は、元の場所にはめた文字(カーソルから逃げて動いていても)より上に出し、いつでもつかめるようにする */
+.hero-letter.is-down {
+  z-index: 21;
+}
+/* 崩れて寝ている文字は、ふだんの揺れを止める */
+.hero-letter.is-down .letter-float {
+  animation-play-state: paused;
 }
 .hero-letter.is-held {
   cursor: grabbing;

@@ -13,7 +13,8 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink bg-paper/90 backdrop-blur">
+    // 背景は少し透かして、後ろをぼかす。開いたメニューも同じ背景の中に出すので、透け具合がそろう
+    <header className="sticky top-0 z-40 border-b border-ink bg-paper/70 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           <LogoMark className="size-8" />
@@ -67,7 +68,7 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
       {children}
 
       {open && (
-        <nav id="mobile-menu" className="anim-menu border-t border-ink bg-paper md:hidden" aria-label="メインメニュー">
+        <nav id="mobile-menu" className="anim-menu border-t border-ink md:hidden" aria-label="メインメニュー">
           <ul className="mx-auto max-w-6xl px-4 py-2">
             {navItems.map((item, i) => (
               <li key={item.href} className="anim-menu" style={delay(0.04 * (i + 1))}>
