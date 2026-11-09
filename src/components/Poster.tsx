@@ -184,7 +184,7 @@ export function PosterRails() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 left-0 right-0 z-30 hidden 2xl:block">
       <p className="absolute left-4 top-1/2 origin-left -translate-y-1/2 font-mono text-[10px] tracking-[0.3em] text-muted [writing-mode:vertical-rl]">
-        FUNGC // FUTURE UNIVERSITY HAKODATE // GAME CIRCLE // {coordinates}
+        FUNGC // FUTURE UNIVERSITY HAKODATE // GAME CREATORS // {coordinates}
       </p>
       <p className="absolute right-4 top-1/2 -translate-y-1/2 rotate-180 font-mono text-[10px] tracking-[0.3em] text-muted [writing-mode:vertical-rl]">
         FUGU → FUNGC // UNITY // MIRAIVE // MIRAI-SAI // DISCORD

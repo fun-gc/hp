@@ -90,19 +90,18 @@ export default function Home() {
               <ArrowLine length="2rem" className="anim-wipe shrink-0" />
               <Annot className="text-muted">UNITY / COURSE / EXHIBITION / TEAM</Annot>
             </div>
-            {/* 行ごとに、下の切れ目からせり上げる */}
+            {/* 行ごとに、下の切れ目からせり上げる。FUNGC の GC(Game Creators)と、下の大学名で FUN を表す */}
             <h1 className="w-fit font-poster text-[3rem] font-normal leading-[0.95] tracking-tight sm:text-7xl md:pointer-events-auto">
               <span className="-my-[0.15em] block overflow-y-clip py-[0.15em]">
                 <span className="anim-word block" style={delay(0.2)}>
                   <span className="marker marker-draw" style={delay(1)}>
                     Game
                   </span>{" "}
-                  creation
                 </span>
               </span>
               <span className="-my-[0.15em] block overflow-y-clip py-[0.15em]">
                 <span className="anim-word block" style={delay(0.32)}>
-                  circle.
+                  Creators.
                 </span>
               </span>
               <span className="anim-fade mt-4 block font-mono text-xs font-medium tracking-[0.25em] text-muted sm:text-sm" style={delay(0.6)}>
@@ -174,7 +173,7 @@ export default function Home() {
 
           <div className="anim-fade pointer-events-none absolute bottom-6 right-6 flex flex-col items-end gap-3 text-ink" style={delay(1.2)}>
             <Slashes count={7} className="text-ink" />
-            <Annot className="tag-yellow px-1.5 py-0.5">GAME CIRCLE // HAKODATE</Annot>
+            <Annot className="tag-yellow px-1.5 py-0.5">GAME CREATORS // HAKODATE</Annot>
           </div>
           <span
             aria-hidden="true"

@@ -22,7 +22,7 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
           <span className="hidden font-mono text-[10px] leading-tight text-muted lg:block" aria-hidden="true">
             No[00]
             <br />
-            GAME CIRCLE
+            GAME CREATORS
           </span>
         </Link>
 

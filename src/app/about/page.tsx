@@ -61,7 +61,7 @@ export default function AboutPage() {
         <div data-reveal className="space-y-4">
           <h2 className="font-poster text-4xl font-light">FUGU → FUNGC</h2>
           <p className="leading-relaxed text-muted">
-            以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUNGC として活動を続けています。
+            以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUNGC({site.fullName})として活動を続けています。
           </p>
         </div>
         <div data-reveal className="space-y-4">

@@ -1,6 +1,6 @@
 # FUNGC 公式サイト
 
-公立はこだて未来大学のゲーム制作サークル **FUNGC** の公式サイト(https://fungc.org)のリポジトリです。
+公立はこだて未来大学のゲーム制作サークル **FUNGC**(FUN Game Creators)の公式サイト(https://fungc.org)のリポジトリです。
 
 - 文章や予定を更新したい → [CONTRIBUTING.md](./CONTRIBUTING.md)(Git を使わず GitHub の画面だけで編集できます)
 - 公開の仕組み → [docs/deploy-cloudflare.md](./docs/deploy-cloudflare.md)
