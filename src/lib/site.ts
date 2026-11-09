@@ -1,7 +1,9 @@
 // サイト全体の設定。リンクや連絡先を変えるときはここだけ直せばよい。
 export const site = {
   name: "FUNGC",
-  fullName: "FUNGC(公立はこだて未来大学 ゲーム制作サークル)",
+  // 正式名称。FUN は公立はこだて未来大学(Future University Hakodate)の略称で、GC は Game Creators。
+  // 英語で GC を言い換えるときは Game Circle や Game Club ではなく、Game Creators にそろえる。
+  fullName: "FUN Game Creators",
   description:
     "公立はこだて未来大学のゲーム制作サークル FUNGC の公式サイト。Unity を使ったゲーム開発講座、新入生歓迎イベント Miraive や未来祭でのゲーム展示、チームでの長期ゲーム開発をしています。",
   url: "https://fungc.org",

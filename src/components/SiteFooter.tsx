@@ -19,7 +19,7 @@ export function SiteFooter() {
             <LogoMark className="size-8" />
             <span className="font-display text-lg font-bold tracking-wider">FUNGC</span>
           </div>
-          <p className="font-mono text-xs tracking-wider text-white/70">GAME CREATION CIRCLE — {site.universityEn.toUpperCase()}</p>
+          <p className="font-mono text-xs tracking-wider text-white/70">{site.fullName.toUpperCase()} — {site.universityEn.toUpperCase()}</p>
           <p className="font-mono text-xs tracking-wider text-white/70">
             CONTACT:{" "}
             <a href={`mailto:${site.email}`} className="underline underline-offset-4 hover:bg-fun-yellow hover:text-ink">
