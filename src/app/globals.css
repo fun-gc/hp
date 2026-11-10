@@ -35,9 +35,12 @@
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
+/* ページの中の移動(#schedule など)だけ、なめらかに送る。ページを移るときは Next.js が一番上へ一気に戻す
+   (layout.tsx の data-scroll-behavior)。固定ヘッダーのぶんの余白は、行き先の要素の scroll-mt-* で取る。
+   html に scroll-padding-top を付けると、ヘッダーの下に潜らせた見出し(-mt-16)を Next.js が「画面の外」とみなし、
+   ページを移ったあとに本文の頭まで送ってしまうので、付けない */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
 }
 @media (prefers-reduced-motion: reduce) {
   html {

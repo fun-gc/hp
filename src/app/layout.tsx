@@ -52,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
   return (
     // suppressHydrationWarning: 下のスクリプトが、React が動き出す前に html へ js クラスを足すため
-    <html lang="ja" className={`${raleway.variable} ${plexMono.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="ja" data-scroll-behavior="smooth" className={`${raleway.variable} ${plexMono.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         {/* スクロールで出てくる要素(data-reveal)は、JS が動くときだけ最初に隠す。描く前に印を付け、
             3 秒たっても ScrollReveal が動いていなければ(スクリプトの読み込み失敗など)隠すのをやめる */}

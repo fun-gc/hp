@@ -6,8 +6,8 @@ import { StageMotion } from "./Motion";
 import { Annot, ArcText, ArrowLine, Chevrons, CircleRow, coordinates, CrossTriangles, DotGrid, Eye, FarShore, StackPhoto, Tri } from "./Poster";
 
 // トップページのヒーロー。1 枚のポスターとして組む:
-//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 文字 → 手前の箱だけの写真 → 注記と線、の順に重ねる。
-//   文字を 2 枚の写真のあいだに挟むので、黄色い大文字や細い英字の一部が、せり出した箱の後ろに回り込んで見える。
+//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 細い英字(Playable)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。
+//   細い英字だけを 2 枚の写真のあいだに挟み、せり出した箱の少し後ろにあるように見せる。黄色い大文字は、どの箱よりも手前に置く。
 // 中の位置は、舞台(.stage)の幅を 100 とした単位。広い画面は横長(100 × 56.25)、狭い画面は縦長に組み直す。
 //
 // 動き(globals.css の「動き」):
@@ -43,14 +43,14 @@ const BUILDING: Vars = { "--depth": 0.4 };
 const LETTERS: Vars = { "--depth": 0.95, "--drift": -1.4 };
 const WORD: Vars = { "--depth": 1.3, "--drift": -2.6 };
 
-// 黄色い大文字。建物の上から空へ、右下がりに並べる。文字は建物の手前に浮いていて、いちばん手前へせり出した箱(H07)だけが
-// その上を横切る。N と G の上の端が箱の下に少しもぐる程度にとどめ、どの文字も形がそのまま読めるようにする。
+// 黄色い大文字。建物の上から空へ、右下がりの一直線に並べる(左上の角が 1 本の直線に乗る。広い画面は F と C、狭い画面も F と C を結ぶ線)。
+// 文字は 5 つとも建物の手前に置き、箱が文字を隠すところは作らない(手前の箱の写真より上に描く)。
 // F は、幅 1024px の画面でもヘッダー(高さ 4rem = 6.25cqw)の下に隠れない高さから始める
 const letters: { ch: string; pos: [number, number, number, number] }[] = [
-  { ch: "F", pos: [20.8, 6.9, 4.3, 22.2] },
-  { ch: "U", pos: [29.6, 12, 21.3, 34.3] },
-  { ch: "N", pos: [38.4, 20.2, 38.7, 51.8] },
-  { ch: "G", pos: [48.4, 23.9, 58.5, 59.1] },
+  { ch: "F", pos: [20.4, 6.9, 3.6, 22.2] },
+  { ch: "U", pos: [29.2, 12.57, 20.6, 34.17] },
+  { ch: "N", pos: [38.5, 18.56, 39, 47.14] },
+  { ch: "G", pos: [48, 24.68, 57.6, 60.24] },
   { ch: "C", pos: [57.5, 30.8, 76, 73.2] },
 ];
 
@@ -111,7 +111,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       {/* ---- 建物 ---- */}
       <StackPhoto name="stack-day" narrow="stack-day-m" sizes="110vw" eager className="hero-photo fade-m depth a-build" style={BUILDING} />
 
-      {/* ---- 2 枚の写真のあいだに挟む文字 ---- */}
+      {/* ---- 2 枚の写真のあいだに挟む文字。左下の箱(H03)の角が、P の肩に少しだけ掛かる ---- */}
       <p
         aria-hidden="true"
         className="poster-word pin depth a-wipe whitespace-nowrap text-[17cqw] text-ink [animation-duration:1.3s] lg:text-[8.2cqw]"
@@ -119,6 +119,11 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       >
         Playable
       </p>
+
+      {/* ---- 手前の箱 ---- */}
+      <StackPhoto name="stack-front" narrow="stack-front-m" sizes="110vw" eager className="hero-photo fade-m depth a-build pointer-events-none" style={BUILDING} />
+
+      {/* ---- 黄色い大文字。建物のどの箱よりも手前 ---- */}
       <div aria-hidden="true">
         {letters.map((l, i) => (
           <span key={l.ch} data-ch={l.ch} className="title-letter pin depth a-drop text-[26cqw] lg:text-[13.2cqw]" style={at(...l.pos, { ...LETTERS, ...d(280 + i * 95) })}>
@@ -126,9 +131,6 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
           </span>
         ))}
       </div>
-
-      {/* ---- 手前の箱 ---- */}
-      <StackPhoto name="stack-front" narrow="stack-front-m" sizes="110vw" eager className="hero-photo fade-m depth a-build pointer-events-none" style={BUILDING} />
 
       {/* 面に貼った黄色いフィルム(乗算)。手前の箱の写真より上に置く */}
       <svg
