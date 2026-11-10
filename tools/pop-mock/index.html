@@ -56,6 +56,11 @@ nav svg { width: 13px; height: 13px; overflow: visible; }
 .wall { position: absolute; left: 0; top: 76px; width: 1440px; height: 764px; }
 .wall > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .tile { position: absolute; }
+/* 3D 版の切り替え */
+.render, .over3d { display: none; }
+.is-3d .render { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+.is-3d .flat { display: none; }
+.is-3d .over3d { display: inline; }
 
 /* 文章のタイル */
 .copy { left: 0; top: 382px; width: 720px; height: 382px; padding: 34px 40px 0 44px; }
@@ -153,6 +158,7 @@ h1 .mk { background: linear-gradient(transparent 62%, var(--yellow) 62%, var(--y
 </header>
 
 <main class="wall">
+  <img class="render" src="render/wall-3d.webp" alt="">
   <svg viewBox="0 0 1440 764" aria-hidden="true">
     <defs>
       <!-- 印刷の網点ふうの影 -->
@@ -166,16 +172,21 @@ h1 .mk { background: linear-gradient(transparent 62%, var(--yellow) 62%, var(--y
       <path id="gC" d="M100,0 H300 A100,100 0 0 1 200,100 H100 V200 H200 A100,100 0 0 1 300,300 H100 A100,100 0 0 1 0,200 V100 A100,100 0 0 1 100,0 Z"/>
     </defs>
 
-    <!-- 地の色 -->
-    <rect x="0" y="0" width="360" height="382" fill="var(--red)"/>
-    <rect x="360" y="0" width="360" height="382" fill="var(--yellow)"/>
-    <rect x="720" y="0" width="360" height="382" fill="var(--pink)"/>
+    <!-- 地の色。3D 版(?look=3d)では、文字のタイルをレンダーした画像に差し替える -->
+    <g class="flat">
+      <rect x="0" y="0" width="360" height="382" fill="var(--red)"/>
+      <rect x="360" y="0" width="360" height="382" fill="var(--yellow)"/>
+      <rect x="720" y="0" width="360" height="382" fill="var(--pink)"/>
+      <rect x="720" y="382" width="360" height="382" fill="var(--green)"/>
+      <rect x="1080" y="382" width="360" height="382" fill="var(--blue)"/>
+    </g>
     <rect x="1080" y="0" width="360" height="382" fill="var(--ink)"/>
     <rect x="0" y="382" width="720" height="382" fill="var(--paper)"/>
-    <rect x="720" y="382" width="360" height="382" fill="var(--green)"/>
-    <rect x="1080" y="382" width="360" height="382" fill="var(--blue)"/>
 
-    <g id="halftones"></g>
+    <g id="halftones-keep"></g>
+    <g class="flat" id="halftones"></g>
+
+    <g class="flat">
 
     <!-- F:まんなかの腕は、四角いキャラクターが持ち上げているボール -->
     <g transform="translate(30,41)">
@@ -272,6 +283,8 @@ h1 .mk { background: linear-gradient(transparent 62%, var(--yellow) 62%, var(--y
       <text x="0" y="-9" class="lbl" fill="var(--paper)">C = Creators</text>
     </g>
 
+    </g>
+
     <!-- 区切りの線 -->
     <g stroke="var(--ink)" stroke-width="3">
       <line x1="360" y1="0" x2="360" y2="382"/>
@@ -279,6 +292,8 @@ h1 .mk { background: linear-gradient(transparent 62%, var(--yellow) 62%, var(--y
       <line x1="1080" y1="0" x2="1080" y2="764"/>
       <line x1="0" y1="382" x2="1440" y2="382"/>
     </g>
+    <!-- 3D 版で、レンダーした画像の上に重ねるもの -->
+    <g class="over3d" id="over3d"></g>
     <style>
       .say-s { font-family: "DotGothic16", monospace; font-size: 15px; letter-spacing: 0.02em; }
       .lbl { font-family: "LINE Seed JP", sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.1em; }
@@ -361,6 +376,9 @@ h1 .mk { background: linear-gradient(transparent 62%, var(--yellow) 62%, var(--y
 </svg>
 
 <script>
+// ?look=3d を付けると 3D 版になる
+if (new URLSearchParams(location.search).get("look") === "3d") document.body.classList.add("is-3d");
+
 const NS = "http://www.w3.org/2000/svg";
 const el = (name, attrs, parent) => {
   const n = document.createElementNS(NS, name);
@@ -370,8 +388,8 @@ const el = (name, attrs, parent) => {
 };
 
 // 角から広がる網点。タイルの外にはみ出さないように切り抜く
-function halftone({ x, y, w = 360, h = 382, corner, reach = 250, rmax = 3.6, color = "var(--ink)", opacity = 0.2 }) {
-  const root = document.getElementById("halftones");
+function halftone({ x, y, w = 360, h = 382, corner, reach = 250, rmax = 3.6, color = "var(--ink)", opacity = 0.2, keep = false }) {
+  const root = document.getElementById(keep ? "halftones-keep" : "halftones");
   const id = `clip-${x}-${y}`;
   const cp = el("clipPath", { id }, root);
   el("rect", { x, y, width: w, height: h }, cp);
@@ -393,7 +411,57 @@ halftone({ x: 360, y: 0, corner: "lb", color: "#ff9d00", opacity: 0.8 });
 halftone({ x: 720, y: 0, corner: "rb", color: "#ff3f9c", opacity: 0.6 });
 halftone({ x: 720, y: 382, corner: "lb", color: "#0b6b2b", opacity: 0.55 });
 halftone({ x: 1080, y: 382, corner: "rt", color: "#0a2bb0", opacity: 0.6 });
-halftone({ x: 0, y: 382, w: 720, corner: "rt", color: "var(--pink)", opacity: 0.9, reach: 230, rmax: 4 });
+halftone({ x: 0, y: 382, w: 720, corner: "rt", color: "var(--pink)", opacity: 0.9, reach: 230, rmax: 4, keep: true });
+
+// 3D 版で画像の上に重ねる、ラベル、音符、スピード線、ふきだし、カーソル。
+// 位置は scene3d.py が出す anchors(シーンの点が画像のどこに写るか)に合わせている
+(() => {
+  const root = document.getElementById("over3d");
+  const ink = "var(--ink)";
+  const line = { fill: "none", stroke: ink, "stroke-width": 3.2, "stroke-linecap": "round", "stroke-linejoin": "round" };
+  const pill = (x, y, text) => {
+    const g = el("g", { transform: `translate(${x},${y})` }, root);
+    const r = el("rect", { height: 24, rx: 12, fill: ink }, g);
+    const t = el("text", { x: 12, y: 16.5, class: "lbl", fill: "var(--paper)" }, g);
+    t.textContent = text;
+    document.fonts.ready.then(() => r.setAttribute("width", (t.getComputedTextLength() + 24).toFixed(1)));
+  };
+  const bubble = (x, y, w, text, tail) => {
+    const g = el("g", { transform: `translate(${x},${y})` }, root);
+    el("path", { d: `M8,0 H${w - 8} a8,8 0 0 1 8,8 V22 a8,8 0 0 1 -8,8 ${tail} H8 a8,8 0 0 1 -8,-8 V8 a8,8 0 0 1 8,-8 Z`, fill: "#fff", stroke: ink, "stroke-width": 2.6, "stroke-linejoin": "round" }, g);
+    const t = el("text", { x: w / 2, y: 21, class: "say-s", "text-anchor": "middle", fill: ink }, g);
+    t.textContent = text;
+  };
+  const note = (x, y, rot, scale) => {
+    const g = el("g", { transform: `translate(${x},${y}) rotate(${rot}) scale(${scale})`, ...line, "stroke-width": 3.2 / scale }, root);
+    el("ellipse", { cx: 0, cy: 0, rx: 7.5, ry: 5.6, transform: "rotate(-22)", fill: ink, stroke: "none" }, g);
+    el("path", { d: "M6.5,-2 V-32 c7,3 11,8 9,16" }, g);
+  };
+
+  pill(14, 13, "FUN = Future University Hakodate");
+  pill(734, 395, "G = Game");
+  pill(1094, 395, "C = Creators");
+
+  // U:音符
+  note(566, 150, 8, 1);
+  note(531, 121, -12, 0.72);
+
+  // N:すべるスピード線
+  for (const [a, b] of [[[883.2, 123.3], [875.1, 111.2]], [[896.7, 119.0], [890.3, 109.3]], [[911.9, 117.1], [907.0, 109.8]]]) {
+    el("path", { d: `M${a} L${b}`, ...line }, root);
+  }
+
+  // G:ピースのはまる場所、カーソル、ふきだし
+  el("rect", { x: 893.2, y: 592.5, width: 144.3, height: 48.1, fill: "rgb(255 246 223 / 0.25)", stroke: "var(--paper)", "stroke-width": 2.6, "stroke-dasharray": "7 7" }, root);
+  bubble(776, 548, 126, "あと 1ピース！", "H112 L126,44 L96,30");
+  el("path", { d: "M0,0 V32 L8.5,24.5 L14.5,37.5 L20.5,34.8 L14.5,22 H25.5 Z", transform: "translate(1034,588) rotate(-14)", fill: "#fff", stroke: ink, "stroke-width": 2.8, "stroke-linejoin": "round" }, root);
+
+  // C:手を振る線とふきだし
+  const wave = el("g", { transform: "translate(1233,629) scale(0.97)", ...line }, root);
+  el("path", { d: "M47,-62 q7,6 5,15" }, wave);
+  el("path", { d: "M56,-68 q11,10 8,24" }, wave);
+  bubble(1298, 528, 86, "ようこそ！", "H30 L10,42 L16,30");
+})();
 
 // ふちが波になったシール
 (() => {

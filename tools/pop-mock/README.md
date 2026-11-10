@@ -19,3 +19,30 @@ node tools/pop-mock/shot.mjs pop-home-pc.png
 ```
 
 `index.html` をブラウザで直接開いても確認できます(画面は 1440×900 の固定です)。
+
+## 3D 版
+
+「3D を取り入れるとどうなるか」を見るための版です。文字のタイルを色の箱に見立て、厚みのある文字とキャラクターを中に置いて Blender(Cycles)でレンダーし、その画像を文字のタイルの位置に敷いています。文章、メニュー、ラベル、ふきだし、カーソルは平面のまま上に重ねます。
+
+- シーンは `scene3d.py` がすべてコードで組み立てます。文字の輪郭は `index.html` の SVG と同じ形で、角を丸めてから厚みを付けています。
+- 色を画面の色(CSS)と並べるので、ビュー変換は Standard にしています。箱の内側は、影で色がにごらないよう地の色でほんの少し光らせています(`GLOW`)。
+- カメラは壁の少し上に置き、レンズのシフトで壁をまっすぐ収めています。箱の口がタイルの区切りにぴったり重なるので、HTML の面とそのまま並べられます。
+- 重ねるものの位置は、`scene3d.py` が最後に出す `anchors`(シーンの点が画像のどこに写るか)に合わせています。シーンを動かしたら `index.html` の「3D 版で画像の上に重ねる」の数字も直します。
+
+```sh
+# Blender の Python モジュール(bpy 5.0、Python 3.11)。tools/poster-render と同じ環境に shapely(輪郭の角を丸める)を足します
+uv venv -p 3.11 .venv-render
+uv pip install --python .venv-render/bin/python bpy pillow shapely
+
+# 下見(小さく、粗く)
+.venv-render/bin/python tools/pop-mock/scene3d.py --res 720x382 --samples 24 --out /tmp/wall-3d.png
+
+# 本番。PNG を WebP にして render/ に置く
+.venv-render/bin/python tools/pop-mock/scene3d.py --out /tmp/wall-3d.png
+.venv-render/bin/python -c "from PIL import Image; Image.open('/tmp/wall-3d.png').save('tools/pop-mock/render/wall-3d.webp', quality=92)"
+
+# 3D 版の画面を画像にする(最後の 3d が切り替え)
+node tools/pop-mock/shot.mjs pop-home-3d-pc.png 2 3d
+```
+
+ブラウザでは `index.html?look=3d` で開きます。
