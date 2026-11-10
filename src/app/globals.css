@@ -50,18 +50,33 @@ body {
   color: var(--color-ink);
 }
 
-/* 紙のざらつき。ページ全体に薄く重ね、レンダーした写真と平らな色の面をなじませる */
-body::after {
+/* 紙のざらつき。建物の写真を置く舞台(ヒーロー、各ページの見出し、夜の建物)にだけ薄く重ね、写真と平らな空の色をなじませる。
+   本文の領域には重ねない(文字が読みにくくなるため) */
+.stage::after {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 70;
   background: url("/poster/grain.png");
   opacity: 0.4;
   pointer-events: none;
+  z-index: 1;
+}
+/* 舞台の中でも、読む文章とボタンのかたまりは、ざらつきより上に置く */
+.hero-copy,
+.page-copy,
+.night-copy {
+  z-index: 2;
+}
+/* 下に線のない狭い画面のヒーローと見出しでは、ざらつきを下へ向かって消し、本文の地につなげる */
+@media (max-width: 63.99rem) {
+  .hero::after,
+  .page-head::after {
+    -webkit-mask-image: linear-gradient(#000 70%, transparent);
+    mask-image: linear-gradient(#000 70%, transparent);
+  }
 }
 @media print {
-  body::after {
+  .stage::after {
     display: none;
   }
 }
