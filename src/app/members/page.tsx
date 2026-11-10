@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { PageHeading, SubHead } from "@/components/Heading";
 import { MemberCard } from "@/components/MemberCard";
-import { PageHeading } from "@/components/SectionLabel";
 import { getMedals, getMembers } from "@/lib/content";
 import { memberStanding } from "@/lib/grade";
 
@@ -23,39 +23,31 @@ export default function MembersPage() {
   const alumni = members.filter((m) => m.standing.alumni);
 
   const renderGrid = (list: typeof members) => (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {list.map(({ member, standing }) => (
-        <MemberCard
-          key={member.discordId}
-          member={member}
-          standing={standing}
-          medals={member.medals.flatMap((id) => medals.get(id) ?? [])}
-        />
+        <MemberCard key={member.discordId} member={member} standing={standing} medals={member.medals.flatMap((id) => medals.get(id) ?? [])} />
       ))}
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <>
       <PageHeading en="MEMBERS" />
-
-      {members.length === 0 ? (
-        <p data-reveal className="border border-dashed border-line px-4 py-16 text-center text-muted">
-          メンバー紹介は準備中です。
-        </p>
-      ) : (
-        <div className="space-y-16">
-          {active.length > 0 && renderGrid(active)}
-          {alumni.length > 0 && (
-            <section className="space-y-6">
-              <h2 data-reveal className="font-poster text-4xl font-light">
-                Alumni
-              </h2>
-              {renderGrid(alumni)}
-            </section>
-          )}
-        </div>
-      )}
-    </div>
+      <div className="wrap py-16 sm:py-20">
+        {members.length === 0 ? (
+          <p className="corner-ticks px-4 py-16 text-center text-muted">メンバー紹介は準備中です。</p>
+        ) : (
+          <div className="space-y-20">
+            {active.length > 0 && renderGrid(active)}
+            {alumni.length > 0 && (
+              <section>
+                <SubHead note={`${String(alumni.length).padStart(2, "0")} PLAYERS`}>Alumni</SubHead>
+                {renderGrid(alumni)}
+              </section>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

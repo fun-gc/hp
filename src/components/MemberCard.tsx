@@ -19,18 +19,18 @@ export function MemberCard({
   medals: Medal[];
 }) {
   return (
-    <article data-reveal className="corner-ticks flex flex-col gap-4 border border-ink/20 bg-paper-2 p-5">
+    <article className="corner-ticks flex flex-col gap-4 border border-ink/25 bg-paper-2 p-5">
       <div className="flex items-center gap-4">
         {member.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- Discord のアバター画像をそのまま表示する
           <img src={member.avatarUrl} alt="" className="size-16 shrink-0 rounded-full bg-paper object-cover" loading="lazy" />
         ) : (
-          <div className="grid size-16 shrink-0 place-items-center rounded-full bg-ink font-display text-2xl font-bold text-white">
+          <div className="grid size-16 shrink-0 place-items-center rounded-full bg-ink text-2xl font-bold text-white">
             {member.name.slice(0, 1)}
           </div>
         )}
         <div className="min-w-0">
-          <p className="truncate text-lg font-black">{member.name}</p>
+          <p className="truncate text-lg font-extrabold">{member.name}</p>
           <p className="font-mono text-xs tracking-wider text-muted">{gradeEn(standing, member.override)}</p>
         </div>
       </div>
@@ -38,7 +38,7 @@ export function MemberCard({
       {member.roles.length > 0 && (
         <ul className="flex flex-wrap gap-2 text-xs">
           {member.roles.map((r) => (
-            <li key={r} className="border border-ink/30 px-2 py-0.5 font-mono text-[11px] font-bold tracking-wider">
+            <li key={r} className="border border-ink/40 px-2 py-0.5 font-mono text-[11px] font-medium tracking-wider">
               {roleEn[r]}
             </li>
           ))}
@@ -65,19 +65,19 @@ export function MemberCard({
       )}
 
       {member.links && (
-        <p className="mt-auto flex gap-4 font-mono text-xs font-bold tracking-wider">
+        <p className="mt-auto flex gap-4 font-mono text-xs font-medium tracking-wider">
           {member.links.x && (
-            <a href={member.links.x} target="_blank" rel="noreferrer" className="hover:text-fun-red-ink">
+            <a href={member.links.x} target="_blank" rel="noreferrer" className="px-0.5 hover:bg-fun-yellow">
               X
             </a>
           )}
           {member.links.github && (
-            <a href={member.links.github} target="_blank" rel="noreferrer" className="hover:text-fun-red-ink">
+            <a href={member.links.github} target="_blank" rel="noreferrer" className="px-0.5 hover:bg-fun-yellow">
               GitHub
             </a>
           )}
           {member.links.website && (
-            <a href={member.links.website} target="_blank" rel="noreferrer" className="hover:text-fun-red-ink">
+            <a href={member.links.website} target="_blank" rel="noreferrer" className="px-0.5 hover:bg-fun-yellow">
               Web
             </a>
           )}

@@ -1,24 +1,23 @@
 import Link from "next/link";
-import { Cube } from "@/components/Cube";
-import { delay } from "@/lib/motion";
+import { Annot, ArrowLine, Crosshair } from "@/components/Poster";
 
 export default function NotFound() {
   return (
-    <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-24 sm:px-6">
-      <Cube color="red" className="anim-rise size-16" />
-      <p className="-my-[0.15em] overflow-y-clip py-[0.15em] font-poster text-8xl font-light text-ink">
-        <span className="anim-word block" style={delay(0.1)}>
-          404
-        </span>
-      </p>
-      <h1 className="anim-fade font-mono text-sm tracking-[0.25em] text-muted" style={delay(0.35)}>
-        PAGE NOT FOUND
-        <span className="blink" aria-hidden="true">
-          _
-        </span>
-      </h1>
-      <Link href="/" className="anim-rise bg-ink px-5 py-3 font-bold text-white hover:bg-fun-yellow hover:text-ink" style={delay(0.5)}>
+    <div className="wrap flex flex-col items-start gap-6 py-28">
+      <div className="flex items-center gap-3 text-ink" aria-hidden="true">
+        <Crosshair className="size-4" />
+        <Annot>
+          <span className="hl px-1">H00</span> THIS MODULE DOES NOT EXIST
+        </Annot>
+      </div>
+      <p className="poster-word text-[clamp(7rem,26vw,18rem)] text-ink">404</p>
+      <h1 className="font-mono text-sm tracking-[0.25em] text-muted">PAGE NOT FOUND_</h1>
+      <Link
+        href="/"
+        className="flex items-center gap-3 bg-ink px-6 py-3 font-mono text-sm font-medium tracking-[0.18em] text-white transition-colors hover:bg-fun-yellow hover:text-ink"
+      >
         BACK TO TOP
+        <ArrowLine length="1.5rem" />
       </Link>
     </div>
   );

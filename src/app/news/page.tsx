@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHeading } from "@/components/SectionLabel";
+import { PageHeading } from "@/components/Heading";
+import { ArrowLine } from "@/components/Poster";
 import { getNews } from "@/lib/content";
 
 export const metadata: Metadata = { title: "News" };
@@ -8,23 +9,31 @@ export const metadata: Metadata = { title: "News" };
 export default function NewsPage() {
   const news = getNews();
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+    <>
       <PageHeading en="NEWS" />
-      <ul className="divide-y divide-ink/20 border-y border-ink">
-        {news.map((n) => (
-          <li key={n.slug} data-reveal>
-            <Link href={`/news/${n.slug}/`} className="group flex flex-col gap-2 py-6 sm:flex-row sm:gap-6">
-              <span className="w-28 shrink-0 font-mono text-sm text-muted">
-                {n.date.toISOString().slice(0, 10).replaceAll("-", ".")}
-              </span>
-              <span className="space-y-1">
-                <span className="block text-lg font-black group-hover:bg-fun-yellow">{n.title}</span>
-                <span className="block text-sm text-muted">{n.excerpt}…</span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="wrap py-16 sm:py-20">
+        <ul className="max-w-5xl border-t border-ink">
+          {news.map((n, i) => (
+            <li key={n.slug} className="border-b border-ink/25">
+              <Link href={`/news/${n.slug}/`} className="group grid gap-x-8 gap-y-2 py-7 sm:grid-cols-[9rem_1fr_auto] sm:items-baseline">
+                <span className="font-mono text-sm text-muted">
+                  <span className="mr-3 text-[10px]" aria-hidden="true">
+                    [{String(news.length - i).padStart(2, "0")}]
+                  </span>
+                  {n.date.toISOString().slice(0, 10).replaceAll("-", ".")}
+                </span>
+                <span className="space-y-1.5">
+                  <span className="block text-lg font-extrabold leading-snug">
+                    <span className="group-hover:bg-fun-yellow">{n.title}</span>
+                  </span>
+                  <span className="block text-sm leading-relaxed text-muted">{n.excerpt}…</span>
+                </span>
+                <ArrowLine length="2rem" className="hidden sm:inline-block" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }

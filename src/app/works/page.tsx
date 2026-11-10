@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PageHeading } from "@/components/SectionLabel";
+import { PageHeading } from "@/components/Heading";
+import { Annot } from "@/components/Poster";
 import { WorkCard } from "@/components/WorkCard";
 import { getWorks } from "@/lib/content";
 
@@ -14,16 +15,19 @@ export default function WorksPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <>
       <PageHeading en="WORKS" />
-      <div className="space-y-16">
-        {[...groups.entries()].map(([event, items]) => (
-          <section key={event} className="space-y-6">
-            <h2 data-reveal className="flex items-center gap-3 text-2xl font-black">
-              <span className="h-6 w-1.5 bg-fun-yellow" aria-hidden="true" />
-              {event}
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="wrap space-y-20 py-16 sm:py-20">
+        {[...groups.entries()].map(([event, items], g) => (
+          <section key={event}>
+            <div className="mb-7 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-ink pb-3">
+              <span className="hl px-2 py-0.5 font-mono text-[11px] font-medium tracking-[0.2em]" aria-hidden="true">
+                SET {String(g + 1).padStart(2, "0")}
+              </span>
+              <h2 className="text-2xl font-extrabold">{event}</h2>
+              <Annot className="ml-auto text-muted">{String(items.length).padStart(2, "0")} WORKS</Annot>
+            </div>
+            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((w) => (
                 <WorkCard key={w.slug} work={w} />
               ))}
@@ -31,6 +35,6 @@ export default function WorksPage() {
           </section>
         ))}
       </div>
-    </div>
+    </>
   );
 }
