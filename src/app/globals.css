@@ -146,7 +146,7 @@ body {
 }
 .hero-copy {
   position: relative;
-  padding: 124cqw 1.25rem 3rem;
+  padding: 106cqw 1.25rem 3rem;
 }
 @media (min-width: 64rem) {
   /* 16:9 の 1 枚。背の低い画面では下が切れるので、見出しとボタンは上から 48cqw までに収める。

@@ -3,15 +3,16 @@ import { delay as d, type Vars } from "@/lib/motion";
 import { navItems, site } from "@/lib/site";
 import { moduleOf } from "./Heading";
 import { StageMotion } from "./Motion";
-import { Annot, ArcText, ArrowLine, Chevrons, CircleRow, coordinates, CrossTriangles, DotGrid, Eye, FarShore, StackPhoto, Tri } from "./Poster";
+import { Annot, ArrowLine, Chevrons, coordinates, Eye, FarShore, StackPhoto } from "./Poster";
 
 // トップページのヒーロー。1 枚のポスターとして組む:
-//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 細い英字(Playable)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。
-//   細い英字だけを 2 枚の写真のあいだに挟み、せり出した箱の少し後ろにあるように見せる。黄色い大文字は、どの箱よりも手前に置く。
+//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 黄色い大文字 → 注記と線、の順に重ねる。黄色い大文字は、どの箱よりも手前に置く。
+//   細い英字の「Playable」は、いったん外してある(パネルで遊べる仕掛けを作るときに戻すかもしれない)。戻すときは、建物の写真と
+//   手前の箱だけの写真(public/poster の stack-front)のあいだに挟むと、左下の箱の少し後ろにあるように見える。
 // 中の位置は、舞台(.stage)の幅を 100 とした単位。広い画面は横長(100 × 56.25)、狭い画面は縦長に組み直す。
 //
 // 動き(globals.css の「動き」):
-//   読み込むと、写真 → 黄色の大文字 → 細い英字 → 線と注記の順に、刷り重ねるように出る(a-*、--d は始まるまでのミリ秒)。
+//   読み込むと、写真 → 黄色の大文字 → 線と注記の順に、刷り重ねるように出る(a-*、--d は始まるまでのミリ秒)。
 //   .depth の付いた層は、カーソルとスクロールに合わせて少しずつ違う量だけ動き、重ねた紙のような奥行きが出る(StageMotion)。
 
 /** 位置を CSS 変数で渡す(globals.css の .pin)。x, y は広い画面、mx, my は狭い画面。more で、動きの変数を足す */
@@ -41,7 +42,6 @@ const FACE: Record<(typeof navItems)[number]["en"], Pt[]> = {
 const FAR: Vars = { "--depth": -0.3, "--drift": 5 };
 const BUILDING: Vars = { "--depth": 0.4 };
 const LETTERS: Vars = { "--depth": 0.95, "--drift": -1.4 };
-const WORD: Vars = { "--depth": 1.3, "--drift": -2.6 };
 
 // 黄色い大文字。建物の上から空へ、右下がりの一直線に並べる(左上の角が 1 本の直線に乗る。広い画面は F と C、狭い画面も F と C を結ぶ線)。
 // 文字は 5 つとも建物の手前に置き、箱が文字を隠すところは作らない(手前の箱の写真より上に描く)。
@@ -106,22 +106,10 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       <StageMotion />
 
       {/* ---- 奥: 霧の向こうの函館山 ---- */}
-      <FarShore className="pin depth a-fade w-[150cqw] max-w-none opacity-90 [animation-duration:2.4s] lg:w-[62cqw]" style={at(51.6, 40, -22, 116, { ...FAR, ...d(300) })} />
+      <FarShore className="pin depth a-fade w-[150cqw] max-w-none opacity-90 [animation-duration:2.4s] lg:w-[62cqw]" style={at(51.6, 40, -22, 98, { ...FAR, ...d(300) })} />
 
       {/* ---- 建物 ---- */}
       <StackPhoto name="stack-day" narrow="stack-day-m" sizes="110vw" eager className="hero-photo fade-m depth a-build" style={BUILDING} />
-
-      {/* ---- 2 枚の写真のあいだに挟む文字。左下の箱(H03)の角が、P の肩に少しだけ掛かる ---- */}
-      <p
-        aria-hidden="true"
-        className="poster-word pin depth a-wipe whitespace-nowrap text-[17cqw] text-ink [animation-duration:1.3s] lg:text-[8.2cqw]"
-        style={at(16.4, 45.2, 4, 101, { ...WORD, ...d(650) })}
-      >
-        Playable
-      </p>
-
-      {/* ---- 手前の箱 ---- */}
-      <StackPhoto name="stack-front" narrow="stack-front-m" sizes="110vw" eager className="hero-photo fade-m depth a-build pointer-events-none" style={BUILDING} />
 
       {/* ---- 黄色い大文字。建物のどの箱よりも手前 ---- */}
       <div aria-hidden="true">
@@ -132,7 +120,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         ))}
       </div>
 
-      {/* 面に貼った黄色いフィルム(乗算)。手前の箱の写真より上に置く */}
+      {/* 面に貼った黄色いフィルム(乗算) */}
       <svg
         className="tint depth a-build pointer-events-none absolute left-0 top-0 hidden h-[56.25cqw] w-[100cqw] lg:block"
         style={BUILDING}
@@ -164,10 +152,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
           {/* 大きな弧 */}
           <path className="a-draw [animation-duration:2s]" style={d(700)} pathLength={1} d="M -4 20 A 58 58 0 0 0 62 60" strokeWidth="0.07" />
         </g>
-        {/* H08 の角から、注記へ引き出す線 */}
-        <line className="a-draw" style={d(1350)} pathLength={1} x1="68.2" y1="19" x2="72.3" y2="19" stroke="var(--color-ink)" strokeWidth="0.07" />
         <circle className="a-fade" style={d(1100)} cx="59.3" cy="27.7" r="0.45" fill="var(--color-fun-yellow)" />
-        <circle className="a-fade" style={d(1300)} cx="68.2" cy="19" r="0.3" fill="var(--color-ink)" />
       </svg>
 
       {/* ---- 注記 ---- */}
@@ -178,30 +163,6 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
           <br />
           {site.universityEn.toUpperCase()}
         </Annot>
-      </div>
-
-      {/* 箱の番号から引き出した注記(広い画面) */}
-      <div className="pin depth a-type hidden items-start gap-2 text-ink lg:flex" style={at(73, 18.2, 0, 0, { ...BUILDING, ...d(1650) })}>
-        <Annot>
-          <span className="hl px-1">H08</span> FIG.01 — THE STACK
-          <br />
-          6000 × 6000 × 6000 / RC + AL
-          <br />
-          <span className="text-muted">1 DOT = 1 PIXEL</span>
-        </Annot>
-      </div>
-
-      {/* 右上の飾り */}
-      <div aria-hidden="true" className="pin a-fade hidden w-[8cqw] flex-col gap-[0.7cqw] text-ink lg:flex" style={at(88.5, 6.2, 0, 0, d(1500))}>
-        <div className="flex items-center justify-between">
-          <CircleRow className="h-[0.9cqw]" />
-          <span className="font-mono text-[0.8cqw] leading-none">↔</span>
-        </div>
-        <CrossTriangles className="w-full" />
-        <div className="flex items-end justify-between">
-          <Tri className="size-[1cqw]" />
-          <DotGrid cols={6} rows={2} gap={7} className="opacity-70" />
-        </div>
       </div>
 
       {/* 縦書きの注記 */}
@@ -218,18 +179,6 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         [0–100]
         <br />
         MEMBERS {pad2(members)}
-      </p>
-
-      {/* 下の空: 円に沿った文字と、斜体のひとこと */}
-      <ArcText
-        text="A GOOD BEGINNING MAKES A GOOD GAME"
-        className="pin a-turn hidden w-[16cqw] text-ink lg:block"
-        style={at(49.8, 44.2, 0, 0, d(1250))}
-        start={-152}
-        span={124}
-      />
-      <p aria-hidden="true" className="pin a-fade hidden font-poster text-[1.35cqw] font-light italic text-ink lg:block" style={at(51.5, 52, 0, 0, d(2100))}>
-        <span className="blink">|</span> press any button
       </p>
 
       {/* ---- 見出しと本文 ---- */}
