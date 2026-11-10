@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FUNGC トップ(ポップ案)</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/line-seed-jp/400.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/line-seed-jp/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/line-seed-jp/800.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/dotgothic16/400.css">
+<style>
+:root {
+  --paper: #fff6df;
+  --ink: #1b1b33;
+  --red: #ed1c24;
+  --yellow: #fff200;
+  --green: #22b14c;
+  --blue: #2a5cff;
+  --pink: #ff8fc8;
+  --line: 3px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1440px; height: 900px; overflow: hidden; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "LINE Seed JP", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "palt";
+}
+a { color: inherit; text-decoration: none; }
+.px { font-family: "DotGothic16", monospace; font-feature-settings: normal; }
+
+/* ---- ヘッダー ---- */
+header {
+  position: absolute; inset: 0 0 auto 0; height: 76px;
+  display: flex; align-items: center; gap: 28px;
+  padding: 0 32px 0 30px;
+  border-bottom: var(--line) solid var(--ink);
+  background: var(--paper);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand svg { width: 40px; height: 43px; }
+.brand b { font-weight: 800; font-size: 27px; letter-spacing: 0.05em; line-height: 1; }
+.brand small { display: block; margin-top: 5px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; opacity: 0.7; }
+nav { margin-left: auto; display: flex; align-items: center; gap: 30px; font-weight: 700; font-size: 15px; }
+nav a { display: flex; align-items: center; gap: 8px; }
+nav svg { width: 13px; height: 13px; overflow: visible; }
+.join-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 20px 11px 22px; border-radius: 999px;
+  background: var(--ink); color: var(--paper); font-weight: 700; font-size: 15px;
+}
+
+/* ---- タイルの壁 ---- */
+.wall { position: absolute; left: 0; top: 76px; width: 1440px; height: 764px; }
+.wall > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.tile { position: absolute; }
+
+/* 文章のタイル */
+.copy { left: 0; top: 382px; width: 720px; height: 382px; padding: 34px 40px 0 44px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 13px 5px 11px; border: 2.5px solid var(--ink); border-radius: 999px;
+  background: #fff; font-size: 13px; font-weight: 700; letter-spacing: 0.03em;
+}
+.tag i { width: 9px; height: 9px; border-radius: 50%; background: var(--red); }
+h1 { margin-top: 14px; font-weight: 800; font-size: 60px; line-height: 1.19; letter-spacing: 0.005em; }
+h1 .mk { background: linear-gradient(transparent 62%, var(--yellow) 62%, var(--yellow) 94%, transparent 94%); padding: 0 2px; margin: 0 -2px; }
+.lead { margin-top: 14px; font-size: 15px; line-height: 1.75; font-weight: 400; }
+.btns { margin-top: 20px; display: flex; gap: 16px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 52px; padding: 0 26px; border: var(--line) solid var(--ink); border-radius: 999px;
+  background: #fff; font-weight: 800; font-size: 16px; letter-spacing: 0.03em;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.btn.primary { background: var(--yellow); }
+.btn svg { width: 22px; height: 14px; }
+
+.news {
+  position: absolute; right: 30px; bottom: 30px; width: 268px;
+  display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 5px; align-items: center;
+  padding: 11px 14px 12px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff;
+  box-shadow: 4px 4px 0 var(--ink); transform: rotate(-1.6deg);
+}
+.news em { font-style: normal; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 999px; background: var(--pink); border: 2px solid var(--ink); }
+.news time { font-family: "DotGothic16"; font-size: 13px; letter-spacing: 0.06em; }
+.news b { grid-column: 1 / -1; font-size: 13.5px; font-weight: 700; line-height: 1.5; word-break: auto-phrase; }
+
+/* なかま募集のタイル(ゲームのメニュー画面ふう) */
+.party { left: 1080px; top: 0; width: 360px; height: 382px; color: var(--paper); padding: 17px; }
+.win { width: 100%; height: 100%; border: 2.5px solid var(--paper); border-radius: 16px; padding: 16px 16px 0; display: flex; flex-direction: column; }
+.win-head { display: flex; align-items: baseline; justify-content: space-between; }
+.win-head b { font-family: "DotGothic16"; font-weight: 400; font-size: 19px; letter-spacing: 0.04em; }
+.win-head span { font-family: "DotGothic16"; font-size: 12px; letter-spacing: 0.12em; color: var(--ink); background: var(--yellow); padding: 1px 7px 2px 8px; border-radius: 4px; }
+.roles { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.role { position: relative; height: 96px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 8px; background: rgb(255 246 223 / 0.07); }
+.role svg { width: 54px; height: 50px; overflow: visible; }
+.role b { margin-top: 3px; font-size: 13.5px; font-weight: 700; letter-spacing: 0.04em; }
+.role.on { outline: 2.5px solid var(--yellow); background: rgb(255 242 0 / 0.1); }
+.role.on::before { content: "▶"; position: absolute; left: 9px; top: 8px; font-size: 11px; color: var(--yellow); }
+.say { margin-top: auto; padding: 10px 2px 13px; font-family: "DotGothic16"; font-size: 14.5px; line-height: 1.6; letter-spacing: 0.02em; border-top: 2px dashed rgb(255 246 223 / 0.35); display: flex; justify-content: space-between; align-items: flex-end; }
+.say i { font-style: normal; color: var(--yellow); font-size: 12px; }
+
+/* 丸いシール */
+.seal { position: absolute; left: 600px; top: 310px; width: 132px; height: 132px; transform: rotate(-11deg); z-index: 6; }
+.seal svg { position: absolute; inset: 0; overflow: visible; }
+.seal div { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; line-height: 1; }
+.seal small { font-size: 11.5px; letter-spacing: 0.06em; }
+.seal b { font-size: 46px; letter-spacing: -0.01em; margin: 2px 0 0; }
+.seal b span { font-size: 17px; margin-left: 2px; }
+
+/* ---- 下の帯 ---- */
+.band {
+  position: absolute; left: 0; top: 840px; width: 1440px; height: 60px;
+  border-top: var(--line) solid var(--ink);
+  background: var(--yellow); overflow: hidden;
+  display: flex; align-items: center;
+}
+.band ul { list-style: none; display: flex; align-items: center; gap: 22px; white-space: nowrap; transform: translateX(-46px); font-weight: 800; font-size: 25px; letter-spacing: 0.06em; }
+.band li { display: flex; align-items: center; gap: 22px; }
+.band svg { width: 19px; height: 19px; overflow: visible; }
+.band .en { font-size: 26px; letter-spacing: 0.1em; }
+
+/* 紙のざらつき */
+.grain { position: absolute; inset: 0; pointer-events: none; z-index: 20; opacity: 0.18; mix-blend-mode: multiply; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="/">
+    <svg viewBox="140 150 940 1000" aria-hidden="true">
+      <g stroke="#1b1b33" stroke-width="34" stroke-linejoin="round">
+        <polygon points="610,160 1062,402 610,646 158,402" fill="#ed1c24"/>
+        <polygon points="158,402 610,646 610,1140 158,898" fill="#22b14c"/>
+        <polygon points="610,646 1062,402 1062,898 610,1140" fill="#fff200"/>
+      </g>
+    </svg>
+    <span><b>FUNGC</b><small>FUN Game Creators</small></span>
+  </a>
+  <nav>
+    <a href="/about/"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="5.2" fill="var(--red)" stroke="var(--ink)" stroke-width="1.6"/></svg>活動紹介</a>
+    <a href="/course/"><svg viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" rx="1.5" fill="var(--yellow)" stroke="var(--ink)" stroke-width="1.6"/></svg>講座</a>
+    <a href="/works/"><svg viewBox="0 0 12 12"><path d="M6,0.8 L11.4,10.8 H0.6 Z" fill="var(--green)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>作品</a>
+    <a href="/members/"><svg viewBox="0 0 12 12"><path d="M0.8,9.6 A5.2,5.2 0 0 1 11.2,9.6 Z" fill="var(--blue)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>メンバー</a>
+    <a href="/news/"><svg viewBox="0 0 12 12"><path d="M6,0.6 L11.4,6 L6,11.4 L0.6,6 Z" fill="var(--pink)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>お知らせ</a>
+  </nav>
+  <a class="join-pill" href="/join/">入部案内
+    <svg viewBox="0 0 22 14" width="18" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1,7 H20 M14,1.5 L20,7 L14,12.5"/></svg>
+  </a>
+</header>
+
+<main class="wall">
+  <svg viewBox="0 0 1440 764" aria-hidden="true">
+    <defs>
+      <!-- 印刷の網点ふうの影 -->
+      <pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <circle cx="4.5" cy="4.5" r="2.15" fill="var(--ink)"/>
+      </pattern>
+      <path id="gF" d="M0,0 H300 A100,100 0 0 1 200,100 H100 V300 H0 Z"/>
+      <path id="gU" d="M0,0 H100 V200 H200 V0 H300 V200 A100,100 0 0 1 200,300 H100 A100,100 0 0 1 0,200 Z"/>
+      <path id="gN" d="M0,0 H100 L200,150 V0 H300 V300 H200 L100,150 V300 H0 Z"/>
+      <path id="gG" d="M100,0 H200 A100,100 0 0 1 300,100 H100 V200 H300 A100,100 0 0 1 200,300 H100 A100,100 0 0 1 0,200 V100 A100,100 0 0 1 100,0 Z"/>
+      <path id="gC" d="M100,0 H300 A100,100 0 0 1 200,100 H100 V200 H200 A100,100 0 0 1 300,300 H100 A100,100 0 0 1 0,200 V100 A100,100 0 0 1 100,0 Z"/>
+    </defs>
+
+    <!-- 地の色 -->
+    <rect x="0" y="0" width="360" height="382" fill="var(--red)"/>
+    <rect x="360" y="0" width="360" height="382" fill="var(--yellow)"/>
+    <rect x="720" y="0" width="360" height="382" fill="var(--pink)"/>
+    <rect x="1080" y="0" width="360" height="382" fill="var(--ink)"/>
+    <rect x="0" y="382" width="720" height="382" fill="var(--paper)"/>
+    <rect x="720" y="382" width="360" height="382" fill="var(--green)"/>
+    <rect x="1080" y="382" width="360" height="382" fill="var(--blue)"/>
+
+    <g id="halftones"></g>
+
+    <!-- F:まんなかの腕は、四角いキャラクターが持ち上げているボール -->
+    <g transform="translate(30,41)">
+      <use href="#gF" transform="translate(13,13)" fill="url(#dots)"/>
+      <circle cx="163" cy="163" r="50" fill="url(#dots)"/>
+      <use href="#gF" fill="var(--paper)"/>
+      <circle cx="150" cy="150" r="50" fill="var(--yellow)"/>
+      <g transform="translate(150,300)" fill="none" stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-11,-26 V-2 H-19"/>
+        <path d="M11,-26 V-2 H19"/>
+        <path d="M-27,-58 C-42,-64 -42,-92 -27,-104"/>
+        <path d="M27,-58 C42,-64 42,-92 27,-104"/>
+        <rect x="-28" y="-80" width="56" height="56" rx="9" fill="var(--blue)"/>
+        <circle cx="-9" cy="-61" r="3.7" fill="var(--ink)" stroke="none"/>
+        <circle cx="9" cy="-61" r="3.7" fill="var(--ink)" stroke="none"/>
+      </g>
+      <text x="0" y="-9" class="lbl" fill="var(--paper)">FUN = Future University Hakodate</text>
+    </g>
+
+    <!-- U:コップの中に丸いキャラクター -->
+    <g transform="translate(390,41)">
+      <use href="#gU" transform="translate(13,13)" fill="url(#dots)"/>
+      <use href="#gU" fill="var(--blue)"/>
+      <g fill="none" stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="150" cy="158" r="40" fill="var(--red)"/>
+        <circle cx="141" cy="145" r="3.7" fill="var(--ink)" stroke="none"/>
+        <circle cx="161" cy="145" r="3.7" fill="var(--ink)" stroke="none"/>
+        <!-- 音符 -->
+        <g transform="translate(166,74) rotate(8)">
+          <ellipse cx="0" cy="0" rx="7.5" ry="5.6" transform="rotate(-22)" fill="var(--ink)" stroke="none"/>
+          <path d="M6.5,-2 V-32 c7,3 11,8 9,16"/>
+        </g>
+        <g transform="translate(132,44) rotate(-12) scale(0.72)">
+          <ellipse cx="0" cy="0" rx="7.5" ry="5.6" transform="rotate(-22)" fill="var(--ink)" stroke="none"/>
+          <path d="M6.5,-2 V-32 c7,3 11,8 9,16" stroke-width="4"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- N:斜めの線はすべり台 -->
+    <g transform="translate(750,41)">
+      <use href="#gN" transform="translate(13,13)" fill="url(#dots)"/>
+      <rect x="0" y="0" width="100" height="300" fill="var(--red)"/>
+      <rect x="200" y="0" width="100" height="300" fill="var(--red)"/>
+      <polygon points="0,0 100,0 300,300 200,300" fill="var(--paper)"/>
+      <g transform="translate(152,78) rotate(56.31)" fill="none" stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-24,0 L0,-42 L24,0 Z" fill="var(--green)"/>
+        <circle cx="-4" cy="-13" r="3.5" fill="var(--ink)" stroke="none"/>
+        <circle cx="8" cy="-13" r="3.5" fill="var(--ink)" stroke="none"/>
+        <path d="M-37,-7 H-52"/>
+        <path d="M-33,-21 H-45"/>
+        <path d="M-26,-35 H-35"/>
+      </g>
+    </g>
+
+    <!-- G:最後のピースをはめるところ -->
+    <g transform="translate(750,423)">
+      <use href="#gG" transform="translate(13,13)" fill="url(#dots)"/>
+      <use href="#gG" fill="var(--paper)"/>
+      <rect x="150" y="150" width="150" height="50" fill="rgb(255 246 223 / 0.28)" stroke="var(--paper)" stroke-width="2.6" stroke-dasharray="7 7"/>
+      <g transform="translate(243,138) rotate(-9)">
+        <rect x="-69" y="-19" width="150" height="50" fill="var(--ink)"/>
+        <rect x="-75" y="-25" width="150" height="50" fill="var(--yellow)" stroke="var(--ink)" stroke-width="3.2" stroke-linejoin="round"/>
+      </g>
+      <g transform="translate(266,140) rotate(-14)" stroke="var(--ink)" stroke-width="2.8" stroke-linejoin="round">
+        <path d="M0,0 V32 L8.5,24.5 L14.5,37.5 L20.5,34.8 L14.5,22 H25.5 Z" fill="#fff"/>
+      </g>
+      <g transform="translate(34,112)">
+        <path d="M8,0 H118 a8,8 0 0 1 8,8 V22 a8,8 0 0 1 -8,8 H112 L126,44 L96,30 H8 a8,8 0 0 1 -8,-8 V8 a8,8 0 0 1 8,-8 Z" fill="#fff" stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round"/>
+        <text x="63" y="21" class="say-s" text-anchor="middle" fill="var(--ink)">あと 1ピース！</text>
+      </g>
+      <text x="0" y="-9" class="lbl" fill="var(--ink)">G = Game</text>
+    </g>
+
+    <!-- C:入口で手を振るキャラクター -->
+    <g transform="translate(1110,423)">
+      <use href="#gC" transform="translate(13,13)" fill="url(#dots)"/>
+      <use href="#gC" fill="var(--pink)"/>
+      <g transform="translate(152,200)" fill="none" stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-10,-20 V-2 H-18"/>
+        <path d="M10,-20 V-2 H18"/>
+        <path d="M-25,-26 C-34,-24 -37,-16 -36,-9"/>
+        <path d="M25,-27 C35,-31 40,-41 38,-52"/>
+        <path d="M-28,-18 A28,28 0 0 1 28,-18 Z" fill="var(--yellow)"/>
+        <circle cx="-5" cy="-31" r="3.6" fill="var(--ink)" stroke="none"/>
+        <circle cx="12" cy="-31" r="3.6" fill="var(--ink)" stroke="none"/>
+        <path d="M47,-62 q7,6 5,15"/>
+        <path d="M56,-68 q11,10 8,24"/>
+      </g>
+      <g transform="translate(210,97)">
+        <path d="M8,0 H78 a8,8 0 0 1 8,8 V22 a8,8 0 0 1 -8,8 H30 L10,42 L16,30 H8 a8,8 0 0 1 -8,-8 V8 a8,8 0 0 1 8,-8 Z" fill="#fff" stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round"/>
+        <text x="43" y="21" class="say-s" text-anchor="middle" fill="var(--ink)">ようこそ！</text>
+      </g>
+      <text x="0" y="-9" class="lbl" fill="var(--paper)">C = Creators</text>
+    </g>
+
+    <!-- 区切りの線 -->
+    <g stroke="var(--ink)" stroke-width="3">
+      <line x1="360" y1="0" x2="360" y2="382"/>
+      <line x1="720" y1="0" x2="720" y2="764"/>
+      <line x1="1080" y1="0" x2="1080" y2="764"/>
+      <line x1="0" y1="382" x2="1440" y2="382"/>
+    </g>
+    <style>
+      .say-s { font-family: "DotGothic16", monospace; font-size: 15px; letter-spacing: 0.02em; }
+      .lbl { font-family: "LINE Seed JP", sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.1em; }
+    </style>
+  </svg>
+
+  <!-- 文章 -->
+  <section class="tile copy">
+    <p class="tag"><i></i>公立はこだて未来大学のゲーム制作サークル</p>
+    <h1>いっしょに、<span class="mk">ゲーム</span>を<br>つくりませんか。</h1>
+    <p class="lead">Discord と学内を拠点として、Unity の講座、展示、チーム開発をしています。<br>初めての方も気軽にお声かけください。</p>
+    <div class="btns">
+      <a class="btn primary" href="/join/">入部・見学する
+        <svg viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1,7 H20 M14,1.5 L20,7 L14,12.5"/></svg>
+      </a>
+      <a class="btn" href="/works/">作品を見る</a>
+    </div>
+    <a class="news" href="/news/2026-10-21-miraive-game/"><em>お知らせ</em><time>2026.10.21</time><b>Miraive 2027 に向けてゲームを開発します</b></a>
+  </section>
+
+  <!-- なかま募集 -->
+  <section class="tile party">
+    <div class="win">
+      <div class="win-head"><b>なかまを 募集中</b><span>PARTY</span></div>
+      <div class="roles">
+        <div class="role on">
+          <svg viewBox="-30 -56 60 58" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <g stroke="var(--paper)"><path d="M-8,-16 V-2 H-14"/><path d="M8,-16 V-2 H14"/></g>
+            <rect x="-20" y="-54" width="40" height="40" rx="7" fill="var(--blue)" stroke="var(--paper)"/>
+            <circle cx="-6" cy="-37" r="3" fill="var(--paper)" stroke="none"/><circle cx="7" cy="-37" r="3" fill="var(--paper)" stroke="none"/>
+          </svg>
+          <b>プログラム</b>
+        </div>
+        <div class="role">
+          <svg viewBox="-30 -56 60 58" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M-8,-16 V-2 H-14"/><path d="M8,-16 V-2 H14"/>
+            <path d="M-23,-14 L0,-54 L23,-14 Z" fill="var(--green)"/>
+            <circle cx="-5" cy="-26" r="3" fill="var(--paper)" stroke="none"/><circle cx="7" cy="-26" r="3" fill="var(--paper)" stroke="none"/>
+          </svg>
+          <b>グラフィック</b>
+        </div>
+        <div class="role">
+          <svg viewBox="-30 -56 60 58" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M-8,-16 V-2 H-14"/><path d="M8,-16 V-2 H14"/>
+            <circle cx="0" cy="-34" r="20.5" fill="var(--red)"/>
+            <circle cx="-6" cy="-38" r="3" fill="var(--paper)" stroke="none"/><circle cx="7" cy="-38" r="3" fill="var(--paper)" stroke="none"/>
+          </svg>
+          <b>サウンド</b>
+        </div>
+        <div class="role">
+          <svg viewBox="-30 -56 60 58" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M-8,-18 V-2 H-14"/><path d="M8,-18 V-2 H14"/>
+            <path d="M-23,-16 A23,23 0 0 1 23,-16 Z" fill="var(--yellow)"/>
+            <circle cx="-6" cy="-27" r="3" fill="var(--ink)" stroke="none"/><circle cx="7" cy="-27" r="3" fill="var(--ink)" stroke="none"/>
+          </svg>
+          <b>企画</b>
+        </div>
+      </div>
+      <p class="say"><span>見学は いつでも<br>受け付けています。</span><i>▼</i></p>
+    </div>
+  </section>
+
+  <!-- 作品数のシール -->
+  <div class="seal">
+    <svg viewBox="-66 -66 132 132" id="seal-svg"></svg>
+    <div><small>これまでの作品</small><b>12<span>本</span></b></div>
+  </div>
+</main>
+
+<div class="band" aria-hidden="true">
+  <ul id="band"></ul>
+</div>
+
+<svg class="grain" width="1440" height="900">
+  <filter id="noise" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" stitchTiles="stitch"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.2  0.9 0.9 0.9 0 -0.95"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#noise)"/>
+</svg>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const el = (name, attrs, parent) => {
+  const n = document.createElementNS(NS, name);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  parent?.appendChild(n);
+  return n;
+};
+
+// 角から広がる網点。タイルの外にはみ出さないように切り抜く
+function halftone({ x, y, w = 360, h = 382, corner, reach = 250, rmax = 3.6, color = "var(--ink)", opacity = 0.2 }) {
+  const root = document.getElementById("halftones");
+  const id = `clip-${x}-${y}`;
+  const cp = el("clipPath", { id }, root);
+  el("rect", { x, y, width: w, height: h }, cp);
+  const g = el("g", { "clip-path": `url(#${id})`, fill: color, opacity }, root);
+  const [ox, oy] = [corner.includes("r") ? x + w : x, corner.includes("b") ? y + h : y];
+  const p = 11;
+  for (let j = 0; j * (p / 2) <= h + p; j++) {
+    for (let i = 0; i * p <= w + p; i++) {
+      const px = x + i * p + (j % 2) * (p / 2);
+      const py = y + j * (p / 2);
+      const d = Math.hypot(px - ox, py - oy);
+      const r = rmax * (1 - d / reach);
+      if (r > 0.35) el("circle", { cx: px.toFixed(1), cy: py.toFixed(1), r: r.toFixed(2) }, g);
+    }
+  }
+}
+halftone({ x: 0, y: 0, corner: "rb", color: "#7a0008", opacity: 0.55 });
+halftone({ x: 360, y: 0, corner: "lb", color: "#ff9d00", opacity: 0.8 });
+halftone({ x: 720, y: 0, corner: "rb", color: "#ff3f9c", opacity: 0.6 });
+halftone({ x: 720, y: 382, corner: "lb", color: "#0b6b2b", opacity: 0.55 });
+halftone({ x: 1080, y: 382, corner: "rt", color: "#0a2bb0", opacity: 0.6 });
+halftone({ x: 0, y: 382, w: 720, corner: "rt", color: "var(--pink)", opacity: 0.9, reach: 230, rmax: 4 });
+
+// ふちが波になったシール
+(() => {
+  const svg = document.getElementById("seal-svg");
+  const n = 14, R = 58, a = 5;
+  let d = "";
+  for (let i = 0; i <= 360; i += 2) {
+    const t = (i * Math.PI) / 180;
+    const r = R + a * Math.cos(n * t);
+    d += `${i ? "L" : "M"}${(r * Math.cos(t)).toFixed(2)},${(r * Math.sin(t)).toFixed(2)}`;
+  }
+  d += "Z";
+  el("path", { d, fill: "var(--ink)", transform: "translate(5,6)" }, svg);
+  el("path", { d, fill: "#fff", stroke: "var(--ink)", "stroke-width": 3, "stroke-linejoin": "round" }, svg);
+})();
+
+// 下の帯
+(() => {
+  const shapes = {
+    circle: `<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14.5" fill="var(--red)" stroke="var(--ink)" stroke-width="3"/></svg>`,
+    square: `<svg viewBox="0 0 34 34"><rect x="3" y="3" width="28" height="28" rx="4" fill="var(--blue)" stroke="var(--ink)" stroke-width="3"/></svg>`,
+    tri: `<svg viewBox="0 0 34 34"><path d="M17,3 L32,30 H2 Z" fill="var(--green)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/></svg>`,
+    dome: `<svg viewBox="0 0 34 34"><path d="M2,26 A15,15 0 0 1 32,26 Z" fill="var(--pink)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/></svg>`,
+  };
+  const words = [["つくる", "circle"], ["あそぶ", "square"], ["みせる", "tri"], ["MAKE", "dome", 1], ["PLAY", "circle", 1], ["SHOW", "square", 1], ["つくる", "tri"], ["あそぶ", "dome"], ["みせる", "circle"], ["MAKE", "square", 1]];
+  document.getElementById("band").innerHTML = words
+    .map(([w, s, en]) => `<li><span class="${en ? "en" : ""}">${w}</span>${shapes[s]}</li>`)
+    .join("");
+})();
+</script>
+</body>
+</html>
