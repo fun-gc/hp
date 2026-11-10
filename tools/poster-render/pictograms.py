@@ -163,6 +163,7 @@ GRADIENTS = {
     "fade": from_fn(lambda x, y: ((y + 1) / 2) ** 2.2),
     "bands": from_fn(lambda x, y: 0.9 if math.floor((y + 1) * 2) % 2 == 0 else 0.25),
     "bg": blank(LO),  # what carries on behind a pictogram on a long face
+    "full": blank(HI),  # every hole wide open (scene.py --panel: the "all on" state of a face used as a dot display)
 }
 
 SPRITES = {

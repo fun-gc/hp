@@ -150,8 +150,9 @@ class Bucket:
 
 
 class Building:
-    def __init__(self, seed, front_groups):
+    def __init__(self, seed, front_groups, panel_fill=None):
         self.seed = seed
+        self.panel_fill = panel_fill or {}  # (i, k) -> tile: punch that module's whole side face from one flat tile
         self.rnd = random.Random(seed)
         self.proj = layout(seed)
         self.front_groups = front_groups
@@ -243,7 +244,10 @@ class Building:
         # which bitmap drives the hole size on this face. Faces at least one module long can carry a pictogram
         long_face = length > 28 * P + 0.01
         tile = SPRITE_AT.get((i, k))
-        if tile is None:
+        fill = self.panel_fill.get((i, k))
+        if fill:
+            tile = fill
+        elif tile is None:
             if side_len >= S - 0.01 and r.random() < 0.6:
                 tile = pictograms.pick_sprite(r)
             elif long_face:
@@ -278,8 +282,19 @@ class Building:
                 else:
                     uvs = [((p[1] - ya - u0) / P + ubase, (p[2] - za) / P + 2) for p in pts]
                 self.b["panel"].quad(pts, uvs=uvs, tile_u=tu, tile_v=tv, rnd=r.random(), face=self.panel_tone)
+        # the cell grid of the whole face, for the 2D overlay data: (column, row) = (0, 0) at the front bottom corner
+        self.faces.append(
+            {
+                "i": i,
+                "k": k,
+                "type": "panel",
+                "cols": round(length / P),
+                "rows": 28,
+                "pts": [(xp, ya, za), (xp, ya + length, za), (xp, ya + length, za + height), (xp, ya, za + height)],
+            }
+        )
         # behind the panels: a dark glass lining. Lit at night, it shines through the holes and the dot picture glows
-        lit = 1.0 if (tile in pictograms.SPRITES or r.random() < 0.5) else 0.0
+        lit = 1.0 if (fill or tile in pictograms.SPRITES or r.random() < 0.5) else 0.0
         xg = x0 + STAND - 0.012
         self.b["glow"].quad(
             [(xg, ya + length, za), (xg, ya, za), (xg, ya, za + height), (xg, ya + length, za + height)],
@@ -924,6 +939,8 @@ def main():
     ap.add_argument("--zoom", default="", help="i,k,lens: from the shot's camera position, look at that module with a longer lens")
     ap.add_argument("--shift", default="0,0", help="lens shift x,y as a fraction of the picture width: moves the subject left / up")
     ap.add_argument("--exposure", type=float, default=0.0)
+    ap.add_argument("--panel", default="", help='i,k,tile: punch that module\'s whole side face from one flat tile ("full" = every hole open, "bg" = closed)')
+    ap.add_argument("--border", default="", help="x0,y0,x1,y1 as fractions of the picture (y down): render only that part, the rest stays empty")
     ap.add_argument("--font", default="/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", help="font for the painted module codes")
     ap.add_argument("--out", default="")
     ap.add_argument("--data", default="", help="write the 2D positions of the visible faces as JSON")
@@ -934,7 +951,11 @@ def main():
     scene = bpy.context.scene
     w, h = (int(v) for v in args.res.split("x"))
 
-    building = Building(args.seed, parse_groups(args.front))
+    panel_fill = {}
+    if args.panel:
+        pi, pk, ptile = args.panel.split(",")
+        panel_fill[(int(pi), int(pk))] = ptile
+    building = Building(args.seed, parse_groups(args.front), panel_fill)
     building.build()
 
     atlas = make_atlas()
@@ -1022,6 +1043,12 @@ def main():
     except TypeError:
         pass
     scene.render.threads_mode = "AUTO"
+    if args.border:
+        bx0, by0, bx1, by1 = (float(v) for v in args.border.split(","))
+        scene.render.use_border = True
+        scene.render.use_crop_to_border = False
+        scene.render.border_min_x, scene.render.border_max_x = bx0, bx1
+        scene.render.border_min_y, scene.render.border_max_y = 1.0 - by1, 1.0 - by0
 
     if args.matte:
         for ob in scene.objects:
@@ -1059,6 +1086,8 @@ def main():
                     "kind": building.kinds.get((f["i"], f["k"])),
                     "dist": round((centre - cam_pos).length, 3),
                     "len": f.get("len"),
+                    "cols": f.get("cols"),
+                    "rows": f.get("rows"),
                     "pts": pts2,
                 }
             )

@@ -6,6 +6,7 @@ architecture photo; the night shots keep only the yellow of the lights. See READ
   python post.py day    hero.png  --name stack-day   --widths 2400,1600
   python post.py night  night.png --name stack-night --widths 2400,1600
   python post.py front  hero.png  --matte hero-matte.png --channels rg --name stack-front --widths 2400,1600
+  python post.py day    hero.png  --patch panel-on.png@0.22,0.46,0.44,0.72 --crop 0.23,0.47,0.43,0.71 --name panel-on --widths 480,320
 """
 
 import argparse
@@ -128,6 +129,7 @@ def main():
     ap.add_argument("--matte", default="")
     ap.add_argument("--channels", default="rgb", help="which matte groups make up the front layer")
     ap.add_argument("--night", action="store_true", help="front layer of a night picture")
+    ap.add_argument("--patch", default="", help="FILE@x0,y0,x1,y1: paste that part of FILE (a render of the same shot made with scene.py --border) before grading")
     ap.add_argument("--black", type=float, default=0.02)
     ap.add_argument("--white", type=float, default=0.97)
     ap.add_argument("--gamma", type=float, default=None, help="default: 1.3 by day, 0.85 by night")
@@ -138,6 +140,16 @@ def main():
 
     os.makedirs(args.out_dir, exist_ok=True)
     im = load(args.src)
+    if args.patch:
+        # grading the whole picture and cropping afterwards keeps the grain identical to the picture it will sit on
+        path, rect = args.patch.rsplit("@", 1)
+        patch = load(path)
+        if patch.shape[:2] != im.shape[:2]:
+            raise SystemExit("the patch and the picture differ in size")
+        h, w = im.shape[:2]
+        x0, y0, x1, y1 = (float(v) for v in rect.split(","))
+        ys, xs = slice(round(y0 * h), round(y1 * h)), slice(round(x0 * w), round(x1 * w))
+        im[ys, xs] = patch[ys, xs]
     night = args.mode == "night" or args.night
     # the night renders are dark all over, so they are lifted instead of pushed down
     if args.gamma is None:

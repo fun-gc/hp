@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Raleway } from "next/font/google";
 import "@fontsource/line-seed-jp/400.css";
 import "@fontsource/line-seed-jp/700.css";
 import "@fontsource/line-seed-jp/800.css";
+import { ScrollReveal } from "@/components/Motion";
 import { NowBanner } from "@/components/NowBanner";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -50,8 +51,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const upcoming = getSchedule().filter((e) => e.date >= buildDate);
 
   return (
-    <html lang="ja" className={`${raleway.variable} ${plexMono.variable} h-full antialiased`}>
+    // suppressHydrationWarning: 下のスクリプトが、React が動き出す前に html へ js クラスを足すため
+    <html lang="ja" className={`${raleway.variable} ${plexMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* スクロールで出てくる要素(data-reveal)は、JS が動くときだけ最初に隠す。描く前に印を付け、
+            3 秒たっても ScrollReveal が動いていなければ(スクリプトの読み込み失敗など)隠すのをやめる */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var d=document.documentElement;d.classList.add("js");setTimeout(function(){if(!window.__reveal)d.classList.remove("js")},3000)})()`,
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col font-sans">
+        <ScrollReveal />
         <SiteHeader>
           <NowBanner events={upcoming} />
         </SiteHeader>

@@ -3,6 +3,7 @@ import { PageHeading, SubHead } from "@/components/Heading";
 import { MemberCard } from "@/components/MemberCard";
 import { getMedals, getMembers } from "@/lib/content";
 import { memberStanding } from "@/lib/grade";
+import { stagger } from "@/lib/motion";
 
 export const metadata: Metadata = { title: "Members" };
 
@@ -24,8 +25,10 @@ export default function MembersPage() {
 
   const renderGrid = (list: typeof members) => (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {list.map(({ member, standing }) => (
-        <MemberCard key={member.discordId} member={member} standing={standing} medals={member.medals.flatMap((id) => medals.get(id) ?? [])} />
+      {list.map(({ member, standing }, i) => (
+        <div key={member.discordId} className="grid" data-reveal style={stagger((i % 3) + 1)}>
+          <MemberCard member={member} standing={standing} medals={member.medals.flatMap((id) => medals.get(id) ?? [])} />
+        </div>
       ))}
     </div>
   );

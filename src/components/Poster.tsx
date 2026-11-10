@@ -118,10 +118,10 @@ export function Tri({ className = "size-6", filled = true }: { className?: strin
   );
 }
 
-/** 細い線の矢印。length は CSS の長さ */
+/** 細い線の矢印。length は CSS の長さ。リンクやボタン(.group)の中に置くと、カーソルが乗ったときに先へ少し進む */
 export function ArrowLine({ className = "", length = "3rem" }: { className?: string; length?: string }) {
   return (
-    <span aria-hidden="true" className={`relative inline-block h-px shrink-0 bg-current align-middle ${className}`} style={{ width: length }}>
+    <span aria-hidden="true" className={`arrow-line relative inline-block h-px shrink-0 bg-current align-middle ${className}`} style={{ width: length }}>
       <span className="absolute -right-px -top-[3px] size-[7px] rotate-45 border-r border-t border-current" />
     </span>
   );

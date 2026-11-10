@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { delay } from "@/lib/motion";
 import { navItems, site } from "@/lib/site";
 import { LogoMark } from "./Logo";
 
@@ -15,7 +16,7 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
     // 背景は透かして後ろをぼかす。トップページでは、ヒーローの建物がこの下まで続いて見える
     <header className="sticky top-0 z-40 border-b border-ink/70 bg-paper/70 backdrop-blur-md">
       <div className="wrap flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+        <Link href="/" className="logo-spin flex items-center gap-3" onClick={() => setOpen(false)}>
           <LogoMark className="size-8" />
           <span className="font-poster text-xl font-semibold tracking-[0.14em]">{site.name}</span>
           <span className="hidden border-l border-ink/40 pl-3 font-mono text-[10px] leading-tight tracking-wider text-muted xl:block" aria-hidden="true">
@@ -31,8 +32,10 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
               const active = pathname.startsWith(item.href);
               return (
                 <li key={item.href}>
+                  {/* data-nav: トップのヒーローで、同じ名前の箱が黄色く光る(globals.css の .mod-hit) */}
                   <Link
                     href={item.href}
+                    data-nav={item.en}
                     aria-current={active ? "page" : undefined}
                     className={`group flex items-baseline gap-1.5 px-3 py-2 font-mono text-[13px] font-medium tracking-[0.14em] transition-colors ${
                       active ? "hl" : "hover:bg-ink hover:text-paper"
@@ -75,7 +78,8 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
             {navItems.map((item, i) => {
               const active = pathname.startsWith(item.href);
               return (
-                <li key={item.href}>
+                // 開くと、上から順に 1 行ずつ出る
+                <li key={item.href} className="a-rise [animation-duration:0.5s]" style={delay(i * 45)}>
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
