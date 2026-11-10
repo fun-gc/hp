@@ -69,7 +69,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
           <button type="button" onClick={() => shift(-1)} className="px-3 py-1 font-bold hover:text-fun-red-ink" aria-label="前の月">
             ←
           </button>
-          <p className="font-mono text-xl font-bold tracking-wider" aria-live="polite">
+          <p className="font-poster text-3xl font-light tracking-wide tabular-nums lining-nums" aria-live="polite">
             {year}.{pad(mon)}
           </p>
           <button type="button" onClick={() => shift(1)} className="px-3 py-1 font-bold hover:text-fun-red-ink" aria-label="次の月">
@@ -103,7 +103,7 @@ export function ScheduleCalendar({ events, buildDate }: { events: ScheduleEvent[
                 }`}
               >
                 <span
-                  className={`grid size-7 place-items-center font-display font-semibold ${
+                  className={`grid size-7 place-items-center font-mono font-medium ${
                     isToday && !isSelected ? "rounded-full bg-fun-red text-white" : ""
                   }`}
                 >

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Annot, Tri } from "@/components/Poster";
 import { getNews } from "@/lib/content";
-import { delay } from "@/lib/motion";
 
 export const dynamicParams = false;
 
@@ -22,14 +22,19 @@ export default async function NewsArticle({ params }: PageProps<"/news/[slug]">)
   if (!item) notFound();
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <header className="anim-rise mb-10 space-y-4">
-        <p className="font-mono text-sm text-muted">{item.date.toISOString().slice(0, 10).replaceAll("-", ".")}</p>
-        <h1 className="text-3xl font-black leading-snug sm:text-4xl">{item.title}</h1>
+    <article className="mx-auto max-w-3xl px-5 py-14 sm:px-8 sm:py-20">
+      <header className="mb-10 border-b border-ink pb-8">
+        <p className="flex items-center gap-3 text-muted">
+          <Tri className="size-3 text-ink" />
+          <Annot>H04 — NEWS</Annot>
+          <span className="h-px flex-1 bg-current opacity-50" aria-hidden="true" />
+          <span className="font-mono text-sm">{item.date.toISOString().slice(0, 10).replaceAll("-", ".")}</span>
+        </p>
+        <h1 className="mt-6 text-3xl font-extrabold leading-snug sm:text-4xl">{item.title}</h1>
       </header>
       {/* 本文は content/news の Markdown をビルド時に HTML にしたもの(リポジトリ内の文章だけを表示する) */}
-      <div className="prose-fun anim-fade" style={delay(0.25)} dangerouslySetInnerHTML={{ __html: item.html }} />
-      <Link href="/news/" className="mt-12 inline-block font-mono text-sm font-bold tracking-wider hover:bg-fun-yellow">
+      <div className="prose-fun" dangerouslySetInnerHTML={{ __html: item.html }} />
+      <Link href="/news/" className="mt-14 inline-block px-1 font-mono text-xs font-medium tracking-[0.2em] hover:bg-fun-yellow">
         ← ALL NEWS
       </Link>
     </article>

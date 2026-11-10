@@ -68,7 +68,7 @@ export function NowBanner({ events }: { events: ScheduleEvent[] }) {
         {messages.join(" / ")}
       </p>
       <span
-        className="relative z-10 flex shrink-0 items-center bg-fun-yellow pr-6 pl-4 font-display tracking-[0.2em] text-ink [clip-path:polygon(0_0,100%_0,calc(100%-12px)_100%,0_100%)] sm:pl-6"
+        className="relative z-10 flex shrink-0 items-center bg-fun-yellow pr-6 pl-4 font-mono font-medium tracking-[0.2em] text-ink [clip-path:polygon(0_0,100%_0,calc(100%-12px)_100%,0_100%)] sm:pl-6"
         aria-hidden
       >
         NOW

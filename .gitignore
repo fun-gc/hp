@@ -50,3 +50,6 @@ next-env.d.ts
 
 # 建物レンダー用の Python 環境(tools/poster-render/README.md)
 /.venv-render
+
+# python
+__pycache__/

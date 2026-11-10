@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { NightBackdrop } from "@/components/Poster";
-import { PageHeading } from "@/components/SectionLabel";
+import { PageHeading, SubHead } from "@/components/Heading";
+import { NightStage } from "@/components/NightStage";
+import { stagger } from "@/lib/motion";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Join" };
@@ -13,70 +14,78 @@ const steps = [
 
 export default function JoinPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <>
       <PageHeading en="JOIN" lead="Google フォームから入部、見学を受け付けています。" />
 
-      <section aria-labelledby="join-form-heading" data-reveal className="mb-12 max-w-3xl">
-        <h2 id="join-form-heading" className="font-poster text-4xl font-light">Join / Visit</h2>
-        {site.joinFormUrl ? (
-          <a href={site.joinFormUrl} target="_blank" rel="noreferrer" className="mt-5 inline-block bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-ink hover:text-white">
-            今すぐ参加
-            <span className="ml-2 font-mono text-xs font-normal" aria-hidden="true">
-              ↗
-            </span>
-            <span className="sr-only">(Google フォームが新しいタブで開きます)</span>
-          </a>
-        ) : (
-          <p className="mt-5 font-bold">入部・見学フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
-        )}
-      </section>
+      <div className="wrap grid gap-16 py-16 sm:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+        <section aria-labelledby="join-form-heading">
+          <SubHead id="join-form-heading" note="GOOGLE FORM">
+            Join / Visit
+          </SubHead>
+          {site.joinFormUrl ? (
+            <a
+              href={site.joinFormUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="sweep inline-flex items-center gap-3 px-7 py-4 text-lg font-extrabold text-ink [--sweep-from:var(--color-fun-yellow)] [--sweep-to:var(--color-ink)] hover:text-white"
+            >
+              今すぐ参加
+              <span className="font-mono text-sm font-normal" aria-hidden="true">
+                ↗
+              </span>
+              <span className="sr-only">(Google フォームが新しいタブで開きます)</span>
+            </a>
+          ) : (
+            <p className="font-bold">入部・見学フォームは準備中です。下のお問い合わせ先からご連絡ください。</p>
+          )}
+        </section>
 
-      <section className="max-w-3xl">
-        <div className="space-y-5">
-          <h2 data-reveal className="font-poster text-4xl font-light">
+        <section aria-labelledby="join-steps-heading">
+          <SubHead id="join-steps-heading" note="3 STEPS">
             How to join
-          </h2>
-          <ol className="space-y-4">
+          </SubHead>
+          <ol>
             {steps.map((s, i) => (
-              <li key={s.title} data-reveal className="flex gap-4">
-                <span className="grid size-10 shrink-0 place-items-center bg-ink font-mono font-bold text-white">{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <p className="font-bold">{s.title}</p>
+              <li key={s.title} className="grid grid-cols-[4.5rem_1fr] gap-x-4 border-b border-ink/25 py-5 first:pt-0" data-reveal style={stagger(i + 2)}>
+                <span className="font-poster text-5xl font-light leading-none tabular-nums lining-nums" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="space-y-1">
+                  <p className="text-lg font-extrabold">{s.title}</p>
                   <p className="text-sm leading-relaxed text-muted">{s.text}</p>
                 </div>
               </li>
             ))}
           </ol>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      {/* トップの「Join us」と同じ、夜の建物の写真を敷く */}
-      <section
-        id="contact"
-        data-reveal
-        className="relative mt-20 scroll-mt-24 overflow-hidden bg-ink px-6 py-12 text-white sm:px-12 sm:py-16"
-      >
-        <NightBackdrop />
-        <div className="relative z-10 max-w-xl space-y-4">
-          <h2 className="font-poster text-4xl font-light sm:text-5xl">Contact</h2>
-          <p className="text-white/75">入部や見学の相談、展示・取材のご依頼などはこちらからどうぞ。</p>
-          <div className="flex flex-wrap gap-3 pt-2">
+      {/* トップの「Join us」と同じ、夜の建物 */}
+      <div id="contact" className="scroll-mt-16">
+        <NightStage labelledBy="contact-heading" arc="PLEASE LEAVE A MESSAGE AFTER THE BEEP">
+          <h2 id="contact-heading" className="poster-word text-6xl sm:text-8xl" data-reveal="up" style={stagger(1)}>
+            Contact
+          </h2>
+          <p className="mt-6 max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85" data-reveal style={stagger(4)}>
+            入部や見学の相談、展示・取材のご依頼などはこちらからどうぞ。
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3" data-reveal style={stagger(6)}>
             {site.contactFormUrl && (
               <a
                 href={site.contactFormUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-fun-yellow px-6 py-3 font-bold text-ink transition hover:bg-white"
+                className="bg-fun-yellow px-6 py-3 font-mono text-sm font-medium tracking-[0.18em] text-ink transition-colors hover:bg-white"
               >
                 CONTACT FORM
               </a>
             )}
-            <a href={`mailto:${site.email}`} className="border-2 border-white px-6 py-3 font-bold transition hover:bg-white hover:text-ink">
+            <a href={`mailto:${site.email}`} className="border border-white px-6 py-3 font-mono text-sm font-medium tracking-wider transition-colors hover:bg-white hover:text-ink">
               {site.email}
             </a>
           </div>
-        </div>
-      </section>
-    </div>
+        </NightStage>
+      </div>
+    </>
   );
 }

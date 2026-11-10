@@ -34,7 +34,7 @@ export function WorkCard({ work }: { work: Work }) {
   const play = playLinkEn(work);
 
   return (
-    <article data-reveal className="corner-ticks flex flex-col border border-ink/20 bg-paper-2 p-1.5 text-ink">
+    <article className="corner-ticks flex flex-col border border-ink/25 bg-paper-2 p-1.5 text-ink">
       <div className="relative aspect-video overflow-hidden bg-ink">
         {work.youtubeId && playing ? (
           <iframe
@@ -53,7 +53,7 @@ export function WorkCard({ work }: { work: Work }) {
           >
             <Poster src={poster!} contain={Boolean(work.thumbnail)} />
             <span className="absolute inset-0 grid place-items-center">
-              <span className="grid size-14 place-items-center bg-fun-red text-white transition group-hover:scale-110">
+              <span className="grid size-14 place-items-center bg-fun-yellow text-ink transition group-hover:scale-110">
                 <svg viewBox="0 0 24 24" className="ml-1 size-6" aria-hidden="true">
                   <path d="M6 4l14 8-14 8z" fill="currentColor" />
                 </svg>
@@ -63,21 +63,21 @@ export function WorkCard({ work }: { work: Work }) {
         ) : poster ? (
           <Poster src={poster} contain={Boolean(work.thumbnail)} />
         ) : (
-          <div className="grid size-full place-items-center font-display text-3xl font-bold tracking-widest text-white/30">
+          <div className="grid size-full place-items-center font-poster text-3xl font-light tracking-widest text-white/40">
             NO IMAGE
           </div>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex flex-wrap gap-2 text-xs">
-          {work.event && <span className="bg-ink px-2 py-0.5 font-bold text-white">{work.event}</span>}
+          {work.event && <span className="bg-ink px-2 py-0.5 text-[11px] font-bold text-white">{work.event}</span>}
           {work.tags.map((t) => (
             <span key={t} className="border border-ink/30 px-2 py-0.5 font-mono text-[11px] text-muted">
               {t}
             </span>
           ))}
         </div>
-        <h3 className="text-lg font-black leading-snug text-ink">{work.title}</h3>
+        <h3 className="text-lg font-extrabold leading-snug text-ink">{work.title}</h3>
         <p className="text-sm text-muted">{work.authors.join(" / ")}</p>
         <p className="flex-1 text-sm leading-relaxed">{work.body}</p>
         {work.playUrl && (
@@ -85,7 +85,7 @@ export function WorkCard({ work }: { work: Work }) {
             href={work.playUrl}
             target="_blank"
             rel="noreferrer"
-            className="mt-2 inline-flex w-fit items-center gap-3 bg-ink px-4 py-2 font-mono text-xs font-bold tracking-wider text-white transition hover:bg-fun-yellow hover:text-ink"
+            className="mt-2 inline-flex w-fit items-center gap-3 bg-ink px-4 py-2 font-mono text-xs font-medium tracking-[0.16em] text-white transition-colors hover:bg-fun-yellow hover:text-ink"
           >
             {play.verb}
             {play.host && <span className="font-normal opacity-70">{play.host}</span>}

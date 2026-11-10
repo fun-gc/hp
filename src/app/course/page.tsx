@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { PageHeading, SubHead } from "@/components/Heading";
+import { ArrowLine } from "@/components/Poster";
 import { ScheduleCalendar } from "@/components/ScheduleCalendar";
-import { PageHeading } from "@/components/SectionLabel";
 import { getSchedule } from "@/lib/content";
+import { stagger } from "@/lib/motion";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Course" };
@@ -11,7 +13,7 @@ export default function CoursePage() {
   const buildDate = new Date().toISOString().slice(0, 10);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <>
       <PageHeading
         en="COURSE"
         lead={
@@ -23,26 +25,29 @@ export default function CoursePage() {
         }
       />
 
-      <section id="schedule" className="scroll-mt-24 space-y-6">
-        <div data-reveal className="space-y-3">
-          <h2 className="font-poster text-5xl font-light">Schedule</h2>
-          <p className="text-muted">日付を押すと、その日の予定だけを表示します。</p>
-        </div>
-        <div data-reveal>
-          <ScheduleCalendar events={events} buildDate={buildDate} />
-        </div>
-        {/* 講座資料のリポジトリを公開したら(site.courseRepoPublic)、ここにリンクを出す */}
-        {site.courseRepoPublic && (
-          <a
-            href={site.courseRepoUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-ink px-5 py-3 font-mono text-sm font-bold tracking-wider text-white hover:bg-fun-yellow hover:text-ink"
-          >
-            MATERIALS (GitHub) →
-          </a>
-        )}
-      </section>
-    </div>
+      <div className="wrap py-16 sm:py-20">
+        <section id="schedule" className="scroll-mt-24">
+          <SubHead note="JST / UTC+9">Schedule</SubHead>
+          <p className="mb-6 text-muted" data-reveal style={stagger(3)}>
+            日付を押すと、その日の予定だけを表示します。
+          </p>
+          <div data-reveal style={stagger(4)}>
+            <ScheduleCalendar events={events} buildDate={buildDate} />
+          </div>
+          {/* 講座資料のリポジトリを公開したら(site.courseRepoPublic)、ここにリンクを出す */}
+          {site.courseRepoPublic && (
+            <a
+              href={site.courseRepoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="sweep group mt-8 inline-flex items-center gap-3 px-5 py-3 font-mono text-sm font-medium tracking-[0.18em] text-white [--sweep-from:var(--color-ink)] [--sweep-to:var(--color-fun-yellow)] hover:text-ink"
+            >
+              MATERIALS (GitHub)
+              <ArrowLine length="1.5rem" />
+            </a>
+          )}
+        </section>
+      </div>
+    </>
   );
 }

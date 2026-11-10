@@ -1,11 +1,10 @@
+// 動きの順番を CSS 変数で渡すための小さな道具(見た目は globals.css の「動き」)。
 import type { CSSProperties } from "react";
 
-/** アニメーションを遅らせる秒数を CSS 変数 --d で渡す。globals.css の anim-* がこの値を読む */
-export const delay = (seconds: number): CSSProperties => ({ "--d": `${seconds}s` }) as CSSProperties;
+export type Vars = CSSProperties & Record<`--${string}`, string | number>;
 
-/**
- * 最初の描画より前に html へ data-motion="boot" を付け、スクロールで出てくる要素(data-reveal)を隠しておく。
- * 動きを減らす設定の人と、IntersectionObserver のないブラウザでは付けないので、最初からすべて表示される。
- * 出すのは RevealOnScroll(読み込み後に data-motion="on" に切り替える)。
- */
-export const motionBootScript = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&"IntersectionObserver"in window)document.documentElement.setAttribute("data-motion","boot")}catch(e){}`;
+/** 登場の動き(a-*)が始まるまでのミリ秒 */
+export const delay = (ms: number): Vars => ({ "--d": ms });
+
+/** スクロールで出てくる要素(data-reveal)を、i 番目として少しずつ遅らせる。長い一覧でも待たせすぎないよう、max で頭打ちにする */
+export const stagger = (i: number, max = 8): Vars => ({ "--i": Math.min(i, max) });
