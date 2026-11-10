@@ -102,7 +102,9 @@ body {
 /* ---- ポスターの舞台 ----
    建物の切り抜き写真の上に文字や線を置く箱。中の位置と大きさは、箱の幅を 100 とした単位(cqw)で決めるので、
    画面の幅が変わっても、写真と文字の重なり方は 1 枚の絵のように保たれる。
-   位置は --x / --y(広い画面)と --mx / --my(狭い画面)で渡す。 */
+   位置は --x / --y(広い画面)と --mx / --my(狭い画面)で渡す。
+   舞台そのものの高さには cqw を使わない(自分自身は基準にならず、画面の幅が基準になる。スクロールバーが幅を取る環境では
+   その幅のぶん中身とずれる)。高さは aspect-ratio で決め、中に重ねる SVG も 100% ではなく cqw で大きさを決める */
 .stage {
   container-type: inline-size;
   position: relative;
@@ -150,7 +152,8 @@ body {
   /* 16:9 の 1 枚。背の低い画面では下が切れるので、見出しとボタンは上から 48cqw までに収める。
      建物は下の端で切り落とし、細い線で締める */
   .hero {
-    height: 56.25cqw;
+    aspect-ratio: 16 / 9;
+    min-height: 0;
     border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 70%, transparent);
   }
   .hero-photo {
@@ -245,7 +248,8 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
 }
 @media (min-width: 64rem) {
   .page-head {
-    height: 30cqw;
+    aspect-ratio: 10 / 3;
+    min-height: 0;
     border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 70%, transparent);
   }
   /* 写真の右端は建物の途中で切れているので、そこだけ霧に溶かす */
@@ -297,7 +301,8 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
 }
 @media (min-width: 64rem) {
   .night {
-    height: 46cqw;
+    aspect-ratio: 100 / 46;
+    min-height: 0;
   }
   .night-photo {
     left: -12cqw;

@@ -134,7 +134,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
 
       {/* 面に貼った黄色いフィルム(乗算)。手前の箱の写真より上に置く */}
       <svg
-        className="tint depth a-build pointer-events-none absolute inset-0 hidden size-full lg:block"
+        className="tint depth a-build pointer-events-none absolute left-0 top-0 hidden h-[56.25cqw] w-[100cqw] lg:block"
         style={BUILDING}
         viewBox="0 0 100 56.25"
         preserveAspectRatio="xMinYMin slice"
@@ -150,7 +150,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
 
       {/* ---- 線(広い画面)。箱の角から引き出した線と、弧 ---- */}
       <svg
-        className="depth pointer-events-none absolute inset-0 hidden size-full lg:block"
+        className="depth pointer-events-none absolute left-0 top-0 hidden h-[56.25cqw] w-[100cqw] lg:block"
         style={BUILDING}
         viewBox="0 0 100 56.25"
         preserveAspectRatio="xMinYMin slice"
