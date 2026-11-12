@@ -26,7 +26,7 @@ export default function Home() {
 
       {/* ---- 作品。建物の箱のように、1 段ずつ下げて並べる ---- */}
       <section className="wrap relative pb-20 pt-20 lg:pb-44" aria-labelledby="home-works">
-        <SectionHead index={2} en="WORKS" href="/works/" linkLabel="ALL WORKS" id="home-works" />
+        <SectionHead ja="作品" en="WORKS" href="/works/" linkLabel="ALL WORKS" id="home-works" />
         <ul className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-7">
           {works.map((w, i) => (
             <li key={w.slug} className="lg:translate-y-[calc(var(--step)*2.4rem)]" data-reveal style={{ "--step": i, ...stagger(i + 2) } as CSSProperties}>
@@ -65,7 +65,7 @@ export default function Home() {
             <Crosshair className="size-5" />
           </div>
           <div>
-            <SectionHead index={3} en="SCHEDULE" href="/course/#schedule" linkLabel="CALENDAR" />
+            <SectionHead ja="予定" en="SCHEDULE" href="/course/#schedule" linkLabel="CALENDAR" />
             {upcoming.length === 0 ? (
               <p className="corner-ticks px-4 py-10 text-center text-sm text-muted" data-reveal style={stagger(3)}>
                 次の予定は準備中です。
@@ -88,7 +88,7 @@ export default function Home() {
             )}
           </div>
           <div>
-            <SectionHead index={4} en="NEWS" href="/news/" linkLabel="ALL NEWS" />
+            <SectionHead ja="お知らせ" en="NEWS" href="/news/" linkLabel="ALL NEWS" />
             <ul className="border-t border-ink">
               {news.map((n) => (
                 <li key={n.slug} className="border-b border-ink/25" data-reveal style={stagger(news.indexOf(n) + 3)}>
@@ -107,7 +107,7 @@ export default function Home() {
 
       {/* ---- 部員募集。ヒーローと同じ建物の夜 ---- */}
       <NightStage labelledBy="home-join" arc="NEW PLAYER HAS ENTERED THE GAME">
-        <SectionHead index={5} en="JOIN US" invert id="home-join" />
+        <SectionHead ja="入部案内" en="JOIN US" invert id="home-join" />
         <p className="max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85" data-reveal style={stagger(4)}>
           見学はいつでも受け付けています。
         </p>

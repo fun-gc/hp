@@ -29,16 +29,17 @@ export const moduleOf: Record<string, { code: string; sign: string; film: Pt[] }
   JOIN: { code: "H03", sign: "PLUS", film: [[30.44, 28.41], [14.16, 17.21], [19.53, 4.68], [36.77, 14.19]] },
 };
 
-/** セクションの見出し。「▲ [番号] 英字 ———」の細い行の下に、細い英字を大きく置く。画面に入ると、罫線が引かれ、英字がせり上がる */
+/** セクションの見出し。「▲ 日本語の名前 ———」の細い行の下に、細い英字を大きく置く。画面に入ると、罫線が引かれ、英字がせり上がる */
 export function SectionHead({
-  index,
+  ja,
   en,
   href,
   linkLabel,
   invert = false,
   id,
 }: {
-  index: number;
+  /** 細い行に出す日本語の名前(作品、お知らせなど) */
+  ja: string;
   en: string;
   href?: string;
   linkLabel?: string;
@@ -50,8 +51,7 @@ export function SectionHead({
       <div className={`flex items-center gap-3 ${invert ? "text-white/70" : "text-muted"}`} aria-hidden="true">
         <span className="flex items-center gap-3" data-reveal="wipe">
           <Tri className={`size-3 ${invert ? "text-fun-yellow" : "text-ink"}`} />
-          <span className="font-mono text-[11px]">[{pad2(index)}]</span>
-          <span className="font-mono text-xs font-medium tracking-[0.25em]">{en}</span>
+          <span className="text-xs font-medium tracking-[0.2em]">{ja}</span>
         </span>
         <span className="h-px min-w-8 flex-1 bg-current opacity-50" data-reveal="line" style={stagger(2)} />
       </div>

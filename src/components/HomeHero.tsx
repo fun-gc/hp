@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { delay as d, type Vars } from "@/lib/motion";
-import { navItems, site } from "@/lib/site";
+import { navItems } from "@/lib/site";
 import { moduleOf } from "./Heading";
 import { StageMotion } from "./Motion";
 import { PanelGame } from "./PanelGame";
-import { Annot, ArrowLine, Chevrons, coordinates, Eye, FarShore, StackPhoto } from "./Poster";
+import { Annot, ArrowLine, Chevrons, coordinates, FarShore, StackPhoto } from "./Poster";
 
 // トップページのヒーロー。1 枚のポスターとして組む:
 //   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 細い英字(Playable)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。
@@ -47,13 +47,13 @@ const LETTERS: Vars = { "--depth": 0.95, "--drift": -1.4 };
 
 // 黄色い大文字。建物の上から空へ、右下がりの一直線に並べる(左上の角が 1 本の直線に乗る。広い画面は F と C、狭い画面も F と C を結ぶ線)。
 // 文字は 5 つとも建物の手前に置き、箱が文字を隠すところは作らない(手前の箱の写真より上に描く)。
-// F は、幅 1024px の画面でもヘッダー(高さ 4rem = 6.25cqw)の下に隠れない高さから始める
+// F は、幅 1024px の画面でもヘッダー(高さ 4rem = 6.25cqw)の下に隠れない高さから始める。広い画面の F の左端は、下の「Playable」とそろえる
 const letters: { ch: string; pos: [number, number, number, number] }[] = [
-  { ch: "F", pos: [20.4, 6.9, 3.6, 22.2] },
-  { ch: "U", pos: [29.2, 12.57, 20.6, 34.17] },
-  { ch: "N", pos: [38.5, 18.56, 39, 47.14] },
-  { ch: "G", pos: [48, 24.68, 57.6, 60.24] },
-  { ch: "C", pos: [57.5, 30.8, 76, 73.2] },
+  { ch: "F", pos: [16.05, 6.9, 3.6, 22.2] },
+  { ch: "U", pos: [24.85, 12.57, 20.6, 34.17] },
+  { ch: "N", pos: [34.15, 18.56, 39, 47.14] },
+  { ch: "G", pos: [43.65, 24.68, 57.6, 60.24] },
+  { ch: "C", pos: [53.15, 30.8, 76, 73.2] },
 ];
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
@@ -161,16 +161,6 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         </g>
         <circle className="a-fade" style={d(1100)} cx="59.3" cy="27.7" r="0.45" fill="var(--color-fun-yellow)" />
       </svg>
-
-      {/* ---- 注記 ---- */}
-      <div className="play-out pin a-wipe flex items-center gap-3 bg-ink py-1.5 pl-1.5 pr-3 text-white lg:max-xl:hidden" style={at(2.2, 6.4, 40, 19, d(500))}>
-        <Eye className="size-6 lg:size-7" />
-        <Annot>
-          No[01]
-          <br />
-          {site.universityEn.toUpperCase()}
-        </Annot>
-      </div>
 
       {/* 縦書きの注記 */}
       <p aria-hidden="true" className="pin a-type-v hidden font-mono text-[11px] tracking-[0.28em] text-ink [writing-mode:vertical-rl] lg:block" style={at(97.2, 23, 0, 0, d(1900))}>
