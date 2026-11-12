@@ -439,7 +439,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
       {front}
 
       {/* ---- Play ボタン。斜体のひとこと「press any button」を押すと始まる。読み込み中は進み具合を出す。
-          広い画面では、遊ぶ場所になる黄色いパネルの下の辺に沿わせて書く(建物と一緒に動く)---- */}
+          建物の右下の空に置く ---- */}
       <button
         ref={playButton}
         type="button"
@@ -448,8 +448,8 @@ export function PanelGame({ front }: { front: ReactNode }) {
         onClick={() => api.current?.start()}
         onPointerEnter={() => api.current?.warm()}
         onFocus={() => api.current?.warm()}
-        className="play-word play-out pin depth a-fade whitespace-nowrap font-poster text-[3.7cqw] font-light italic text-ink lg:origin-top-left lg:rotate-[21deg] lg:text-[max(12px,1.1cqw)] lg:font-normal"
-        style={at(15.5, 30.4, 4, 104, { "--depth": 0.4, ...d(2100) })}
+        className="play-word play-out pin a-fade whitespace-nowrap font-poster text-[3.7cqw] font-light italic text-ink lg:text-[1.35cqw]"
+        style={at(41.5, 47, 4, 104, d(2100))}
       >
         <span className="blink">|</span> <span className="play-hint">{busy ? `loading ${Math.round(loaded * 100)}%` : failed ? "try again" : "press any button"}</span>
       </button>

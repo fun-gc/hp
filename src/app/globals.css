@@ -188,7 +188,7 @@ body {
    舞台の data-play が段階を表す。in: ポスターの文字や線(.play-out)が引く → on: 建物の写真の代わりに、
    回り込む連番と静止画(.play-layer)を出す → out: 写真に戻して、文字や線を出し直す */
 .play-word {
-  /* 黄色いパネルの上に書くので、パネルのリンク(.mod-hit)より上に置く */
+  /* 建物の写真や線より上に置く */
   z-index: 1;
   cursor: pointer;
   text-align: left;
@@ -374,11 +374,6 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
   position: relative;
   padding: 1.25rem 1.25rem 1rem;
 }
-.page-note {
-  position: absolute;
-  right: 1.25rem;
-  top: 50cqw;
-}
 @media (min-width: 64rem) {
   .page-head {
     aspect-ratio: 10 / 3;
@@ -406,11 +401,6 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
     top: 7.5cqw;
     width: 28cqw;
     padding: 0;
-  }
-  .page-note {
-    left: 24.5cqw;
-    right: auto;
-    top: 21.5cqw;
   }
 }
 

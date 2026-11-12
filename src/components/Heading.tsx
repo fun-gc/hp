@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { delay as d, stagger, type Vars } from "@/lib/motion";
 import { navItems } from "@/lib/site";
 import { StageMotion } from "./Motion";
-import { Annot, ArrowLine, coordinates, Crosshair, DotGrid, StackPhoto, Tri, type PhotoName } from "./Poster";
+import { Annot, ArrowLine, coordinates, DotGrid, StackPhoto, Tri, type PhotoName } from "./Poster";
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 // 奥行き(globals.css の .depth)。写真と、その手前に浮かせる英字
@@ -118,16 +118,6 @@ export function PageHeading({ en, lead }: { en: string; lead?: ReactNode }) {
           {sentence(en)}
         </span>
       </h1>
-
-      {/* 箱の番号から引き出した注記 */}
-      <div className="page-note a-type flex items-start gap-2 text-ink lg:max-xl:hidden" style={d(1100)} aria-hidden="true">
-        <Crosshair className="mt-0.5 size-3.5 shrink-0" />
-        <Annot>
-          <span className="hl px-1">{mod.code}</span> FIG.{no} — {mod.sign}
-          <br />
-          <span className="text-muted">1 DOT = 1 PIXEL</span>
-        </Annot>
-      </div>
 
       <div className="page-copy">
         <div className="a-wipe flex flex-wrap items-center gap-x-3 gap-y-1" style={d(500)} aria-hidden="true">

@@ -9,7 +9,7 @@ import { Annot, ArrowLine, FarShore, StackPhoto } from "./Poster";
 // トップページのヒーロー。1 枚のポスターとして組む:
 //   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。黄色い大文字は、どの箱よりも手前に置く。
 //   斜体の「press any button」を押すと、カメラが黄色いパネルの正面へ回り込み、パネルでミニゲームが遊べる(PanelGame)。
-//   黄色は、大文字と黄色いパネルのほかは、いちばん押してほしい JOIN US にだけ使う(飾りの線は墨の細線)。
+//   ボタンの黄色は、いちばん押してほしい JOIN US にだけ使う。
 //   遊んでいるあいだは、play-out の付いた層を引かせる(play-out-lg は広い画面でだけ。globals.css の「パネルのミニゲーム」)。
 // 中の位置は、舞台(.stage)の幅を 100 とした単位。広い画面は横長(100 × 56.25)、狭い画面は縦長に組み直す。
 //
@@ -153,13 +153,11 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         fill="none"
       >
         {/* 線の太さも絵の中の単位(幅 1440px の画面で 1px)。pathLength を 1 にして、a-draw で端から引く。
-            黄色は押してほしいもの(JOIN US)に取っておき、飾りの線は墨の細線で控えめにする */}
-        <g stroke="var(--color-ink)" strokeWidth="0.07" strokeOpacity="0.35">
-          {/* H07 の角から、見出しへ引き出す線 */}
-          <line className="a-draw" style={d(1150)} pathLength={1} x1="59.3" y1="27.7" x2="64" y2="25.75" />
-          {/* 大きな弧 */}
-          <path className="a-draw [animation-duration:2s]" style={d(700)} pathLength={1} d="M -4 20 A 58 58 0 0 0 62 60" strokeOpacity="0.2" />
-        </g>
+            引き出し線は墨の細線で控えめにする */}
+        {/* H07 の角から、見出しへ引き出す線 */}
+        <line className="a-draw" style={d(1150)} pathLength={1} x1="59.3" y1="27.7" x2="64" y2="25.75" stroke="var(--color-ink)" strokeWidth="0.07" strokeOpacity="0.35" />
+        {/* 大きな弧 */}
+        <path className="a-draw [animation-duration:2s]" style={d(700)} pathLength={1} d="M -4 20 A 58 58 0 0 0 62 60" stroke="var(--color-fun-yellow)" strokeWidth="0.07" />
         <circle className="a-fade" style={d(1100)} cx="59.3" cy="27.7" r="0.2" fill="var(--color-ink)" fillOpacity="0.45" />
       </svg>
 

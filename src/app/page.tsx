@@ -106,7 +106,7 @@ export default function Home() {
       </section>
 
       {/* ---- 部員募集。ヒーローと同じ建物の夜 ---- */}
-      <NightStage labelledBy="home-join" arc="NEW PLAYER HAS ENTERED THE GAME">
+      <NightStage labelledBy="home-join">
         <SectionHead ja="入部案内" en="JOIN US" invert id="home-join" />
         <p className="max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85" data-reveal style={stagger(4)}>
           見学はいつでも受け付けています。
