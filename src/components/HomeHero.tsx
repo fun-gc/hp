@@ -3,16 +3,18 @@ import { delay as d, type Vars } from "@/lib/motion";
 import { navItems, site } from "@/lib/site";
 import { moduleOf } from "./Heading";
 import { StageMotion } from "./Motion";
+import { PanelGame } from "./PanelGame";
 import { Annot, ArrowLine, Chevrons, coordinates, Eye, FarShore, StackPhoto } from "./Poster";
 
 // トップページのヒーロー。1 枚のポスターとして組む:
-//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 黄色い大文字 → 注記と線、の順に重ねる。黄色い大文字は、どの箱よりも手前に置く。
-//   細い英字の「Playable」は、いったん外してある(パネルで遊べる仕掛けを作るときに戻すかもしれない)。戻すときは、建物の写真と
-//   手前の箱だけの写真(public/poster の stack-front)のあいだに挟むと、左下の箱の少し後ろにあるように見える。
+//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 細い英字(Playable)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。
+//   細い英字だけを 2 枚の写真のあいだに挟み、せり出した箱の少し後ろにあるように見せる。黄色い大文字は、どの箱よりも手前に置く。
+//   「Playable」は Play ボタンを兼ねていて、押すとカメラが黄色いパネルの正面へ回り込み、パネルでミニゲームが遊べる(PanelGame)。
+//   遊んでいるあいだは、play-out の付いた層を引かせる(play-out-lg は広い画面でだけ。globals.css の「パネルのミニゲーム」)。
 // 中の位置は、舞台(.stage)の幅を 100 とした単位。広い画面は横長(100 × 56.25)、狭い画面は縦長に組み直す。
 //
 // 動き(globals.css の「動き」):
-//   読み込むと、写真 → 黄色の大文字 → 線と注記の順に、刷り重ねるように出る(a-*、--d は始まるまでのミリ秒)。
+//   読み込むと、写真 → 黄色の大文字 → 細い英字 → 線と注記の順に、刷り重ねるように出る(a-*、--d は始まるまでのミリ秒)。
 //   .depth の付いた層は、カーソルとスクロールに合わせて少しずつ違う量だけ動き、重ねた紙のような奥行きが出る(StageMotion)。
 
 /** 位置を CSS 変数で渡す(globals.css の .pin)。x, y は広い画面、mx, my は狭い画面。more で、動きの変数を足す */
@@ -106,13 +108,18 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       <StageMotion />
 
       {/* ---- 奥: 霧の向こうの函館山 ---- */}
-      <FarShore className="pin depth a-fade w-[150cqw] max-w-none opacity-90 [animation-duration:2.4s] lg:w-[62cqw]" style={at(51.6, 40, -22, 98, { ...FAR, ...d(300) })} />
+      <div className="play-out-lg">
+        <FarShore className="pin depth a-fade w-[150cqw] max-w-none opacity-90 [animation-duration:2.4s] lg:w-[62cqw]" style={at(51.6, 40, -22, 116, { ...FAR, ...d(300) })} />
+      </div>
 
       {/* ---- 建物 ---- */}
       <StackPhoto name="stack-day" narrow="stack-day-m" sizes="110vw" eager className="hero-photo fade-m depth a-build" style={BUILDING} />
 
+      {/* ---- Play ボタンを兼ねる細い英字(Playable)、その上に重ねる手前の箱、ミニゲームの画面 ---- */}
+      <PanelGame front={<StackPhoto name="stack-front" narrow="stack-front-m" sizes="110vw" eager className="hero-photo fade-m depth a-build pointer-events-none" style={BUILDING} />} />
+
       {/* ---- 黄色い大文字。建物のどの箱よりも手前 ---- */}
-      <div aria-hidden="true">
+      <div aria-hidden="true" className="play-out">
         {letters.map((l, i) => (
           <span key={l.ch} data-ch={l.ch} className="title-letter pin depth a-drop text-[26cqw] lg:text-[13.2cqw]" style={at(...l.pos, { ...LETTERS, ...d(280 + i * 95) })}>
             {l.ch}
@@ -120,7 +127,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         ))}
       </div>
 
-      {/* 面に貼った黄色いフィルム(乗算) */}
+      {/* 面に貼った黄色いフィルム(乗算)。手前の箱の写真より上に置く */}
       <svg
         className="tint depth a-build pointer-events-none absolute left-0 top-0 hidden h-[56.25cqw] w-[100cqw] lg:block"
         style={BUILDING}
@@ -138,7 +145,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
 
       {/* ---- 線(広い画面)。箱の角から引き出した線と、弧 ---- */}
       <svg
-        className="depth pointer-events-none absolute left-0 top-0 hidden h-[56.25cqw] w-[100cqw] lg:block"
+        className="play-out depth pointer-events-none absolute left-0 top-0 hidden h-[56.25cqw] w-[100cqw] lg:block"
         style={BUILDING}
         viewBox="0 0 100 56.25"
         preserveAspectRatio="xMinYMin slice"
@@ -156,7 +163,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       </svg>
 
       {/* ---- 注記 ---- */}
-      <div className="pin a-wipe flex items-center gap-3 bg-ink py-1.5 pl-1.5 pr-3 text-white lg:max-xl:hidden" style={at(2.2, 6.4, 40, 19, d(500))}>
+      <div className="play-out pin a-wipe flex items-center gap-3 bg-ink py-1.5 pl-1.5 pr-3 text-white lg:max-xl:hidden" style={at(2.2, 6.4, 40, 19, d(500))}>
         <Eye className="size-6 lg:size-7" />
         <Annot>
           No[01]
@@ -173,7 +180,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       {/* 黄色い面の中の注記(広い画面)。面の上の辺に沿わせて傾ける */}
       <p
         aria-hidden="true"
-        className="pin depth a-fade hidden origin-top-left rotate-[17deg] font-mono text-[0.8cqw] font-medium leading-tight text-ink lg:block"
+        className="play-out pin depth a-fade hidden origin-top-left rotate-[17deg] font-mono text-[0.8cqw] font-medium leading-tight text-ink lg:block"
         style={at(19.6, 25.6, 0, 0, { ...BUILDING, ...d(1500) })}
       >
         [0–100]
@@ -182,7 +189,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       </p>
 
       {/* ---- 見出しと本文 ---- */}
-      <div className="hero-copy">
+      <div className="hero-copy play-out-lg">
         <div className="a-wipe flex items-center gap-3" style={d(500)}>
           <span className="hl whitespace-nowrap px-2 py-0.5 font-mono text-[11px] font-medium tracking-[0.2em]">GAME DEV</span>
           <ArrowLine length="2rem" />
