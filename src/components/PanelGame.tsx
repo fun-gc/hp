@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { delay as d, type Vars } from "@/lib/motion";
 import { COLS, type Phase, ROWS, Runner } from "@/lib/runner";
 
-// トップのヒーローで遊べるミニゲーム。細い英字の「Playable」が Play ボタンになっていて、押すと
+// トップのヒーローで遊べるミニゲーム。斜体のひとこと「press any button」が Play ボタンになっていて、押すと
 //   1. ポスターの文字や線が引き、
 //   2. カメラが建物の黄色いパネル(H05)の正面へ回り込み(あらかじめレンダーした 36 コマの連番を、1 秒に 24 コマで送る)、
 //   3. パネルの穴がドット画面になって、ボタン 1 つのランゲーム(src/lib/runner.ts)が始まる。
@@ -142,7 +142,7 @@ function saveHi(hi: number) {
 
 type Api = { warm(): void; start(): void; leave(): void; press(): void };
 
-/** front: 手前の箱だけの写真。「Playable」の文字のすぐ上に重ねる(HomeHero の重ね順) */
+/** front: 手前の箱だけの写真。ミニゲームの絵の上、Play ボタンの下に重ねる(HomeHero の重ね順) */
 export function PanelGame({ front }: { front: ReactNode }) {
   const layer = useRef<HTMLDivElement>(null);
   const seq = useRef<HTMLCanvasElement>(null);
@@ -436,33 +436,23 @@ export function PanelGame({ front }: { front: ReactNode }) {
         <canvas ref={dots} className="play-dots" />
       </div>
 
-      {/* ---- 2 枚の写真のあいだに挟む文字。左下の箱(H03)の角が、P の肩に少しだけ掛かる。Play ボタンを兼ねる ---- */}
+      {front}
+
+      {/* ---- Play ボタン。斜体のひとこと「press any button」を押すと始まる。読み込み中は進み具合を出す。
+          広い画面では、遊ぶ場所になる黄色いパネルの下の辺に沿わせて書く(建物と一緒に動く)---- */}
       <button
         ref={playButton}
         type="button"
-        aria-label="Play: 建物のパネルでミニゲームを遊ぶ"
+        aria-label="Play: 建物の黄色いパネルでミニゲームを遊ぶ"
         aria-busy={busy}
         onClick={() => api.current?.start()}
         onPointerEnter={() => api.current?.warm()}
         onFocus={() => api.current?.warm()}
-        className="play-word play-out poster-word pin depth a-wipe whitespace-nowrap text-[17cqw] text-ink [animation-duration:1.3s] lg:text-[8.2cqw]"
-        style={at(16.4, 45.2, 4, 101, { "--depth": 1.3, "--drift": -2.6, ...d(650) })}
+        className="play-word play-out pin depth a-fade whitespace-nowrap font-poster text-[3.7cqw] font-light italic text-ink lg:origin-top-left lg:rotate-[21deg] lg:text-[max(12px,1.1cqw)] lg:font-normal"
+        style={at(15.5, 30.4, 4, 104, { "--depth": 0.4, ...d(2100) })}
       >
-        <span>Play</span>able
+        <span className="blink">|</span> <span className="play-hint">{busy ? `loading ${Math.round(loaded * 100)}%` : failed ? "try again" : "press any button"}</span>
       </button>
-
-      {front}
-
-      {/* 斜体のひとこと。押しても始まる(Play ボタンと同じ働きなので、読み上げとタブ移動からは外す) */}
-      <p
-        aria-hidden="true"
-        onClick={() => api.current?.start()}
-        onPointerEnter={() => api.current?.warm()}
-        className="play-out pin a-fade cursor-pointer whitespace-nowrap font-poster text-[3.7cqw] font-light italic text-ink lg:text-[1.35cqw]"
-        style={at(51.5, 52, 66, 111.2, d(2100))}
-      >
-        <span className="blink">|</span> {busy ? `loading ${Math.round(loaded * 100)}%` : failed ? "try again" : "press any button"}
-      </p>
 
       {mode === "play" && (
         <>

@@ -1,20 +1,20 @@
 import Link from "next/link";
 import { delay as d, type Vars } from "@/lib/motion";
-import { navItems } from "@/lib/site";
+import { navItems, site } from "@/lib/site";
 import { moduleOf } from "./Heading";
 import { StageMotion } from "./Motion";
 import { PanelGame } from "./PanelGame";
-import { Annot, ArrowLine, Chevrons, coordinates, FarShore, StackPhoto } from "./Poster";
+import { Annot, ArrowLine, FarShore, StackPhoto } from "./Poster";
 
 // トップページのヒーロー。1 枚のポスターとして組む:
-//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 細い英字(Playable)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。
-//   細い英字だけを 2 枚の写真のあいだに挟み、せり出した箱の少し後ろにあるように見せる。黄色い大文字は、どの箱よりも手前に置く。
-//   「Playable」は Play ボタンを兼ねていて、押すとカメラが黄色いパネルの正面へ回り込み、パネルでミニゲームが遊べる(PanelGame)。
+//   空と霧の向こうの函館山 → 建物(切り抜き写真)→ 手前の箱だけの写真 → 黄色い大文字 → 注記と線、の順に重ねる。黄色い大文字は、どの箱よりも手前に置く。
+//   斜体の「press any button」を押すと、カメラが黄色いパネルの正面へ回り込み、パネルでミニゲームが遊べる(PanelGame)。
+//   黄色は、大文字と黄色いパネルのほかは、いちばん押してほしい JOIN US にだけ使う(飾りの線は墨の細線)。
 //   遊んでいるあいだは、play-out の付いた層を引かせる(play-out-lg は広い画面でだけ。globals.css の「パネルのミニゲーム」)。
 // 中の位置は、舞台(.stage)の幅を 100 とした単位。広い画面は横長(100 × 56.25)、狭い画面は縦長に組み直す。
 //
 // 動き(globals.css の「動き」):
-//   読み込むと、写真 → 黄色の大文字 → 細い英字 → 線と注記の順に、刷り重ねるように出る(a-*、--d は始まるまでのミリ秒)。
+//   読み込むと、写真 → 黄色の大文字 → 線と注記の順に、刷り重ねるように出る(a-*、--d は始まるまでのミリ秒)。
 //   .depth の付いた層は、カーソルとスクロールに合わせて少しずつ違う量だけ動き、重ねた紙のような奥行きが出る(StageMotion)。
 
 /** 位置を CSS 変数で渡す(globals.css の .pin)。x, y は広い画面、mx, my は狭い画面。more で、動きの変数を足す */
@@ -47,7 +47,7 @@ const LETTERS: Vars = { "--depth": 0.95, "--drift": -1.4 };
 
 // 黄色い大文字。建物の上から空へ、右下がりの一直線に並べる(左上の角が 1 本の直線に乗る。広い画面は F と C、狭い画面も F と C を結ぶ線)。
 // 文字は 5 つとも建物の手前に置き、箱が文字を隠すところは作らない(手前の箱の写真より上に描く)。
-// F は、幅 1024px の画面でもヘッダー(高さ 4rem = 6.25cqw)の下に隠れない高さから始める。広い画面の F の左端は、下の「Playable」とそろえる
+// F は、幅 1024px の画面でもヘッダー(高さ 4rem = 6.25cqw)の下に隠れない高さから始める。広い画面の F の左端は、以前の「Playable」の P とそろえた位置
 const letters: { ch: string; pos: [number, number, number, number] }[] = [
   { ch: "F", pos: [16.05, 6.9, 3.6, 22.2] },
   { ch: "U", pos: [24.85, 12.57, 20.6, 34.17] },
@@ -115,7 +115,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       {/* ---- 建物 ---- */}
       <StackPhoto name="stack-day" narrow="stack-day-m" sizes="110vw" eager className="hero-photo fade-m depth a-build" style={BUILDING} />
 
-      {/* ---- Play ボタンを兼ねる細い英字(Playable)、その上に重ねる手前の箱、ミニゲームの画面 ---- */}
+      {/* ---- 手前の箱だけの写真、ミニゲームの画面と、その Play ボタン(press any button)---- */}
       <PanelGame front={<StackPhoto name="stack-front" narrow="stack-front-m" sizes="110vw" eager className="hero-photo fade-m depth a-build pointer-events-none" style={BUILDING} />} />
 
       {/* ---- 黄色い大文字。建物のどの箱よりも手前 ---- */}
@@ -152,20 +152,16 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         aria-hidden="true"
         fill="none"
       >
-        {/* 線の太さも絵の中の単位(幅 1440px の画面で 1.5px と 1px)。pathLength を 1 にして、a-draw で端から引く */}
-        <g stroke="var(--color-fun-yellow)" strokeWidth="0.104">
+        {/* 線の太さも絵の中の単位(幅 1440px の画面で 1px)。pathLength を 1 にして、a-draw で端から引く。
+            黄色は押してほしいもの(JOIN US)に取っておき、飾りの線は墨の細線で控えめにする */}
+        <g stroke="var(--color-ink)" strokeWidth="0.07" strokeOpacity="0.35">
           {/* H07 の角から、見出しへ引き出す線 */}
-          <line className="a-draw" style={d(1150)} pathLength={1} x1="59.3" y1="27.7" x2="66.3" y2="25.8" />
+          <line className="a-draw" style={d(1150)} pathLength={1} x1="59.3" y1="27.7" x2="64" y2="25.75" />
           {/* 大きな弧 */}
-          <path className="a-draw [animation-duration:2s]" style={d(700)} pathLength={1} d="M -4 20 A 58 58 0 0 0 62 60" strokeWidth="0.07" />
+          <path className="a-draw [animation-duration:2s]" style={d(700)} pathLength={1} d="M -4 20 A 58 58 0 0 0 62 60" strokeOpacity="0.2" />
         </g>
-        <circle className="a-fade" style={d(1100)} cx="59.3" cy="27.7" r="0.45" fill="var(--color-fun-yellow)" />
+        <circle className="a-fade" style={d(1100)} cx="59.3" cy="27.7" r="0.2" fill="var(--color-ink)" fillOpacity="0.45" />
       </svg>
-
-      {/* 縦書きの注記 */}
-      <p aria-hidden="true" className="pin a-type-v hidden font-mono text-[11px] tracking-[0.28em] text-ink [writing-mode:vertical-rl] lg:block" style={at(97.2, 23, 0, 0, d(1900))}>
-        waiting for player 2<span className="blink">_</span>
-      </p>
 
       {/* 黄色い面の中の注記(広い画面)。面の上の辺に沿わせて傾ける */}
       <p
@@ -181,7 +177,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
       {/* ---- 見出しと本文 ---- */}
       <div className="hero-copy play-out-lg">
         <div className="a-wipe flex items-center gap-3" style={d(500)}>
-          <span className="hl whitespace-nowrap px-2 py-0.5 font-mono text-[11px] font-medium tracking-[0.2em]">GAME DEV</span>
+          <span className="whitespace-nowrap border border-ink px-2 py-0.5 font-mono text-[11px] font-medium tracking-[0.2em]">GAME DEV</span>
           <ArrowLine length="2rem" />
           <Annot className="text-muted">
             UNITY / COURSE <span className="hidden sm:inline lg:hidden xl:inline">/ EXHIBITION / TEAM</span>
@@ -196,11 +192,13 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
             Creators<span className="text-fun-red">.</span>
           </span>
         </h1>
-        <p className="a-rise mt-4 max-w-md border-l border-ink pl-4 leading-relaxed text-ink-2 lg:mt-[1.5cqw] lg:text-[clamp(0.9rem,1.15cqw,1.125rem)]" style={d(900)}>
-          Discord と学内を拠点として、Unity の講座、展示、チーム開発をしています。
+        <p className="a-rise mt-4 max-w-md border-l border-ink pl-4 [word-break:auto-phrase] lg:max-w-none leading-relaxed text-ink-2 lg:mt-[1.5cqw] lg:text-[clamp(0.9rem,1.15cqw,1.125rem)]" style={d(900)}>
+          <span className="block">{site.university}のゲーム制作サークルです。</span>
+          <span className="block">Discord と学内を拠点に、Unity の講座、展示、チーム開発をしています。</span>
         </p>
         <div className="a-rise mt-6 flex flex-wrap items-center gap-3 lg:mt-[1.6cqw]" style={d(1050)}>
-          <Link href="/join/" className="sweep group flex items-center gap-3 px-6 py-3 font-mono text-sm font-medium tracking-[0.18em] text-white [--sweep-from:var(--color-ink)] [--sweep-to:var(--color-fun-yellow)] hover:text-ink">
+          {/* いちばん押してほしいボタンなので、ページでただ 1 つの黄色いボタンにする */}
+          <Link href="/join/" className="sweep group flex items-center gap-3 px-6 py-3 font-mono text-sm font-semibold tracking-[0.18em] text-ink [--sweep-from:var(--color-fun-yellow)] [--sweep-to:var(--color-ink)] hover:text-white">
             JOIN US
             <ArrowLine length="1.5rem" />
           </Link>
@@ -211,7 +209,7 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
             WORKS
           </Link>
         </div>
-        <dl className="a-rise mt-7 flex gap-7 font-mono text-ink lg:mt-[2.3cqw]" style={d(1200)}>
+        <dl className="a-rise mt-7 flex gap-7 font-mono text-ink lg:mt-[1.8cqw] lg:max-xl:hidden" style={d(1200)}>
           {stats.map(([label, n], i) => (
             <div key={label}>
               <dt className="text-[10px] tracking-[0.2em] text-muted">{label}</dt>
@@ -225,11 +223,6 @@ export function HomeHero({ works, members, upcoming }: { works: number; members:
         </dl>
       </div>
 
-      {/* 右下: 位置の注記 */}
-      <div aria-hidden="true" className="pin a-fade hidden items-center gap-3 text-ink xl:flex" style={at(86, 52.6, 0, 0, d(2000))}>
-        <Chevrons className="w-3" count={2} />
-        <Annot>{coordinates}</Annot>
-      </div>
     </section>
   );
 }

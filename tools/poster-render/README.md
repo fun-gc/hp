@@ -25,8 +25,8 @@
 
 写真はどれも空を透明にした切り抜きです。CSS で引いた空の色と霧の向こうの函館山の上に重ねます。
 
-- トップのヒーロー(`src/components/HomeHero.tsx`)は、建物の写真 → 細い英字(Playable)→ 手前の箱だけの写真(`stack-front`)の順に重ねています。Playable の P が箱の少し後ろにあるように見えるのはこのためです。
-- Playable の Play を押すと、カメラが黄色いパネル(H05)の正面へ回り込み、パネルの穴をドット画面にしたミニゲームが始まります(`src/components/PanelGame.tsx`、下の「ミニゲームの絵」)。
+- トップのヒーロー(`src/components/HomeHero.tsx`)は、建物の写真 → 手前の箱だけの写真(`stack-front`)の順に重ねています。2 枚のあいだに文字を挟むと、文字が箱の少し後ろにあるように見せられます(いまは挟んでいません)。
+- ヒーローの「press any button」を押すと、カメラが黄色いパネル(H05)の正面へ回り込み、パネルの穴をドット画面にしたミニゲームが始まります(`src/components/PanelGame.tsx`、下の「ミニゲームの絵」)。
 - 夜の写真(`stack-night`)は昼と同じカメラなので、同じ建物に明かりが入ったように見えます(`src/components/NightStage.tsx`)。
 - 各ページの見出し(`src/components/Heading.tsx` の `PageHeading`)は、そのページの箱に寄ったカット(`zoom-*`)を使い、箱の穴あきパネルに黄色いフィルムを重ねます。
 

@@ -172,34 +172,38 @@ body {
     -webkit-mask-image: none;
     mask-image: none;
   }
+  /* 右の欄。建物の右下の角(H07)から引き出した線の先から始め、右の端には余白を取る。
+     幅 1280px より狭い画面では、数字の行(dl)を出さずに 16:9 に収める */
   .hero-copy {
     position: absolute;
-    left: 67.5cqw;
+    left: 64.5cqw;
     top: 25cqw;
-    width: 29.5cqw;
+    width: 30cqw;
     padding: 0;
   }
 }
 
 /* ---- パネルのミニゲーム(PanelGame) ----
-   「Playable」の Play を押すと、カメラが黄色いパネルの正面へ回り込み、パネルの穴がドット画面になる。
+   「press any button」を押すと、カメラが黄色いパネルの正面へ回り込み、パネルの穴がドット画面になる。
    舞台の data-play が段階を表す。in: ポスターの文字や線(.play-out)が引く → on: 建物の写真の代わりに、
    回り込む連番と静止画(.play-layer)を出す → out: 写真に戻して、文字や線を出し直す */
 .play-word {
+  /* 黄色いパネルの上に書くので、パネルのリンク(.mod-hit)より上に置く */
+  z-index: 1;
   cursor: pointer;
   text-align: left;
 }
-/* Play の下に黄色い線を引いておき、カーソルを乗せると蛍光ペンの帯に太らせる */
-.play-word > span {
-  background: linear-gradient(var(--color-fun-yellow), var(--color-fun-yellow)) no-repeat 0 94% / 100% 0.07em;
+/* 押せることが分かるように、カーソルを乗せると下に線を引く */
+.play-word .play-hint {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
   transition: background-size 0.35s var(--ease-poster);
 }
-.play-word:is(:hover, :focus-visible) > span {
-  background-size: 100% 0.34em;
+.play-word:is(:hover, :focus-visible) .play-hint {
+  background-size: 100% 1px;
 }
 .play-word:focus-visible {
   outline: 1px solid var(--color-ink);
-  outline-offset: 0.08em;
+  outline-offset: 2px;
 }
 /* 写真と同じ場所に、同じ大きさで置く(狭い画面の写真は、絵の横 46% を切り出した縦長)。
    広い画面では、PanelGame が回り込みに合わせて拡大する */
