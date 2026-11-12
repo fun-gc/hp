@@ -62,7 +62,7 @@ export default function JoinPage() {
 
       {/* トップの「Join us」と同じ、夜の建物 */}
       <div id="contact" className="scroll-mt-16">
-        <NightStage labelledBy="contact-heading" arc="PLEASE LEAVE A MESSAGE AFTER THE BEEP">
+        <NightStage labelledBy="contact-heading">
           <h2 id="contact-heading" className="poster-word text-6xl sm:text-8xl" data-reveal="up" style={stagger(1)}>
             Contact
           </h2>

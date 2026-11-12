@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Annot, ArcText, Chevrons, coordinates, FarShore, StackPhoto } from "./Poster";
+import { Annot, Chevrons, coordinates, FarShore, StackPhoto } from "./Poster";
 
 const at = (x: number, y: number, mx = 0, my = 0) => ({ "--x": x, "--y": y, "--mx": mx, "--my": my }) as CSSProperties;
 
@@ -9,8 +9,7 @@ const at = (x: number, y: number, mx = 0, my = 0) => ({ "--x": x, "--y": y, "--m
  * トップの「Join us」と /join/ の「Contact」で使う。
  * 画面に入ると、蛍光灯がつくときのように明かりが 2、3 度またたいてからともり、少し遅れて街の明かりが浮かぶ(globals.css の lights)
  */
-/** arc: 建物のまわりに弧を描いて書く英文(省くと出さない) */
-export function NightStage({ children, labelledBy, arc }: { children: ReactNode; labelledBy: string; arc?: string }) {
+export function NightStage({ children, labelledBy }: { children: ReactNode; labelledBy: string }) {
   return (
     <section className="stage night text-white" aria-labelledby={labelledBy} data-reveal="lights" data-reveal-at="0.3">
       <FarShore night className="night-shore pin w-[150cqw] max-w-none lg:w-[62cqw]" style={at(40, 25.5, -22, 58)} />
@@ -24,7 +23,6 @@ export function NightStage({ children, labelledBy, arc }: { children: ReactNode;
           {coordinates}
         </Annot>
       </div>
-      {arc && <ArcText text={arc} className="night-note pin hidden w-[19cqw] text-white/60 lg:block" style={at(30, 33)} start={-152} span={124} />}
 
       <div className="night-copy">{children}</div>
     </section>
