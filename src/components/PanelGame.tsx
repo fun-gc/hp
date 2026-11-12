@@ -8,7 +8,7 @@ import { COLS, type Phase, ROWS, Runner } from "@/lib/runner";
 //   1. ポスターの文字や線が引き、
 //   2. カメラが建物の黄色いパネル(H05)の正面へ回り込み(あらかじめレンダーした 36 コマの連番を、1 秒に 24 コマで送る)、
 //   3. パネルの穴がドット画面になって、ボタン 1 つのランゲーム(src/lib/runner.ts)が始まる。
-// Esc か EXIT で、同じコマを逆に送ってポスターへ戻る。
+// ヒーローが見えていれば、Enter かスペースでも始まる。Esc か EXIT で、同じコマを逆に送ってポスターへ戻る。
 //
 // 絵はどれも tools/poster-render/ で作る(README.md の「ミニゲームの絵」)。
 //   play/d-00〜35.webp      回り込むカメラの連番(狭い画面は m-*。ヒーローの写真と同じく、絵の横 28%〜74% を切り出したもの)
@@ -141,6 +141,10 @@ function saveHi(hi: number) {
 }
 
 type Api = { warm(): void; start(): void; leave(): void; press(): void };
+
+/** ボタンやリンク、入力欄を操作しているキーか。そのキーは、ゲームでは使わない */
+const onControl = (e: KeyboardEvent) =>
+  e.target instanceof Element && e.target.closest("a, button, input, textarea, select, summary, [contenteditable]") !== null;
 
 /** front: 手前の箱だけの写真。ミニゲームの絵の上、Play ボタンの下に重ねる(HomeHero の重ね順) */
 export function PanelGame({ front }: { front: ReactNode }) {
@@ -294,7 +298,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
       // 画面がスクロールで外れているときは手を出さない
       if (e.ctrlKey || e.metaKey || e.altKey || !inView) return;
       if (!(e.key.length === 1 || e.key === "Enter" || e.key === "ArrowUp")) return;
-      if (e.target instanceof Element && e.target.closest("a, button, input, textarea, select, summary, [contenteditable]")) return;
+      if (onControl(e)) return;
       e.preventDefault();
       if (!e.repeat) game.press();
     };
@@ -392,6 +396,22 @@ export function PanelGame({ front }: { front: ReactNode }) {
       playButton.current?.focus({ preventScroll: true });
     };
 
+    /**
+     * Play ボタンを押さなくても、Enter かスペースで始められる。ただし、ヒーローが半分以上見えているときだけ
+     * (下の段まで読み進めた人がスペースでスクロールしようとして、上へ戻されないように)
+     */
+    const onIdleKey = (e: KeyboardEvent) => {
+      if (now !== "idle" || e.repeat || e.isComposing || e.defaultPrevented) return;
+      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || (e.key !== "Enter" && e.key !== " ")) return;
+      if (onControl(e)) return;
+      const box = stage.getBoundingClientRect();
+      const seen = Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0);
+      if (seen < Math.min(box.height, window.innerHeight) / 2) return;
+      e.preventDefault();
+      void start();
+    };
+    window.addEventListener("keydown", onIdleKey);
+
     /** 途中でも、すぐにポスターへ戻す(画面の幅が変わって写真の切り出し方が変わったときと、ページを離れるとき) */
     const reset = () => {
       run++;
@@ -412,6 +432,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
 
     api.current = { warm, start, leave: () => game?.leave(), press: () => game?.press() };
     return () => {
+      window.removeEventListener("keydown", onIdleKey);
       wideQuery.removeEventListener("change", onResize);
       reset();
       api.current = null;
