@@ -903,10 +903,114 @@ SHOTS = {
     # name: camera position, target, roll (deg), lens (mm)
     # hero: the building fills the upper left, its stepped edge runs from the top right corner down to the bottom left
     "hero": dict(loc=(4.0, -90.0, 22.0), target=(46.0, -60.0, 34.0), roll=24.0, lens=30.0),
+    # play: square on to the perforated side of H05 (the "person" face), which the site uses as a dot display for its
+    # mini game. The cell grid fills `fill` of the picture width and its centre sits at `centre` of the width, so the
+    # whole grid also fits the narrow-screen crop (28 % .. 74 % of the picture)
+    "play": dict(face=(7, 4), fill=0.44, centre=0.51, dist=56.0),
 }
 
 
+def resolve_shot(shot, building):
+    """A shot given as `face` (square on to a module's perforated side) -> camera position, target, roll, lens."""
+    if "face" not in shot:
+        return dict(shot)
+    panel = next(f for f in building.faces if f["type"] == "panel" and (f["i"], f["k"]) == tuple(shot["face"]))
+    (x, ya, za), (_, yb, _), (_, _, zb), _ = panel["pts"]
+    width = (yb - ya) / shot["fill"]  # how much of the panel plane the picture spans
+    # seen from outside, +Y runs to the left: moving the camera towards +Y moves the grid to the right of the picture
+    y = (ya + yb) / 2 + (shot["centre"] - 0.5) * width
+    z = (za + zb) / 2
+    return dict(loc=(x - shot["dist"], y, z), target=(x, y, z), roll=0.0, lens=36.0 * shot["dist"] / width)
+
+
+def camera_pose(loc, target, roll):
+    d = Vector(target) - Vector(loc)
+    q = d.to_track_quat("-Z", "Y")
+    return (q.to_matrix().to_4x4() @ Matrix.Rotation(math.radians(roll), 4, "Z")).to_quaternion()
+
+
+def animate_camera(cam, a, b, frames):
+    """Key the camera from shot a to shot b over `frames` frames (0 .. frames - 1), easing in and out.
+
+    The camera swings round the point it looks at: the look-at point, the distance, the two angles, the roll and the
+    lens (in stops) all run from a to b on the same curve, so the move reads as one arc.
+    """
+
+    def polar(shot):
+        o = Vector(shot["loc"]) - Vector(shot["target"])
+        return o.length, math.atan2(o.y, o.x), math.asin(o.z / o.length)
+
+    ra, aza, ela = polar(a)
+    rb, azb, elb = polar(b)
+    azb = aza + (azb - aza + math.pi) % (2 * math.pi) - math.pi  # the short way round
+    bpy.context.preferences.edit.keyframe_new_interpolation_type = "LINEAR"
+    cam.rotation_mode = "QUATERNION"
+    prev = None
+    for f in range(frames):
+        t = f / (frames - 1)
+        e = t * t * (3 - 2 * t)
+        mix = lambda u, v: u + (v - u) * e  # noqa: E731
+        target = Vector(a["target"]).lerp(Vector(b["target"]), e)
+        r, az, el = mix(ra, rb), mix(aza, azb), mix(ela, elb)
+        loc = target + Vector((r * math.cos(el) * math.cos(az), r * math.cos(el) * math.sin(az), r * math.sin(el)))
+        q = camera_pose(loc, target, mix(a["roll"], b["roll"]))
+        if prev is not None:
+            q.make_compatible(prev)
+        prev = q.copy()
+        cam.location = loc
+        cam.rotation_quaternion = q
+        cam.data.lens = a["lens"] * (b["lens"] / a["lens"]) ** e
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_quaternion", frame=f)
+        cam.data.keyframe_insert("lens", frame=f)
+
+
 # ---------------------------------------------------------------- main
+
+
+def render_move(args, scene, cam, shot, building, w, h):
+    """The camera move from one shot to another, one PNG per frame, and where the target face is in each of them."""
+    end = SHOTS[args.to]
+    animate_camera(cam, shot, {**resolve_shot(end, building), "shift": shot["shift"]}, args.frames)
+    if args.blur > 0:
+        scene.render.use_motion_blur = True
+        scene.render.motion_blur_shutter = args.blur
+        scene.render.motion_blur_position = "CENTER"
+    scene.render.use_persistent_data = True  # only the camera moves: keep the scene in memory between frames
+    scene.frame_start, scene.frame_end = 0, args.frames - 1
+
+    wanted = []
+    for part in (args.only or f"0-{args.frames - 1}").split(","):
+        lo, _, hi = part.partition("-")
+        wanted.extend(range(int(lo), int(hi or lo) + 1))
+
+    if args.data:
+        panel = next(f for f in building.faces if f["type"] == "panel" and (f["i"], f["k"]) == tuple(end["face"]))
+
+        def corners(time):
+            whole = math.floor(time)
+            scene.frame_set(whole, subframe=time - whole)
+            bpy.context.view_layer.update()
+            # the corners of the cell grid, as fractions of the picture (y down): front bottom, far bottom, far top, front top
+            pts = [world_to_camera_view(scene, cam, Vector(p)) for p in panel["pts"]]
+            return [[round(co.x, 6), round(1.0 - co.y, 6)] for co in pts]
+
+        # "frames": the grid at the middle of each frame. "blur": the grid at five moments while the shutter is open,
+        # so that whatever is painted on the face afterwards (post.py) can be smeared the way the render is
+        steps = [(n / 4 - 0.5) * args.blur for n in range(5)] if args.blur > 0 else [0.0]
+        data = {"from": args.shot, "to": args.to, "res": [w, h], "cols": panel["cols"], "rows": panel["rows"]}
+        data["frames"] = [corners(f) for f in range(args.frames)]
+        data["blur"] = [[corners(f + s) for s in steps] for f in range(args.frames)]
+        with open(args.data, "w") as fh:
+            json.dump(data, fh)
+
+    if args.save_blend:
+        bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(args.save_blend))
+    if args.out:
+        for f in wanted:
+            scene.frame_set(f)
+            scene.render.filepath = os.path.abspath(f"{args.out}{f:03d}.png")
+            bpy.ops.render.render(write_still=True)
 
 
 def parse_groups(text):
@@ -942,8 +1046,12 @@ def main():
     ap.add_argument("--panel", default="", help='i,k,tile: punch that module\'s whole side face from one flat tile ("full" = every hole open, "bg" = closed)')
     ap.add_argument("--border", default="", help="x0,y0,x1,y1 as fractions of the picture (y down): render only that part, the rest stays empty")
     ap.add_argument("--font", default="/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", help="font for the painted module codes")
+    ap.add_argument("--to", default="", help="a second shot: render the camera move from --shot to this one (--out is then a file prefix, one PNG per frame)")
+    ap.add_argument("--frames", type=int, default=32, help="with --to: how many frames the move takes (the first is --shot, the last is --to)")
+    ap.add_argument("--only", default="", help="with --to: render just these frames, e.g. 0,8,16 or 4-12")
+    ap.add_argument("--blur", type=float, default=0.5, help="with --to: motion blur, as the shutter time in frames (0 = none)")
     ap.add_argument("--out", default="")
-    ap.add_argument("--data", default="", help="write the 2D positions of the visible faces as JSON")
+    ap.add_argument("--data", default="", help="write the 2D positions of the visible faces as JSON (with --to: where the cell grid of --to's face is in every frame)")
     ap.add_argument("--save-blend", default="")
     args = ap.parse_args(argv)
 
@@ -1000,7 +1108,7 @@ def main():
     else:
         setup_world(False, el, az, args.sky, args.sun_strength)
 
-    shot = dict(SHOTS[args.shot])
+    shot = resolve_shot(SHOTS[args.shot], building)
     if args.cam:
         v = [float(x) for x in args.cam.split(",")]
         shot = dict(loc=tuple(v[0:3]), target=tuple(v[3:6]), roll=v[6], lens=v[7])
@@ -1063,6 +1171,10 @@ def main():
         scene.view_settings.exposure = 0.0
 
     bpy.context.view_layer.update()
+
+    if args.to:
+        render_move(args, scene, cam, shot, building, w, h)
+        return
 
     if args.data:
         data = {"shot": args.shot, "res": [w, h], "faces": []}

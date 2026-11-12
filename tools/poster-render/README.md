@@ -25,7 +25,8 @@
 
 写真はどれも空を透明にした切り抜きです。CSS で引いた空の色と霧の向こうの函館山の上に重ねます。
 
-- トップのヒーロー(`src/components/HomeHero.tsx`)は、建物の写真 → 文字 → 手前の箱だけの写真(`stack-front`)の順に重ねています。文字が箱の後ろに回り込んで見えるのはこのためです。
+- トップのヒーロー(`src/components/HomeHero.tsx`)は、建物の写真 → 細い英字(Playable)→ 手前の箱だけの写真(`stack-front`)の順に重ねています。Playable の P が箱の少し後ろにあるように見えるのはこのためです。
+- Playable の Play を押すと、カメラが黄色いパネル(H05)の正面へ回り込み、パネルの穴をドット画面にしたミニゲームが始まります(`src/components/PanelGame.tsx`、下の「ミニゲームの絵」)。
 - 夜の写真(`stack-night`)は昼と同じカメラなので、同じ建物に明かりが入ったように見えます(`src/components/NightStage.tsx`)。
 - 各ページの見出し(`src/components/Heading.tsx` の `PageHeading`)は、そのページの箱に寄ったカット(`zoom-*`)を使い、箱の穴あきパネルに黄色いフィルムを重ねます。
 
@@ -40,18 +41,33 @@ uv venv -p 3.11 .venv-render
 uv pip install --python .venv-render/bin/python bpy numpy pillow opencv-python-headless
 
 sh tools/poster-render/render-all.sh preview   # 粗い画質で全体を確かめる(数分)
-sh tools/poster-render/render-all.sh           # 本番の画質(4 コアの CPU で 1 時間ほど)
+sh tools/poster-render/render-all.sh           # 本番の画質(4 コアの CPU で 2 時間ほど)
 ```
 
-`render-all.sh` は次の 3 つを順に動かします。1 枚だけやり直したいときは、中のコマンドをそのまま使えます。
+`render-all.sh` は次の 3 つを組み合わせて動かします。1 枚だけやり直したいときは、中のコマンドをそのまま使えます。
 
 | ファイル | 役割 |
 | --- | --- |
-| `scene.py` | シーンを組み立ててレンダーする(空が透明な PNG)。`--night` で夜、`--matte` で手前の箱のマット、`--zoom i,k,レンズ` で 1 つの箱に寄る。`--panel i,k,full`(または `bg`)で 1 つの箱の穴あきパネルの穴をすべて開いた(閉じた)状態にし、`--border x0,y0,x1,y1` で絵の一部だけをレンダーする |
-| `post.py` | レンダーを青みのグレー 1 色の調子に整え(夜は明かりの黄色だけ残す)、幅ごとの WebP にして `public/poster/` に書き出す。`--patch ファイル@x0,y0,x1,y1` で、`--border` でレンダーした一部分を元の絵に貼ってから整える |
+| `scene.py` | シーンを組み立ててレンダーする(空が透明な PNG)。`--night` で夜、`--matte` で手前の箱のマット、`--zoom i,k,レンズ` で 1 つの箱に寄る。`--panel i,k,full`(または `bg`)で 1 つの箱の穴あきパネルの穴をすべて開いた(閉じた)状態にし、`--border x0,y0,x1,y1` で絵の一部だけをレンダーする。`--to カット名` で、`--shot` のカットからそのカットへカメラが動く連番をレンダーする |
+| `post.py` | レンダーを青みのグレー 1 色の調子に整え(夜は明かりの黄色だけ残す)、幅ごとの WebP にして `public/poster/` に書き出す。`--patch ファイル@x0,y0,x1,y1` で、`--border` でレンダーした一部分を元の絵に貼ってから整える。`--film` で黄色いフィルムを焼き込み、`--rectify` でパネルを平らな長方形に切り出す。`move` で連番をまとめて整える |
 | `backdrop.py` | 霧の向こうの函館山(昼と夜)と、紙のざらつきの画像を描く。レンダーは使わない |
 
 まず `--res 600x350 --samples 12` のように小さくして構図や光を確かめてから、本番の大きさで描くと早く進みます。`--clay` を付けると、素材を灰色 1 色にして形だけを確かめられます。
+
+## ミニゲームの絵
+
+トップの Play を押したときの絵は、`public/poster/play/` にあります。
+
+| ファイル | 中身 |
+| --- | --- |
+| `d-00.webp`〜`d-35.webp` | ヒーローの構図(`SHOTS` の `hero`)から、H05 のパネルの正面(`play`)へカメラが回り込む 36 コマ。1 秒に 24 コマで送る。`m-*` は狭い画面用で、ヒーローの写真と同じく絵の横 28%〜74% を切り出したもの |
+| `still-d-*.webp`、`still-m-*.webp` | 回り込んだあとの静止画。連番より大きいので、動きが止まったらこれに替える。広い画面用は、拡大したあとに画面に写る範囲だけ |
+| `panel-off-1520.webp`、`panel-on-1520.webp` | パネルの穴(横 76 × 縦 28 個)をすべて閉じた絵と、すべて開いた絵。穴 1 つが 20px。ゲームは、穴ごとにこの 2 枚を切り貼りして絵を出す |
+
+- カメラは、注視点のまわりを回りながら寄っていきます(`scene.py` の `animate_camera`)。動いているコマにはモーションブラーが掛かります(`--blur`)。
+- 0 コマ目はヒーローの写真と同じカメラなので、写真と入れ替えても位置はずれません(連番は写真より粗いので、サイトでは重ねてから切り替えています)。サイトでは CSS で重ねている黄色いフィルムも、ここでは絵に焼き込みます(`post.py` の `--film`。連番では、ぶれたパネルに合わせてフィルムもぶらします)。
+- `play` のカットは、パネルの穴の並ぶ範囲が絵の幅の 44% を占め、その中心が幅の 51% に来るように決めています(`SHOTS` の `fill` と `centre`)。狭い画面用の切り出し(28%〜74%)にも、パネルがちょうど収まります。
+- カットやパネルを変えたら、`PanelGame.tsx` の `PANEL`(パネルの位置)、`STILL`(広い画面用の静止画の範囲)、`FRAMES`(コマ数)と、`src/lib/runner.ts` の `PERSON`(パネルにもともと出ている絵。「人」と、その左にのぞく縞の端)も合わせてください。
 
 ## Blender で開いて調整する
 
@@ -68,8 +84,9 @@ sh tools/poster-render/render-all.sh           # 本番の画質(4 コアの CPU
 | 建物の形(せり出し方)を変える | `scene.py` の `layout()`、`--seed` |
 | どの箱にどの絵を出すか | `scene.py` の `SPRITE_AT`(指定のない箱は乱数で決まる) |
 | 箱の正面の種類 | `scene.py` の `FRONT_AT`、`FRONT_KINDS` |
-| ドット絵を足す、描き直す | `pictograms.py` の `SPRITES`、`GRADIENTS` |
+| ドット絵を足す、描き直す | `pictograms.py` の `SPRITES`、`GRADIENTS`。絵を足すときは、並び順の最後に置く(`ORDER`)。パネルには 1 つ前の絵の端の 2 列ものぞくので、途中に足すと、ほかのパネルの見え方が変わる |
 | 光の向きと明るさ | `scene.py` の `--sun 高さ,向き`、`--sun-strength`、`--sky`、`--exposure` |
-| 構図 | `scene.py` の `SHOTS`(カメラの位置、注視点、ロール、焦点距離)。`--cam` で一時的に上書きできる |
+| 構図 | `scene.py` の `SHOTS`(カメラの位置、注視点、ロール、焦点距離。`face` で、箱の穴あきパネルの正面に置くこともできる)。`--cam` で一時的に上書きできる |
+| ミニゲームへ回り込む動きの長さ、ぶれ | `scene.py` の `--frames`、`--blur`(`render-all.sh` の中)。コマ数を変えたら `PanelGame.tsx` の `FRAMES` も |
 | 写真の色味、明るさ、粒子 | `post.py` の `DAY` / `NIGHT` / `GLOW`、`--gamma`、`--contrast`、`--grain` |
 | 函館山の形、街の明かり | `backdrop.py` の `RIDGE`、`MASTS`、`city_lights()` |
