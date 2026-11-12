@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { delay as d, stagger, type Vars } from "@/lib/motion";
 import { navItems } from "@/lib/site";
 import { StageMotion } from "./Motion";
-import { Annot, ArrowLine, coordinates, Crosshair, DotGrid, StackPhoto, Tri, type PhotoName } from "./Poster";
+import { Annot, ArrowLine, coordinates, DotGrid, StackPhoto, Tri, type PhotoName } from "./Poster";
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 // 奥行き(globals.css の .depth)。写真と、その手前に浮かせる英字
@@ -29,16 +29,17 @@ export const moduleOf: Record<string, { code: string; sign: string; film: Pt[] }
   JOIN: { code: "H03", sign: "PLUS", film: [[30.44, 28.41], [14.16, 17.21], [19.53, 4.68], [36.77, 14.19]] },
 };
 
-/** セクションの見出し。「▲ [番号] 英字 ———」の細い行の下に、細い英字を大きく置く。画面に入ると、罫線が引かれ、英字がせり上がる */
+/** セクションの見出し。「▲ 日本語の名前 ———」の細い行の下に、細い英字を大きく置く。画面に入ると、罫線が引かれ、英字がせり上がる */
 export function SectionHead({
-  index,
+  ja,
   en,
   href,
   linkLabel,
   invert = false,
   id,
 }: {
-  index: number;
+  /** 細い行に出す日本語の名前(作品、お知らせなど) */
+  ja: string;
   en: string;
   href?: string;
   linkLabel?: string;
@@ -50,8 +51,7 @@ export function SectionHead({
       <div className={`flex items-center gap-3 ${invert ? "text-white/70" : "text-muted"}`} aria-hidden="true">
         <span className="flex items-center gap-3" data-reveal="wipe">
           <Tri className={`size-3 ${invert ? "text-fun-yellow" : "text-ink"}`} />
-          <span className="font-mono text-[11px]">[{pad2(index)}]</span>
-          <span className="font-mono text-xs font-medium tracking-[0.25em]">{en}</span>
+          <span className="text-xs font-medium tracking-[0.2em]">{ja}</span>
         </span>
         <span className="h-px min-w-8 flex-1 bg-current opacity-50" data-reveal="line" style={stagger(2)} />
       </div>
@@ -118,16 +118,6 @@ export function PageHeading({ en, lead }: { en: string; lead?: ReactNode }) {
           {sentence(en)}
         </span>
       </h1>
-
-      {/* 箱の番号から引き出した注記 */}
-      <div className="page-note a-type flex items-start gap-2 text-ink lg:max-xl:hidden" style={d(1100)} aria-hidden="true">
-        <Crosshair className="mt-0.5 size-3.5 shrink-0" />
-        <Annot>
-          <span className="hl px-1">{mod.code}</span> FIG.{no} — {mod.sign}
-          <br />
-          <span className="text-muted">1 DOT = 1 PIXEL</span>
-        </Annot>
-      </div>
 
       <div className="page-copy">
         <div className="a-wipe flex flex-wrap items-center gap-x-3 gap-y-1" style={d(500)} aria-hidden="true">

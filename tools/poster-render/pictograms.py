@@ -189,7 +189,10 @@ SPRITES = {
     "C": letter("C"),
 }
 
-ORDER = list(GRADIENTS) + list(SPRITES)
+# where each tile sits in the atlas. A pictogram face also shows the last two columns of the tile before it (the plain
+# holes that carry on beside the picture), so the order is part of the look: new tiles go at the end
+LAST = ["full"]
+ORDER = [name for name in list(GRADIENTS) + list(SPRITES) if name not in LAST] + LAST
 COLS = 6
 ROWS = math.ceil(len(ORDER) / COLS)
 # how often each one is picked for a full cube face

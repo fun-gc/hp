@@ -7,6 +7,8 @@ import { delay } from "@/lib/motion";
 import { navItems, site } from "@/lib/site";
 import { LogoMark } from "./Logo";
 
+const JOIN = "/join/";
+
 /** children はヘッダーのすぐ下に出す帯(開催中の予定など) */
 export function SiteHeader({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
@@ -28,7 +30,7 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
 
         <nav className="hidden lg:block" aria-label="メインメニュー">
           <ul className="flex items-center gap-1">
-            {navItems.map((item, i) => {
+            {navItems.map((item) => {
               const active = pathname.startsWith(item.href);
               return (
                 <li key={item.href}>
@@ -38,12 +40,14 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
                     data-nav={item.en}
                     aria-current={active ? "page" : undefined}
                     className={`group flex items-baseline gap-1.5 px-3 py-2 font-mono text-[13px] font-medium tracking-[0.14em] transition-colors ${
-                      active ? "hl" : "hover:bg-ink hover:text-paper"
+                      item.href === JOIN
+                        ? // 入部案内だけは、いちばん押してほしい行き先なので黄色い札にする
+                          `ml-2 bg-fun-yellow hover:bg-ink hover:text-paper ${active ? "underline decoration-1 underline-offset-[5px]" : ""}`
+                        : active
+                          ? "underline decoration-1 underline-offset-[5px]"
+                          : "hover:bg-ink hover:text-paper"
                     }`}
                   >
-                    <span className="text-[9px] opacity-60" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
                     {item.en}
                   </Link>
                 </li>
@@ -52,6 +56,10 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
           </ul>
         </nav>
 
+        {/* 狭い画面でも、入部案内だけはメニューを開かずに押せるようにする */}
+        <Link href={JOIN} className="ml-auto bg-fun-yellow px-3 py-1.5 font-mono text-[11px] font-semibold tracking-[0.2em] lg:hidden" onClick={() => setOpen(false)}>
+          JOIN
+        </Link>
         <button
           type="button"
           className="flex items-center gap-3 lg:hidden"
@@ -87,9 +95,6 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
                     className="flex items-baseline justify-between border-b border-ink/20 py-2.5"
                   >
                     <span className={`poster-word px-1 text-4xl capitalize ${active ? "marker" : ""}`}>{item.en.toLowerCase()}</span>
-                    <span className="font-mono text-xs tracking-[0.18em] text-muted" aria-hidden="true">
-                      No[{String(i + 1).padStart(2, "0")}]
-                    </span>
                   </Link>
                 </li>
               );

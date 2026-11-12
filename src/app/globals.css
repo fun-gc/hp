@@ -131,7 +131,8 @@ body {
 
 /* トップのヒーロー(HomeHero)。狭い画面では、建物の写真の下を霧に溶かし、その下に見出しと本文を流す。
    広い画面では横長の 1 枚にして、見出しと本文を右下の空に置く */
-.hero-photo {
+.hero-photo,
+.play-layer {
   position: absolute;
   left: 0;
   top: 0;
@@ -146,7 +147,12 @@ body {
 }
 .hero-copy {
   position: relative;
-  padding: 106cqw 1.25rem 3rem;
+  padding: 124cqw 1.25rem 3rem;
+  /* 上の余白は写真に重なっている。そこでのクリックやタップは、下の層(Play ボタンなど)へ通す */
+  pointer-events: none;
+}
+.hero-copy > * {
+  pointer-events: auto;
 }
 @media (min-width: 64rem) {
   /* 16:9 の 1 枚。背の低い画面では下が切れるので、見出しとボタンは上から 48cqw までに収める。
@@ -156,7 +162,8 @@ body {
     min-height: 0;
     border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 70%, transparent);
   }
-  .hero-photo {
+  .hero-photo,
+  .play-layer {
     left: -12cqw;
     top: -6cqw;
     width: 110cqw;
@@ -165,13 +172,139 @@ body {
     -webkit-mask-image: none;
     mask-image: none;
   }
+  /* 右の欄。建物の右下の角(H07)から引き出した線の先から始め、右の端には余白を取る。
+     幅 1280px より狭い画面では、数字の行(dl)を出さずに 16:9 に収める */
   .hero-copy {
     position: absolute;
-    left: 67.5cqw;
+    left: 64.5cqw;
     top: 25cqw;
-    width: 29.5cqw;
+    width: 30cqw;
     padding: 0;
   }
+}
+
+/* ---- パネルのミニゲーム(PanelGame) ----
+   「press any button」を押すと、カメラが黄色いパネルの正面へ回り込み、パネルの穴がドット画面になる。
+   舞台の data-play が段階を表す。in: ポスターの文字や線(.play-out)が引く → on: 建物の写真の代わりに、
+   回り込む連番と静止画(.play-layer)を出す → out: 写真に戻して、文字や線を出し直す */
+.play-word {
+  /* 建物の写真や線より上に置く */
+  z-index: 1;
+  cursor: pointer;
+  text-align: left;
+}
+/* 押せることが分かるように、カーソルを乗せると下に線を引く */
+.play-word .play-hint {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size 0.35s var(--ease-poster);
+}
+.play-word:is(:hover, :focus-visible) .play-hint {
+  background-size: 100% 1px;
+}
+.play-word:focus-visible {
+  outline: 1px solid var(--color-ink);
+  outline-offset: 2px;
+}
+/* 写真と同じ場所に、同じ大きさで置く(狭い画面の写真は、絵の横 46% を切り出した縦長)。
+   広い画面では、PanelGame が回り込みに合わせて拡大する */
+.play-layer {
+  aspect-ratio: 552 / 700;
+  transform-origin: 0 0;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.play-still,
+.play-dots {
+  position: absolute;
+  max-width: none;
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+.play-still {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* ドット画面は、パネルの穴の並ぶ範囲にぴったり重ねる(位置は PanelGame の LAYOUT) */
+.play-dots {
+  left: var(--dots-mx);
+  top: var(--dots-y);
+  width: var(--dots-mw);
+  height: var(--dots-h);
+}
+.play-layer[data-end] :is(.play-still, .play-dots) {
+  opacity: 1;
+}
+@media (min-width: 64rem) {
+  .play-layer {
+    aspect-ratio: 12 / 7;
+  }
+  .play-still {
+    left: var(--still-x);
+    top: var(--still-y);
+    width: var(--still-w);
+    height: var(--still-h);
+  }
+  .play-dots {
+    left: var(--dots-x);
+    width: var(--dots-w);
+  }
+}
+/* 連番は写真より粗い(幅 1440px)ので、ぱっと入れ替えると切り替わりが見える。行きは、動き出した連番を写真の上に
+   さっと重ねてから写真を外し、帰りは、写真を下に出してから最後のコマを消していく */
+.hero[data-play="on"] .play-layer {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+.hero[data-play="out"] .play-layer {
+  visibility: visible;
+  transition: opacity 0.3s;
+}
+.hero[data-play] :is(.mod-hit, .mod-tag) {
+  display: none;
+}
+.play-out,
+.play-out-lg {
+  transition:
+    opacity 0.35s,
+    visibility 0s;
+}
+.hero:is([data-play="in"], [data-play="on"]) .play-out {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.35s,
+    visibility 0s 0.35s;
+}
+@media (min-width: 64rem) {
+  .hero:is([data-play="in"], [data-play="on"]) .play-out-lg {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.35s,
+      visibility 0s 0.35s;
+  }
+}
+/* 遊んでいるあいだは、カーソルに合わせた奥行きの動きを止める(写真と連番がずれないように)。出入りはなめらかに */
+.hero[data-play] .depth {
+  transition: translate 0.35s;
+}
+/* 帰りは、最後のコマが消えてから動かし始める(消えていくコマの下で、写真がずれないように) */
+.hero[data-play="out"] .depth {
+  transition: translate 0.35s 0.3s;
+}
+/* 連番にも静止画にも黄色いフィルムを焼き込んであるので、連番が重なりきったら、写真と一緒に CSS のフィルムも外す
+   (.depth の transition を上書きするので、その後ろに書く) */
+.hero[data-play="on"] :is(.hero-photo, .tint) {
+  visibility: hidden;
+  transition:
+    visibility 0s 0.15s,
+    translate 0.35s;
+}
+.hero:is([data-play="in"], [data-play="on"]) .depth {
+  translate: 0 0;
 }
 
 /* メニューと建物の箱の連動(広い画面で、カーソルのある端末だけ)。
@@ -241,11 +374,6 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
   position: relative;
   padding: 1.25rem 1.25rem 1rem;
 }
-.page-note {
-  position: absolute;
-  right: 1.25rem;
-  top: 50cqw;
-}
 @media (min-width: 64rem) {
   .page-head {
     aspect-ratio: 10 / 3;
@@ -273,11 +401,6 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
     top: 7.5cqw;
     width: 28cqw;
     padding: 0;
-  }
-  .page-note {
-    left: 24.5cqw;
-    right: auto;
-    top: 21.5cqw;
   }
 }
 
