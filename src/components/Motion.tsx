@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 /**
  * ポスターの舞台(.stage)に奥行きを付ける。カーソルの位置を --px / --py(-1〜1)、スクロールの進みを --s(0〜1)として
- * 舞台に入れ、中の層(data-depth の付いた要素)が、それぞれ違う量だけ動く(globals.css)。
+ * 舞台に入れ、中の層(depth クラスの付いた要素)が、それぞれ違う量だけ動く(globals.css の .depth)。
  * 舞台が画面に見えている間だけ動かす。動きを減らす設定のときは何もしない
  */
 export function StageMotion() {
