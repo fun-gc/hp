@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeading, SubHead } from "@/components/Heading";
 import { NightStage } from "@/components/NightStage";
-import { stagger } from "@/lib/motion";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Join" };
@@ -46,7 +45,7 @@ export default function JoinPage() {
           </SubHead>
           <ol>
             {steps.map((s, i) => (
-              <li key={s.title} className="grid grid-cols-[4.5rem_1fr] gap-x-4 border-b border-ink/25 py-5 first:pt-0" data-reveal style={stagger(i + 2)}>
+              <li key={s.title} className="grid grid-cols-[4.5rem_1fr] gap-x-4 border-b border-ink/25 py-5 first:pt-0">
                 <span className="font-poster text-5xl font-light leading-none tabular-nums lining-nums" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -63,13 +62,13 @@ export default function JoinPage() {
       {/* トップの「Join us」と同じ、夜の建物 */}
       <div id="contact" className="scroll-mt-16">
         <NightStage labelledBy="contact-heading">
-          <h2 id="contact-heading" className="poster-word text-6xl sm:text-8xl" data-reveal="up" style={stagger(1)}>
+          <h2 id="contact-heading" className="poster-word text-6xl sm:text-8xl">
             Contact
           </h2>
-          <p className="mt-6 max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85" data-reveal style={stagger(4)}>
+          <p className="mt-6 max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85">
             入部や見学の相談、展示・取材のご依頼などはこちらからどうぞ。
           </p>
-          <div className="mt-7 flex flex-wrap gap-3" data-reveal style={stagger(6)}>
+          <div className="mt-7 flex flex-wrap gap-3">
             {site.contactFormUrl && (
               <a
                 href={site.contactFormUrl}

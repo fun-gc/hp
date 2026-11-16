@@ -3,7 +3,6 @@ import { PageHeading, SubHead } from "@/components/Heading";
 import { ArrowLine } from "@/components/Poster";
 import { ScheduleCalendar } from "@/components/ScheduleCalendar";
 import { getSchedule } from "@/lib/content";
-import { stagger } from "@/lib/motion";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Course" };
@@ -28,12 +27,10 @@ export default function CoursePage() {
       <div className="wrap py-16 sm:py-20">
         <section id="schedule" className="scroll-mt-24">
           <SubHead note="JST / UTC+9">Schedule</SubHead>
-          <p className="mb-6 text-muted" data-reveal style={stagger(3)}>
+          <p className="mb-6 text-muted">
             日付を押すと、その日の予定だけを表示します。
           </p>
-          <div data-reveal style={stagger(4)}>
-            <ScheduleCalendar events={events} buildDate={buildDate} />
-          </div>
+          <ScheduleCalendar events={events} buildDate={buildDate} />
           {/* 講座資料のリポジトリを公開したら(site.courseRepoPublic)、ここにリンクを出す */}
           {site.courseRepoPublic && (
             <a
