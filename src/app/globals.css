@@ -588,8 +588,8 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
    動き
    ポスターが刷り上がっていくように、写真 → 黄色の版 → 細い英字 → 線と注記の順に出す。
    登場の動き(a-*)は CSS だけで、読み込むとすぐ始まる。順番は --d(ミリ秒)でずらす。
-   登場の動きを付けるのは、写真のある見出し(トップのヒーローと各ページの見出し)だけ。それより下の本文や一覧、
-   夜の建物には付けず、スクロールしたときには最初から出ているようにする(読むのを待たせない)。
+   登場の動きを付けるのは、写真のある見出し(トップのヒーローと各ページの見出し)と、夜の建物の明かりだけ。
+   それより下の本文や一覧、夜の建物の中の文字には付けず、スクロールしたときには最初から出ているようにする(読むのを待たせない)。
    カーソルを乗せたときやメニューを開いたときのように、操作に応えて返す動きは、どこで使ってもよい
    ================================================================ */
 
@@ -780,6 +780,42 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
   content: counter(n, decimal-leading-zero);
   animation: count-to 1.6s var(--ease-poster) backwards;
   animation-delay: calc(var(--d, 0) * 1ms);
+}
+
+/* 夜の建物(NightStage): 見えてきたら明かりがともる。蛍光灯のように 2、3 度またたいてから落ち着く。
+   data-lights は LightsOn が付ける(JS が動かないときは付かず、最初から明かりがついている) */
+@keyframes lights-on {
+  0% {
+    filter: brightness(0.28) saturate(0.15);
+  }
+  7% {
+    filter: brightness(1.08) saturate(1);
+  }
+  13% {
+    filter: brightness(0.36) saturate(0.3);
+  }
+  21% {
+    filter: brightness(0.95) saturate(1);
+  }
+  27% {
+    filter: brightness(0.5) saturate(0.5);
+  }
+  38%,
+  100% {
+    filter: none;
+  }
+}
+.night[data-lights="off"] .night-photo {
+  filter: brightness(0.28) saturate(0.15);
+}
+.night[data-lights="on"] .night-photo {
+  animation: lights-on 1.5s linear backwards;
+}
+.night[data-lights] :is(.night-shore, .night-note) {
+  transition: opacity 1.6s 0.7s;
+}
+.night[data-lights="off"] :is(.night-shore, .night-note) {
+  opacity: 0;
 }
 
 /* ---- ボタンや矢印の細かい動き ---- */
