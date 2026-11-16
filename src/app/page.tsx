@@ -6,7 +6,6 @@ import { NightStage } from "@/components/NightStage";
 import { Annot, ArrowLine, Crosshair, DotGrid, Slashes, Tri } from "@/components/Poster";
 import { Poster } from "@/components/WorkCard";
 import { getMemberCount, getNews, getSchedule, getWorks } from "@/lib/content";
-import { stagger } from "@/lib/motion";
 import { eventKindEn, monthsEn } from "@/lib/en";
 import { workPoster } from "@/lib/work";
 
@@ -29,7 +28,7 @@ export default function Home() {
         <SectionHead ja="作品" en="WORKS" href="/works/" linkLabel="ALL WORKS" id="home-works" />
         <ul className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-7">
           {works.map((w, i) => (
-            <li key={w.slug} className="lg:translate-y-[calc(var(--step)*2.4rem)]" data-reveal style={{ "--step": i, ...stagger(i + 2) } as CSSProperties}>
+            <li key={w.slug} className="lg:translate-y-[calc(var(--step)*2.4rem)]" style={{ "--step": i } as CSSProperties}>
               <Link href="/works/" className="group block">
                 <Annot className="flex justify-between text-muted">
                   <span>No.{pad2(i + 1)}</span>
@@ -47,7 +46,7 @@ export default function Home() {
           ))}
         </ul>
         {/* 段の先に置く注記(広い画面) */}
-        <div className="pointer-events-none absolute bottom-16 left-8 hidden items-center gap-4 text-ink lg:flex" aria-hidden="true" data-reveal="wipe">
+        <div className="pointer-events-none absolute bottom-16 left-8 hidden items-center gap-4 text-ink lg:flex" aria-hidden="true">
           <Slashes count={6} />
           <Annot>
             {pad2(allWorks.length)} WORKS IN STOCK
@@ -60,20 +59,20 @@ export default function Home() {
       {/* ---- 予定とお知らせ ---- */}
       <section className="border-y border-ink/70 bg-paper-2">
         <div className="wrap relative grid gap-16 py-20 lg:grid-cols-2 lg:gap-20">
-          <div className="pointer-events-none absolute right-8 top-6 hidden items-center gap-4 text-ink lg:flex" aria-hidden="true" data-reveal>
+          <div className="pointer-events-none absolute right-8 top-6 hidden items-center gap-4 text-ink lg:flex" aria-hidden="true">
             <DotGrid cols={10} rows={3} className="opacity-50" />
             <Crosshair className="size-5" />
           </div>
           <div>
             <SectionHead ja="予定" en="SCHEDULE" href="/course/#schedule" linkLabel="CALENDAR" />
             {upcoming.length === 0 ? (
-              <p className="corner-ticks px-4 py-10 text-center text-sm text-muted" data-reveal style={stagger(3)}>
+              <p className="corner-ticks px-4 py-10 text-center text-sm text-muted">
                 次の予定は準備中です。
               </p>
             ) : (
               <ul className="border-t border-ink">
                 {upcoming.map((e, i) => (
-                  <li key={i} className="flex items-center gap-5 border-b border-ink/25 py-4" data-reveal style={stagger(i + 3)}>
+                  <li key={i} className="flex items-center gap-5 border-b border-ink/25 py-4">
                     <p className="w-16 shrink-0 text-center" aria-label={e.date}>
                       <span className="block font-poster text-4xl font-light leading-none tabular-nums lining-nums">{Number(e.date.slice(8))}</span>
                       <span className="font-mono text-[10px] tracking-[0.2em] text-muted">{monthsEn[Number(e.date.slice(5, 7)) - 1]}</span>
@@ -91,7 +90,7 @@ export default function Home() {
             <SectionHead ja="お知らせ" en="NEWS" href="/news/" linkLabel="ALL NEWS" />
             <ul className="border-t border-ink">
               {news.map((n) => (
-                <li key={n.slug} className="border-b border-ink/25" data-reveal style={stagger(news.indexOf(n) + 3)}>
+                <li key={n.slug} className="border-b border-ink/25">
                   <Link href={`/news/${n.slug}/`} className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-5">
                     <span className="w-24 shrink-0 font-mono text-sm text-muted">{n.date.toISOString().slice(0, 10).replaceAll("-", ".")}</span>
                     <span className="font-bold">
@@ -108,10 +107,10 @@ export default function Home() {
       {/* ---- 部員募集。ヒーローと同じ建物の夜 ---- */}
       <NightStage labelledBy="home-join">
         <SectionHead ja="入部案内" en="JOIN US" invert id="home-join" />
-        <p className="max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85" data-reveal style={stagger(4)}>
+        <p className="max-w-md border-l border-white/60 pl-4 leading-relaxed text-white/85">
           見学はいつでも受け付けています。
         </p>
-        <div className="mt-7 flex flex-wrap items-center gap-5" data-reveal style={stagger(6)}>
+        <div className="mt-7 flex flex-wrap items-center gap-5">
           <Link
             href="/join/"
             className="sweep group flex items-center gap-3 whitespace-nowrap px-6 py-3 font-mono text-sm font-medium tracking-[0.18em] text-ink [--sweep-from:var(--color-fun-yellow)] [--sweep-to:#fff]"

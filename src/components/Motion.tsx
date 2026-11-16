@@ -1,52 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-
-declare global {
-  interface Window {
-    /** ScrollReveal が動き出した印。layout.tsx の先頭のスクリプトが、これを見て隠したままにするかを決める */
-    __reveal?: boolean;
-  }
-}
-
-/**
- * スクロールで出てくる要素(data-reveal)に、画面へ入ったときに .is-in を付ける。見た目は globals.css の側で決める。
- * ページを移るたびに、新しいページの要素を見張り直す
- */
-export function ScrollReveal() {
-  const pathname = usePathname();
-  useEffect(() => {
-    window.__reveal = true;
-    const targets = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
-    if (!("IntersectionObserver" in window)) {
-      targets.forEach((el) => el.classList.add("is-in"));
-      return;
-    }
-    const observers = new Map<string, IntersectionObserver>();
-    const observerFor = (at: string) => {
-      let io = observers.get(at);
-      if (!io) {
-        io = new IntersectionObserver(
-          (entries, self) => {
-            for (const e of entries) {
-              if (!e.isIntersecting) continue;
-              e.target.classList.add("is-in");
-              self.unobserve(e.target);
-            }
-          },
-          // ふつうは、画面の下の端から少し入ったところで出す。data-reveal-at(0〜1)があれば、その割合まで見えてから出す
-          at ? { threshold: Number(at) } : { rootMargin: "0px 0px -8% 0px" },
-        );
-        observers.set(at, io);
-      }
-      return io;
-    };
-    targets.forEach((el) => observerFor(el.dataset.revealAt ?? "").observe(el));
-    return () => observers.forEach((io) => io.disconnect());
-  }, [pathname]);
-  return null;
-}
 
 /**
  * ポスターの舞台(.stage)に奥行きを付ける。カーソルの位置を --px / --py(-1〜1)、スクロールの進みを --s(0〜1)として

@@ -588,7 +588,9 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
    動き
    ポスターが刷り上がっていくように、写真 → 黄色の版 → 細い英字 → 線と注記の順に出す。
    登場の動き(a-*)は CSS だけで、読み込むとすぐ始まる。順番は --d(ミリ秒)でずらす。
-   スクロールで出てくるもの(data-reveal)は ScrollReveal が見えたときに .is-in を付ける。
+   登場の動きを付けるのは、写真のある見出し(トップのヒーローと各ページの見出し)だけ。それより下の本文や一覧、
+   夜の建物には付けず、スクロールしたときには最初から出ているようにする(読むのを待たせない)。
+   カーソルを乗せたときやメニューを開いたときのように、操作に応えて返す動きは、どこで使ってもよい
    ================================================================ */
 
 @keyframes a-fade {
@@ -780,89 +782,6 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
   animation-delay: calc(var(--d, 0) * 1ms);
 }
 
-/* ---- スクロールで出てくるもの ----
-   JS が動いているとき(html.js)だけ隠しておき、見えたら .is-in で出す。--i で順番にずらす */
-html.js [data-reveal] {
-  transition:
-    opacity 0.9s var(--ease-poster),
-    transform 0.9s var(--ease-poster),
-    clip-path 1s var(--ease-poster);
-  transition-delay: calc(var(--i, 0) * 70ms);
-}
-html.js [data-reveal]:not(.is-in) {
-  opacity: 0;
-  transform: translateY(1.1rem);
-}
-/* 切り抜き(clip-path)や幅 0 の変形で完全に隠すと、ブラウザが「画面に入った」と判定しなくなる。
-   そこで隠している間は透明にしておき、切り抜きはわずかに残す。出るときは透明をすぐ戻し、切り抜きだけを動かす */
-html.js [data-reveal="up"],
-html.js [data-reveal="wipe"],
-html.js [data-reveal="line"] {
-  transition-duration: 0.01s, 0.9s, 1s;
-}
-/* 大きな英字: 下の溝からせり上がる */
-html.js [data-reveal="up"] {
-  clip-path: inset(-0.2em -0.2em -0.3em -0.2em);
-}
-html.js [data-reveal="up"]:not(.is-in) {
-  transform: translateY(0.4em);
-  clip-path: inset(-0.2em -0.2em 95% -0.2em);
-}
-/* 罫線: 左から引く */
-html.js [data-reveal="line"] {
-  transform-origin: left center;
-}
-html.js [data-reveal="line"]:not(.is-in) {
-  transform: scaleX(0.01);
-}
-/* 左から刷る */
-html.js [data-reveal="wipe"] {
-  clip-path: inset(-0.3em -0.2em -0.3em -0.1em);
-}
-html.js [data-reveal="wipe"]:not(.is-in) {
-  transform: none;
-  clip-path: inset(-0.3em 97% -0.3em -0.1em);
-}
-
-/* 夜の建物(NightStage): 見えてきたら明かりがともる。蛍光灯のように 2、3 度またたいてから落ち着く */
-@keyframes lights-on {
-  0% {
-    filter: brightness(0.28) saturate(0.15);
-  }
-  7% {
-    filter: brightness(1.08) saturate(1);
-  }
-  13% {
-    filter: brightness(0.36) saturate(0.3);
-  }
-  21% {
-    filter: brightness(0.95) saturate(1);
-  }
-  27% {
-    filter: brightness(0.5) saturate(0.5);
-  }
-  38%,
-  100% {
-    filter: none;
-  }
-}
-html.js [data-reveal="lights"]:not(.is-in) {
-  opacity: 1;
-  transform: none;
-}
-html.js [data-reveal="lights"]:not(.is-in) .night-photo {
-  filter: brightness(0.28) saturate(0.15);
-}
-html.js [data-reveal="lights"].is-in .night-photo {
-  animation: lights-on 1.5s linear backwards;
-}
-html.js [data-reveal="lights"] :is(.night-shore, .night-note) {
-  transition: opacity 1.6s 0.7s;
-}
-html.js [data-reveal="lights"]:not(.is-in) :is(.night-shore, .night-note) {
-  opacity: 0;
-}
-
 /* ---- ボタンや矢印の細かい動き ---- */
 /* 矢印の線: 親(.group)にカーソルが乗ると、先へ少し進む */
 .arrow-line {
@@ -917,28 +836,11 @@ a:hover > .arrow-line {
   .count::after {
     animation: none;
   }
-  html.js [data-reveal],
-  html.js [data-reveal]:not(.is-in),
-  html.js [data-reveal="lights"] :is(.night-photo, .night-shore, .night-note) {
-    opacity: 1;
-    transform: none;
-    clip-path: none;
-    filter: none;
-    transition: none;
-    animation: none;
-  }
   .depth {
     translate: none;
   }
   .arrow-line,
   .sweep {
     transition: none;
-  }
-}
-@media print {
-  html.js [data-reveal]:not(.is-in) {
-    opacity: 1;
-    transform: none;
-    clip-path: none;
   }
 }

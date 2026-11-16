@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Cube, cubeCycle } from "@/components/Cube";
 import { PageHeading, SubHead } from "@/components/Heading";
 import { ArrowLine } from "@/components/Poster";
-import { stagger } from "@/lib/motion";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "About" };
@@ -38,7 +37,7 @@ export default function AboutPage() {
       <div className="wrap py-16 sm:py-20">
         <ol className="border-t border-ink">
           {activities.map((a, i) => (
-            <li key={a.title} id={a.id} className="grid scroll-mt-24 gap-x-8 gap-y-4 border-b border-ink/25 py-9 sm:grid-cols-[6.5rem_1fr_auto]" data-reveal>
+            <li key={a.title} id={a.id} className="grid scroll-mt-24 gap-x-8 gap-y-4 border-b border-ink/25 py-9 sm:grid-cols-[6.5rem_1fr_auto]">
               <span className="font-poster text-6xl font-light leading-none tabular-nums lining-nums" aria-hidden="true">
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -66,13 +65,13 @@ export default function AboutPage() {
         <section className="mt-20 grid gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <SubHead note="SINCE FUGU">FUGU → FUNGC</SubHead>
-            <p className="leading-relaxed text-muted" data-reveal style={stagger(3)}>
+            <p className="leading-relaxed text-muted">
               以前は「FUGU(FUN Game Unity)」という名前で活動し、Global Game Jam への参加や未来祭でのオンライン作品展示を行っていました。現在は FUNGC({site.fullName})として活動を続けています。
             </p>
           </div>
           <div>
             <SubHead note="ONLINE / CAMPUS">Where we work</SubHead>
-            <dl className="divide-y divide-ink/20" data-reveal style={stagger(3)}>
+            <dl className="divide-y divide-ink/20">
               <div className="flex flex-wrap gap-x-4 pb-3">
                 <dt className="w-24 pt-1 font-mono text-xs tracking-[0.2em] text-muted">ONLINE</dt>
                 <dd className="leading-relaxed">Discord サーバー(日々の相談、作品共有、お知らせ)</dd>

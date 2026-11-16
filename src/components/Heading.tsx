@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { delay as d, stagger, type Vars } from "@/lib/motion";
+import { delay as d, type Vars } from "@/lib/motion";
 import { navItems } from "@/lib/site";
 import { StageMotion } from "./Motion";
 import { Annot, ArrowLine, coordinates, DotGrid, StackPhoto, Tri, type PhotoName } from "./Poster";
@@ -29,7 +29,7 @@ export const moduleOf: Record<string, { code: string; sign: string; film: Pt[] }
   JOIN: { code: "H03", sign: "PLUS", film: [[30.44, 28.41], [14.16, 17.21], [19.53, 4.68], [36.77, 14.19]] },
 };
 
-/** セクションの見出し。「▲ 日本語の名前 ———」の細い行の下に、細い英字を大きく置く。画面に入ると、罫線が引かれ、英字がせり上がる */
+/** セクションの見出し。「▲ 日本語の名前 ———」の細い行の下に、細い英字を大きく置く */
 export function SectionHead({
   ja,
   en,
@@ -49,28 +49,24 @@ export function SectionHead({
   return (
     <div className="mb-9">
       <div className={`flex items-center gap-3 ${invert ? "text-white/70" : "text-muted"}`} aria-hidden="true">
-        <span className="flex items-center gap-3" data-reveal="wipe">
-          <Tri className={`size-3 ${invert ? "text-fun-yellow" : "text-ink"}`} />
-          <span className="text-xs font-medium tracking-[0.2em]">{ja}</span>
-        </span>
-        <span className="h-px min-w-8 flex-1 bg-current opacity-50" data-reveal="line" style={stagger(2)} />
+        <Tri className={`size-3 ${invert ? "text-fun-yellow" : "text-ink"}`} />
+        <span className="text-xs font-medium tracking-[0.2em]">{ja}</span>
+        <span className="h-px min-w-8 flex-1 bg-current opacity-50" />
       </div>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
-        <h2 id={id} className={`poster-word text-6xl sm:text-8xl ${invert ? "text-white" : "text-ink"}`} data-reveal="up" style={stagger(1)}>
+        <h2 id={id} className={`poster-word text-6xl sm:text-8xl ${invert ? "text-white" : "text-ink"}`}>
           {sentence(en)}
         </h2>
         {href && (
-          <span data-reveal style={stagger(5)}>
-            <Link
-              href={href}
-              className={`group flex items-center gap-3 px-1 font-mono text-xs font-medium tracking-[0.2em] transition-colors ${
-                invert ? "hover:bg-fun-yellow hover:text-ink" : "hover:bg-fun-yellow"
-              }`}
-            >
-              {linkLabel}
-              <ArrowLine length="2.5rem" />
-            </Link>
-          </span>
+          <Link
+            href={href}
+            className={`group flex items-center gap-3 px-1 font-mono text-xs font-medium tracking-[0.2em] transition-colors ${
+              invert ? "hover:bg-fun-yellow hover:text-ink" : "hover:bg-fun-yellow"
+            }`}
+          >
+            {linkLabel}
+            <ArrowLine length="2.5rem" />
+          </Link>
         )}
       </div>
     </div>
@@ -81,15 +77,15 @@ export function SectionHead({
 export function SubHead({ children, note, id }: { children: ReactNode; note?: string; id?: string }) {
   return (
     <div className="relative mb-6 flex flex-wrap items-end gap-x-4 gap-y-1 pb-3">
-      <h2 id={id} className="poster-word text-4xl sm:text-5xl" data-reveal="up">
+      <h2 id={id} className="poster-word text-4xl sm:text-5xl">
         {children}
       </h2>
       {note && (
-        <span className="pb-1" data-reveal style={stagger(3)}>
+        <span className="pb-1">
           <Annot className="text-muted">{note}</Annot>
         </span>
       )}
-      <span className="absolute inset-x-0 bottom-0 h-px bg-ink" data-reveal="line" style={stagger(1)} aria-hidden="true" />
+      <span className="absolute inset-x-0 bottom-0 h-px bg-ink" aria-hidden="true" />
     </div>
   );
 }
