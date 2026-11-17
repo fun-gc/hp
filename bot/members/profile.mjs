@@ -188,10 +188,10 @@ export function applyInput(existing, { kind, values, discordId, avatar }) {
 
   const result = memberSchema.safeParse(next);
   if (!result.success) return { error: `入力をもう一度見てみてね。\n${z.prettifyError(result.error)}` };
-  return { member: ordered(next) };
+  return { member: orderMember(next) };
 }
 
-// content/members/_example.json と同じ並びで書く(空の項目は書かない)
+// content/members/_example.json と同じ並びで書く(空の項目は書かない)。編集画面(bot/admin/)でも使う
 const KEY_ORDER = [
   "discordId",
   "name",
@@ -208,7 +208,7 @@ const KEY_ORDER = [
   "override",
 ];
 
-function ordered(member) {
+export function orderMember(member) {
   const filled = { medals: [], ...member };
   const out = {};
   const keys = [...KEY_ORDER, ...Object.keys(filled).filter((k) => !KEY_ORDER.includes(k))];

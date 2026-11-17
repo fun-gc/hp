@@ -2,7 +2,8 @@
 
 公立はこだて未来大学のゲーム制作サークル **FUNGC**(FUN Game Creators)の公式サイト(https://fungc.org)のリポジトリです。
 
-- 文章や予定を更新したい → [CONTRIBUTING.md](./CONTRIBUTING.md)(Git を使わず GitHub の画面だけで編集できます)
+- 文章や予定を更新したい → [CONTRIBUTING.md](./CONTRIBUTING.md)(Discord でログインする編集画面 https://fungc.org/admin/ か、GitHub の画面で編集できます)
+- 編集画面(/admin)の仕組みと設定 → [docs/admin.md](./docs/admin.md)
 - 公開の仕組み → [docs/deploy-cloudflare.md](./docs/deploy-cloudflare.md)
 - Discord Bot 連携の設計 → [docs/discord-bot.md](./docs/discord-bot.md)
 - 入部・見学フォームと Discord 招待の自動送信 → [docs/join-form.md](./docs/join-form.md)
@@ -15,12 +16,13 @@
 | `content/works/*.md` | 作品紹介 |
 | `content/schedule.json` | 講座・イベントの日程(講座ページのカレンダーに出る) |
 | `content/discord-events.json` | Discord のメンバー募集チャンネルからビルド時に作る日程(リポジトリには入れない) |
-| `content/members/<DiscordのID>.json` | メンバーのプロフィール(Discord Bot から登録する予定) |
+| `content/members/<DiscordのID>.json` | メンバーのプロフィール(Discord の `/profile` か編集画面から登録する) |
 | `content/medals.json` | メダルの定義(条件は運用を見て決める) |
 | `src/app/` | 各ページ |
 | `src/components/` | 部品(ロゴ、カレンダー、カードなど) |
 | `src/lib/site.ts` | 連絡先やリンクなど、サイト全体の設定 |
-| `bot/` | Discord Bot(`bot/calendar/` は募集チャンネルの予定の読み込み) |
+| `bot/` | Discord Bot(`bot/calendar/` は募集チャンネルの予定の読み込み、`bot/members/` は `/profile` コマンド)と、編集画面の API(`bot/admin/`) |
+| `functions/` | Cloudflare Pages Functions。`/api/discord`(`/profile`)と `/api/admin/*`(編集画面)の受け口 |
 
 ## 手元で動かす
 
@@ -28,7 +30,7 @@
 npm install
 npm run dev     # http://localhost:3000
 npm run build   # out/ に静的ファイルを書き出す
-npm test        # Discord の投稿から予定を読み取る処理のテスト
+npm test        # Bot と編集画面の API のテスト(bot/**/*.test.mjs)
 ```
 
 Next.js(App Router)+ Tailwind CSS で作り、`output: "export"` で静的な HTML として書き出して Cloudflare Pages に置いています。

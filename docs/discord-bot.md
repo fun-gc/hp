@@ -151,6 +151,8 @@ Cloudflare Pages が再ビルド → fungc.org/members に反映
 
 `/profile` を打っても候補に出ないときは、Discord を再読み込み(Ctrl+R)してください。
 
+同じ Discord のアプリと GitHub App は、Discord でログインして使う編集画面(https://fungc.org/admin/)でも使います。編集画面からも `content/members/<ID>.json` を書けます。設定は [admin.md](./admin.md) を見てください。
+
 ### 手元で試す
 
 `.dev.vars` に `DISCORD_PUBLIC_KEY` と `GITHUB_APP_ID`、`GITHUB_APP_PRIVATE_KEY` を書いて `npx wrangler pages dev out` を実行すると、`npm run build` した `out/` と一緒に受け口が動きます(`.dev.vars` はリポジトリに入れません)。入力の組み立てと PR の作り方は `npm test`(`bot/members/*.test.mjs`)で確かめています。
