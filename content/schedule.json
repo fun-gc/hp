@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "date": "2026-11-21",
+    "start": "18:10",
+    "title": "IBAe試射会",
+    "kind": "event",
+    "place": "Discord",
+    "note": "コンテストに投稿する予定の3V3FPSゲームの試遊会です。",
+    "host": "iuchico"
+  }
+]
