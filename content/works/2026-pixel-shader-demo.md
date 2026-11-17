@@ -9,4 +9,4 @@ playLabel: unityroom で遊ぶ
 thumbnail: /works/2026-pixel-shader-demo.gif
 tags: [個人制作, シェーダー]
 ---
-「触っていて心地よい」を目標に、0 から構築しました。
+「触っていて心地よい」を目標にしてシーンを構築しました。
