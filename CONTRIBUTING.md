@@ -2,6 +2,16 @@
 
 Git を使ったことがなくても、GitHub の Web 画面だけで更新できます。どの変更も Pull Request(PR)を通して、運営メンバー 1 人が確認してから公開されます。
 
+## 編集画面で更新する(いちばん簡単)
+
+FUNGC の Discord サーバーに参加している人は、https://fungc.org/admin/ を開いて **DISCORD でログイン** を押すと、お知らせ・予定・メンバー・作品をフォームで編集できます。GitHub のアカウントは要りません。
+
+- 保存すると、編集した人ごとの PR が GitHub にできます。運営が確認してマージすると、fungc.org に反映されます。マージ前にもう一度保存した変更は、同じ PR に追加されます。
+- 作品のサムネイル画像も、画面からアップロードできます。
+- 仕組みと初回の設定は [docs/admin.md](./docs/admin.md) を見てください。
+
+下の書き方は、GitHub の画面でファイルを直接編集するときのものです。連絡先やリンク(`src/lib/site.ts`)のように、編集画面にないものもこちらで直します。
+
 ## 共通の手順
 
 1. https://github.com/fun-gc/hp を開き、直したいファイルを開く(新しく作るときはフォルダを開いて **Add file → Create new file**)
@@ -79,9 +89,9 @@ tags: [アクション]
 
 ## メンバーのプロフィール
 
-Discord の `/profile edit` から登録できます(→ [docs/discord-bot.md](./docs/discord-bot.md#メンバー登録profile-コマンド))。送った内容は Bot が PR にするので、運営が確認してマージしてください。手で作るときは `content/members/_example.json` をまねて、`content/members/<DiscordのユーザーID>.json` を作ります。
+Discord の `/profile edit` か、編集画面(https://fungc.org/admin/)から登録できます(→ [docs/discord-bot.md](./docs/discord-bot.md#メンバー登録profile-コマンド))。送った内容は PR になるので、運営が確認してマージしてください。手で作るときは `content/members/_example.json` をまねて、`content/members/<DiscordのユーザーID>.json` を作ります。
 
-- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)、並び順(`order`)は運営が手で書き足します。本人が `/profile` で編集しても消えません。
+- メダル(`medals`)、作品(`works`)、学年の上書き(`override`)、並び順(`order`)は運営が書き足します(編集画面では「運営が入れる項目」の欄)。本人が `/profile` で編集しても消えません。
 
 - `admissionYear`(入学年度)を入れると学年が自動で計算され、毎年 4 月に繰り上がります。4 年生になると OB・OG の欄に移ります。
 - 院生などで表示を変えたいときは `"override": { "gradeLabel": "M1", "alumni": false }` を付けます。
