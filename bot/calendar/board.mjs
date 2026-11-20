@@ -10,6 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { todayInJapan } from "../../src/lib/date.ts";
 import { discord } from "./discord.mjs";
 
 const contentDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../content");
@@ -20,11 +21,11 @@ const MAX_LENGTH = 2000;
 const kindLabels = { course: "講座", exhibition: "展示", event: "イベント", other: "その他" };
 const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
-/** 日本時間の今日を { year, month, date: "YYYY-MM-DD" } で返す */
-export function todayInJapan(now = Date.now()) {
-  const jst = new Date(now + 9 * 60 * 60 * 1000);
-  const date = jst.toISOString().slice(0, 10);
-  return { year: jst.getUTCFullYear(), month: jst.getUTCMonth() + 1, date };
+/** 日本時間の今日を { year, month, date: "YYYY-MM-DD" } で返す(日付の計算はサイトと同じ src/lib/date.ts) */
+export function boardToday(now = Date.now()) {
+  const date = todayInJapan(new Date(now));
+  const [year, month] = date.split("-").map(Number);
+  return { year, month, date };
 }
 
 export const boardTitle = (year, month) => `## 📅 ${year}年${month}月の予定`;
@@ -73,7 +74,7 @@ export function renderBoard(events, { year, month, date: today }) {
 
 /** 今月の掲示メッセージを送るか書き換える。何をしたかを返す */
 export async function postBoard({ token, channelId, events, now = Date.now(), log = console.log }) {
-  const today = todayInJapan(now);
+  const today = boardToday(now);
   const content = renderBoard(events, today);
   const me = await discord(token, "/users/@me");
   const recent = (await discord(token, `/channels/${channelId}/messages?limit=50`)) ?? [];
