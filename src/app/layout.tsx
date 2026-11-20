@@ -9,6 +9,7 @@ import { NowBanner } from "@/components/NowBanner";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getSchedule } from "@/lib/content";
+import { todayInJapan } from "@/lib/date";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   // 開催中かどうかは閲覧時に決めるので、ビルドした日より前の予定だけ外して渡す
-  const buildDate = new Date().toISOString().slice(0, 10);
+  const buildDate = todayInJapan();
   const upcoming = getSchedule().filter((e) => e.date >= buildDate);
 
   return (

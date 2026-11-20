@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test bot/**/*.test.mjs",
+    "test": "node --test bot/**/*.test.mjs src/**/*.test.mjs",
     "discord:sync": "node bot/calendar/sync.mjs",
     "discord:board": "node bot/calendar/board.mjs"
   },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
+import { todayInJapan } from "@/lib/date";
 import { eventKindEn, monthsEn, weekdaysEn as weekdays } from "@/lib/en";
 import type { ScheduleEvent } from "@/lib/schema";
 
@@ -19,11 +20,6 @@ function pad(n: number) {
 
 function ymd(y: number, m: number, d: number) {
   return `${y}-${pad(m)}-${pad(d)}`;
-}
-
-function todayInJapan() {
-  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
-  return ymd(jst.getUTCFullYear(), jst.getUTCMonth() + 1, jst.getUTCDate());
 }
 
 const noopSubscribe = () => () => {};

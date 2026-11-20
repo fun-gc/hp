@@ -1,0 +1,26 @@
+name: 毎日の再ビルド
+
+# サイトは静的な HTML なので、日付で変わるところはビルドした日(日本時間)で決まる。
+# - トップや各ページの予定は、ビルドした日より前のものを外して書き出す(トップの UPCOMING の数も)
+# - メンバーの学年は、ビルドした日の年度から計算する(4 月 1 日に繰り上がる)
+# 予定の中身が変わらなくても日付が進めば書き出し直す必要があるので、毎日日本時間 0:05 に再ビルドする。
+# 予定が変わったときの再ビルドは discord-calendar.yml が受け持つ。
+# Cloudflare Pages の Deploy Hook の URL をリポジトリの Secrets に CF_PAGES_DEPLOY_HOOK として登録しておく(docs/deploy-cloudflare.md)。
+on:
+  schedule:
+    - cron: "5 15 * * *"
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloudflare Pages の再ビルドを依頼
+        env:
+          HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::CF_PAGES_DEPLOY_HOOK が未設定のため再ビルドをスキップしました"
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK"

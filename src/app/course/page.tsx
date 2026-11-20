@@ -3,13 +3,14 @@ import { PageHeading, SubHead } from "@/components/Heading";
 import { ArrowLine } from "@/components/Poster";
 import { ScheduleCalendar } from "@/components/ScheduleCalendar";
 import { getSchedule } from "@/lib/content";
+import { todayInJapan } from "@/lib/date";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Course" };
 
 export default function CoursePage() {
   const events = getSchedule();
-  const buildDate = new Date().toISOString().slice(0, 10);
+  const buildDate = todayInJapan();
 
   return (
     <>
