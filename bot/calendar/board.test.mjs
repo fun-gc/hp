@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { postBoard, renderBoard, todayInJapan } from "./board.mjs";
+import { postBoard, renderBoard, boardToday } from "./board.mjs";
 
 const today = { year: 2026, month: 10, date: "2026-10-20" };
 const events = [
@@ -38,7 +38,7 @@ test("予定がない月と、2000 文字を超える月", () => {
 
 test("日本時間で月を決める", () => {
   // 日本時間 11/1 0:30 は UTC では 10/31
-  assert.deepEqual(todayInJapan(Date.parse("2026-10-31T15:30:00Z")), { year: 2026, month: 11, date: "2026-11-01" });
+  assert.deepEqual(boardToday(Date.parse("2026-10-31T15:30:00Z")), { year: 2026, month: 11, date: "2026-11-01" });
 });
 
 // Discord の API をまねる
@@ -71,7 +71,7 @@ test("今月の掲示がなければ新しく送り、あれば書き換える",
   assert.equal(await postBoard({ token: "t", channelId: "C", events, now, log }), "edited");
   assert.deepEqual(calls.at(-1).slice(0, 2), ["PATCH", "/channels/C/messages/CUR"]);
 
-  calls = fakeDiscord([{ ...thisMonth, content: renderBoard(events, todayInJapan(now)) }]);
+  calls = fakeDiscord([{ ...thisMonth, content: renderBoard(events, boardToday(now)) }]);
   assert.equal(await postBoard({ token: "t", channelId: "C", events, now, log }), "unchanged");
   assert.equal(calls.length, 2);
 });

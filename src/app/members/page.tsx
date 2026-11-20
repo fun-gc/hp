@@ -7,7 +7,7 @@ import { memberStanding } from "@/lib/grade";
 export const metadata: Metadata = { title: "Members" };
 
 export default function MembersPage() {
-  // 学年はビルドした日を基準に計算する。毎日 0:05(日本時間)に自動で再ビルドするので、4 月 1 日に繰り上がる(.github/workflows/daily-rebuild.yml)。
+  // 学年はビルドした日を基準に計算する。毎日 0:17(日本時間)に自動で再ビルドするので、4 月 1 日に繰り上がる(.github/workflows/daily-rebuild.yml)。
   const now = new Date();
   const medals = new Map(getMedals().map((m) => [m.id, m]));
   const members = getMembers()

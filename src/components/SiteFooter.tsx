@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { todayInJapan } from "@/lib/date";
 import { navItems, site } from "@/lib/site";
 import { moduleOf } from "./Heading";
 import { LogoMark } from "./Logo";
@@ -83,7 +84,7 @@ export function SiteFooter() {
 
       <div className="relative border-t border-white/15">
         <p className="wrap flex justify-between py-4 font-mono text-[11px] tracking-[0.15em] text-white/50">
-          <span>© {new Date().getFullYear()} FUNGC</span>
+          <span>© {todayInJapan().slice(0, 4)} FUNGC</span>
           <span aria-hidden="true" className="italic">
             end of page_
           </span>
