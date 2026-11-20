@@ -6,6 +6,8 @@
 //       leave() を呼ぶと exit(画面が「人」の絵に戻る)→ done。
 // 走者はパネルの「人」の絵を小さくしたもの、障害物は THE STACK の箱。地面の箱は跳び越え、吊られた箱は跳ばずに下を走り抜ける。
 // 長さの単位は穴 1 つ、時間は秒。
+// (src/lib/runner.test.mjs から Node でそのまま読むので、このファイルはほかのファイルを import しない。
+//  @/ や拡張子なしの import、enum やコンストラクタ引数の private などの TypeScript だけの書き方は Node で読めない)
 
 export const COLS = 76;
 export const ROWS = 28;
@@ -52,11 +54,11 @@ const PERSON: Bitmap = [
 const PERSON_X = COLS - 36;
 
 /** 地面の線の行(上から数えて) */
-const FLOOR = 25;
+export const FLOOR = 25;
 
 // ---- 走者: 「人」の絵と同じ、丸い頭と台形の体 ----
-const RUNNER_X = 8;
-const RUNNER_W = 7;
+export const RUNNER_X = 8;
+export const RUNNER_W = 7;
 const RUNNER_H = 10;
 const BODY: Bitmap = ["..###..", ".#####.", "..###..", ".......", "..###..", ".#####.", ".#####.", "#######"];
 const LEGS: Record<"stand" | "a" | "b" | "jump", Bitmap> = {

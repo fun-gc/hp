@@ -9,7 +9,7 @@
 ```
 メンバー募集チャンネルに投稿
    ↓ 15 分ごとに GitHub Actions が REST API で読む(.github/workflows/discord-calendar.yml)
-予定が前回から変わっていたら Cloudflare Pages の Deploy Hook を叩く
+予定が前回から変わっていたら(日本時間の日付が変わったときも)Cloudflare Pages の Deploy Hook を叩く
    ↓
 ビルドの最初に next.config.ts が bot/calendar/sync.mjs を呼び、content/discord-events.json を作る
    ↓ content/schedule.json と一緒に zod で検証してカレンダーに出す
@@ -77,7 +77,7 @@ Unity 講座 第2回
 トップの「MEMBERS」には、Discord サーバーの参加人数から Bot などのアプリを除いた数を出します(`bot/members/count.mjs`)。
 
 - 予定と同じく、ビルドの最初に `bot/calendar/sync.mjs` が数え、`content/discord-stats.json`(`{ "memberCount": 人数 }`)に書き出します。ビルドのたびに作り直すので、リポジトリには入れません(`.gitignore`)。
-- 15 分ごとの見張りは、予定に加えて人数も比べ、変わっていたら再ビルドします。
+- 15 分ごとの見張りは、予定に加えて人数と日本時間の日付も比べ、変わっていたら再ビルドします(日付は、終わった予定をトップから外すため)。
 - メンバーの一覧を読むので、Developer Portal の **Bot** タブで **Server Members Intent** を ON にしておきます。OFF のときや読めなかったときはビルドを止めず、メンバー欄に載っている人数を出します。
 
 ### Discord への掲示(今月の予定)
