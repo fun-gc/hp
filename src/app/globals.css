@@ -463,10 +463,12 @@ body:has([data-nav="JOIN"]:is(:hover, :focus-visible)) [data-mod="JOIN"] {
   line-height: 0.74;
   color: var(--color-fun-yellow);
 }
+/* 黒い線は、版ズレのようにわざと右下へずらす。書体は重なりをまとめた Raleway(layout.tsx の titleOutline)で、G の棒の中に線が出ないようにする */
 .title-letter::after {
   content: attr(data-ch);
   position: absolute;
   inset: 0;
+  font-family: var(--font-title-outline), var(--font-poster);
   color: transparent;
   -webkit-text-stroke: 1px var(--color-ink);
   transform: translate(0.03em, 0.03em);
