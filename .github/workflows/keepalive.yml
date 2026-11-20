@@ -1,0 +1,43 @@
+name: 定期実行を止めない
+
+# 公開リポジトリでは、60 日間コミットがないと GitHub が定期実行(schedule)のワークフローを自動で止める。
+# 春休みのように更新がない時期が続いても、15 分ごとの予定の見張りや日付での再ビルドが止まらないよう、
+# 週に 1 回、定期実行のあるワークフロー(このファイルも含む)を API で「有効にする」と送り直して、60 日の数えを戻す。
+# コミットは増やさない。だれかが Actions の画面で手で止めたワークフローは、そのまま止めておく。
+on:
+  schedule:
+    - cron: "17 3 * * 1" # 毎週月曜 12:17(日本時間)
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/workflows
+
+      - name: 定期実行のあるワークフローを有効にし直す
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          files=$(grep -lE '^[[:space:]]*schedule:' .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null || true)
+          if [ -z "$files" ]; then
+            echo "定期実行のあるワークフローはありません"
+            exit 0
+          fi
+          for path in $files; do
+            file=$(basename "$path")
+            state=$(gh api "repos/$REPO/actions/workflows/$file" --jq .state)
+            if [ "$state" = "disabled_manually" ]; then
+              echo "::notice::$file は手で止められているので、そのままにしました"
+              continue
+            fi
+            gh api -X PUT "repos/$REPO/actions/workflows/$file/enable"
+            echo "$file を有効にし直しました(前の状態: $state)"
+          done
