@@ -30,7 +30,7 @@
 npm install
 npm run dev     # http://localhost:3000
 npm run build   # out/ に静的ファイルを書き出す
-npm test        # Bot と編集画面の API のテスト(bot/**/*.test.mjs)
+npm test        # Bot と編集画面の API(bot/**/*.test.mjs)、日付・学年・ミニゲームの中身(src/lib/*.test.mjs)のテスト
 ```
 
 Next.js(App Router)+ Tailwind CSS で作り、`output: "export"` で静的な HTML として書き出して Cloudflare Pages に置いています。
