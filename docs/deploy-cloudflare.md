@@ -28,7 +28,7 @@ Pages のプロジェクト → **Custom domains** → `fungc.org` を追加。�
 
 ### 3. 毎日の自動再ビルド
 
-予定の一覧(終わった予定を外す)とメンバーの学年はビルドした日(日本時間)を基準に決まるので、毎日 0:05 に再ビルドします(`.github/workflows/daily-rebuild.yml`)。これがないと、Discord の予定に変化がない日は、終わった予定がトップに残ります。学年も 4 月 1 日のこの再ビルドで繰り上がります。
+予定の一覧(終わった予定を外す)とメンバーの学年はビルドした日(日本時間)を基準に決まるので、毎日 0:17 に再ビルドします(`.github/workflows/daily-rebuild.yml`)。これがないと、Discord の予定に変化がない日は、終わった予定がトップに残ります。GitHub は毎時 0 分前後が混んで定期実行が遅れたり落とされたりするので、0 分ちょうどは避けています。15 分ごとの Discord の予定の見張り(`discord-calendar.yml`)も、日本時間の日付が変わった最初の回で再ビルドするので、どちらかが動けば終わった予定は消えます。学年も 4 月 1 日のこの再ビルドで繰り上がります。
 
 1. Pages のプロジェクト → **Settings** → **Builds** → **Deploy hooks** で、ブランチ `main` のフックを作り URL をコピー
 2. GitHub の `fun-gc/hp` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**、名前 `CF_PAGES_DEPLOY_HOOK` で URL を貼る

@@ -1,10 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { COLS, ROWS, Runner } from "./runner.ts";
+import { COLS, FLOOR, ROWS, RUNNER_W, RUNNER_X, Runner } from "./runner.ts";
 
-// 画面の中身から走者の位置を読む。走者は左から 8〜14 列目、地面の線は 25 行目
-const RUNNER_COLS = [8, 14];
-const FLOOR = 25;
+// 画面の中身から走者の位置を読む。走者は左から RUNNER_X 列目から RUNNER_W 列ぶん、地面の線は FLOOR 行目
+const RUNNER_COLS = [RUNNER_X, RUNNER_X + RUNNER_W - 1];
 /** 走ってるときの足の先の行 */
 const ON_GROUND = FLOOR - 1;
 
