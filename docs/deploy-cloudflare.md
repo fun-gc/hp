@@ -26,9 +26,9 @@ Node.js のバージョンはリポジトリの `.node-version` でパッチま�
 
 Pages のプロジェクト → **Custom domains** → `fungc.org` を追加。ドメインの DNS が Cloudflare にあれば、レコードは自動で作られます。`www.fungc.org` も追加しておくと安心です。
 
-### 3. 年度替わりの自動再ビルド
+### 3. 毎日の自動再ビルド
 
-メンバーの学年はビルドした日を基準に計算するので、毎年 4 月 1 日に再ビルドします(`.github/workflows/yearly-rebuild.yml`)。
+予定の一覧(終わった予定を外す)とメンバーの学年はビルドした日(日本時間)を基準に決まるので、毎日 0:05 に再ビルドします(`.github/workflows/daily-rebuild.yml`)。これがないと、Discord の予定に変化がない日は、終わった予定がトップに残ります。学年も 4 月 1 日のこの再ビルドで繰り上がります。
 
 1. Pages のプロジェクト → **Settings** → **Builds** → **Deploy hooks** で、ブランチ `main` のフックを作り URL をコピー
 2. GitHub の `fun-gc/hp` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**、名前 `CF_PAGES_DEPLOY_HOOK` で URL を貼る

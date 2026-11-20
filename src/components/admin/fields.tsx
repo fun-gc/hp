@@ -3,6 +3,7 @@
 // 編集画面の入力欄とボタン。見た目はサイトと同じ色(globals.css の @theme)にそろえる
 import { marked } from "marked";
 import { useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { todayInJapan } from "@/lib/date";
 
 export const inputClass =
   "w-full border border-ink/40 bg-white/80 px-3 py-2 text-[15px] leading-relaxed text-ink placeholder:text-muted/60 focus:border-ink focus:outline-none focus:ring-2 focus:ring-fun-yellow disabled:opacity-60";
@@ -226,7 +227,7 @@ export const splitLines = (text: string) =>
 export const toNumber = (text: string) => (text.trim() === "" ? undefined : Number(text));
 
 /** 日本時間の今日(YYYY-MM-DD) */
-export const today = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+export const today = () => todayInJapan();
 
 export function FormTitle({ children, note }: { children: ReactNode; note?: ReactNode }) {
   return (

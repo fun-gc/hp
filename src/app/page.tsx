@@ -6,6 +6,7 @@ import { NightStage } from "@/components/NightStage";
 import { Annot, ArrowLine, Crosshair, DotGrid, Slashes, Tri } from "@/components/Poster";
 import { Poster } from "@/components/WorkCard";
 import { getMemberCount, getNews, getSchedule, getWorks } from "@/lib/content";
+import { todayInJapan } from "@/lib/date";
 import { eventKindEn, monthsEn } from "@/lib/en";
 import { workPoster } from "@/lib/work";
 
@@ -15,7 +16,7 @@ export default function Home() {
   const news = getNews().slice(0, 3);
   const allWorks = getWorks();
   const works = allWorks.filter((w) => workPoster(w)).slice(0, 4);
-  const buildDate = new Date().toISOString().slice(0, 10);
+  const buildDate = todayInJapan();
   const upcomingAll = getSchedule().filter((e) => e.date >= buildDate);
   const upcoming = upcomingAll.slice(0, 3);
 
