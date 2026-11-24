@@ -4,6 +4,8 @@
 //
 // 流れ: boot(パネルの「人」の絵がほどけて、小さな走者が降りてくる)→ title(PRESS ANY BUTTON)→ run → over → run …
 //       leave() を呼ぶと exit(画面が「人」の絵に戻る)→ done。
+//       BREAK_AT 点まで走ると break(箱が出なくなり、「BREAK OUT」と出て、走者がパネルの右端から飛び出す)→ gone。
+//       飛び出したあとは、src/components/PageRun.tsx がページの上で続きを走らせる(飛び出した位置と速さは exit)。
 // 走者はパネルの「人」の絵を小さくしたもの、障害物は THE STACK の箱。地面の箱は跳び越え、吊られた箱は跳ばずに下を走り抜ける。
 // 長さの単位は穴 1 つ、時間は秒。
 // (src/lib/runner.test.mjs から Node でそのまま読むので、このファイルはほかのファイルを import しない。
@@ -13,9 +15,9 @@ export const COLS = 76;
 export const ROWS = 28;
 /** 画面。COLS × ROWS 個の穴を、左上から 1 行ずつ並べたもの(1 = 開く) */
 export type Screen = Uint8Array;
-export type Phase = "boot" | "title" | "run" | "over" | "exit" | "done";
+export type Phase = "boot" | "title" | "run" | "over" | "break" | "gone" | "exit" | "done";
 
-type Bitmap = readonly string[];
+export type Bitmap = readonly string[];
 
 /**
  * パネルにもともと出ている絵。右端の 28 列が「人」(tools/poster-render/pictograms.py の person と同じ形)で、
@@ -59,9 +61,10 @@ export const FLOOR = 25;
 // ---- 走者: 「人」の絵と同じ、丸い頭と台形の体 ----
 export const RUNNER_X = 8;
 export const RUNNER_W = 7;
-const RUNNER_H = 10;
-const BODY: Bitmap = ["..###..", ".#####.", "..###..", ".......", "..###..", ".#####.", ".#####.", "#######"];
-const LEGS: Record<"stand" | "a" | "b" | "jump", Bitmap> = {
+export const RUNNER_H = 10;
+/** 走者の絵(体と足)。ページの上を走る走者(src/lib/pagerun.ts)も同じ絵を使う */
+export const BODY: Bitmap = ["..###..", ".#####.", "..###..", ".......", "..###..", ".#####.", ".#####.", "#######"];
+export const LEGS: Record<"stand" | "a" | "b" | "jump", Bitmap> = {
   stand: ["..#.#..", "..#.#.."],
   a: ["..#.#..", "..#...."],
   b: ["..#.#..", "....#.."],
@@ -77,6 +80,14 @@ const JUMP = 76;
 const SPEED_MIN = 34;
 const SPEED_MAX = 68;
 const ACCEL = 0.85;
+
+/** この点数まで走ると、走者がパネルから飛び出す */
+export const BREAK_AT = 200;
+/** 飛び出すときに右へ駆ける速さと、最後の大きな跳び */
+const DASH = 60;
+const LEAP = 100;
+/** 飛び出したときの走者。x は左端の列、y は地面からの足もとの高さ、vx は右向き、vy は上向きの速さ(穴/秒) */
+export type Exit = { x: number; y: number; vx: number; vy: number };
 
 // ---- 障害物: 1 辺 4 の箱(THE STACK の箱)を並べたり積んだりしたもの ----
 const BOX = 4;
@@ -141,6 +152,7 @@ const BIG: Font = {
     B: "####./#...#/#...#/####./#...#/#...#/####.",
     E: "#####/#..../#..../####./#..../#..../#####",
     G: ".###./#...#/#..../#.###/#...#/#...#/.###.",
+    K: "#...#/#..#./#.#../##.../#.#../#..#./#...#",
     M: "#...#/##.##/#.#.#/#.#.#/#...#/#...#/#...#",
     N: "#...#/##..#/##..#/#.#.#/#..##/#..##/#...#",
     O: ".###./#...#/#...#/#...#/#...#/#...#/.###.",
@@ -197,6 +209,8 @@ export class Runner {
   /** これまでの最高点。記録を塗り替えた回は record が立つ */
   hi: number;
   record = false;
+  /** gone になったときの走者の位置と速さ */
+  exit: Exit | null = null;
 
   /** いまの場面に入ってからの秒数 */
   private t = 0;
@@ -205,6 +219,10 @@ export class Runner {
   /** 走者の足もとの高さと、上向きの速さ */
   private y = 0;
   private vy = 0;
+  /** 走者の左端の列。ふだんは RUNNER_X で止まっていて、飛び出すときだけ右へ動く */
+  private x = RUNNER_X;
+  /** break で、箱がなくなってからの秒数(箱が残っているあいだは -1) */
+  private calm = -1;
   private air = false;
   /** 着地の少し前に押したぶんを、着地してすぐの踏み切りに回す(残り秒数) */
   private buffer = 0;
@@ -216,10 +234,12 @@ export class Runner {
   /** exit に入ったときの画面。ここから「人」の絵へ戻す */
   private frozen: Screen | null = null;
   private readonly random: () => number;
+  private readonly breakAt: number;
 
-  constructor(hi = 0, random: () => number = Math.random) {
+  constructor(hi = 0, random: () => number = Math.random, breakAt = BREAK_AT) {
     this.hi = hi;
     this.random = random;
+    this.breakAt = breakAt;
   }
 
   /** ボタンを押した */
@@ -227,7 +247,7 @@ export class Runner {
     if (this.phase === "title" || (this.phase === "over" && this.t > 0.6)) {
       this.start();
       this.jump();
-    } else if (this.phase === "run") {
+    } else if (this.phase === "run" || (this.phase === "break" && this.calm < 0)) {
       if (this.air) this.buffer = 0.12;
       else this.jump();
     }
@@ -252,6 +272,9 @@ export class Runner {
     this.speed = SPEED_MIN;
     this.y = 0;
     this.vy = 0;
+    this.x = RUNNER_X;
+    this.calm = -1;
+    this.exit = null;
     this.air = false;
     this.buffer = 0;
     this.flash = 0;
@@ -259,9 +282,9 @@ export class Runner {
     this.gap = 26;
   }
 
-  private jump() {
+  private jump(power = JUMP) {
     this.air = true;
-    this.vy = JUMP;
+    this.vy = power;
     this.buffer = 0;
   }
 
@@ -275,38 +298,75 @@ export class Runner {
     this.t += dt;
     if (this.phase === "boot" && this.t >= 1.25) this.enter("title");
     if (this.phase === "exit" && this.t >= 0.6) this.enter("done");
+    if (this.phase === "break") return this.breakOut(dt);
     if (this.phase !== "run") return;
 
     this.speed = Math.min(SPEED_MAX, SPEED_MIN + ACCEL * this.t);
+    this.scroll(dt);
+    this.fall(dt);
+    this.gap -= this.speed * dt;
+    if (this.gap <= 0) this.spawn();
+
+    if (this.hit()) return this.end("over");
+    if (this.score >= this.breakAt) this.enter("break");
+  }
+
+  /** 地面と箱を、いまの速さで左へ流す。点数は流れた距離で決まる */
+  private scroll(dt: number) {
     const dx = this.speed * dt;
     this.dist += dx;
     const score = Math.floor(this.dist / 4);
     if (Math.floor(score / 100) > Math.floor(this.score / 100)) this.flash = 0.9;
     this.score = score;
     this.flash = Math.max(0, this.flash - dt);
-
-    if (this.air) {
-      this.vy -= GRAVITY * dt;
-      this.y += this.vy * dt;
-      this.buffer = Math.max(0, this.buffer - dt);
-      if (this.y <= 0) {
-        this.y = 0;
-        this.vy = 0;
-        this.air = false;
-        if (this.buffer > 0) this.jump();
-      }
-    }
-
     for (const o of this.obstacles) o.x -= dx;
     this.obstacles = this.obstacles.filter((o) => o.x + KINDS[o.kind].w > -1);
-    this.gap -= dx;
-    if (this.gap <= 0) this.spawn();
+  }
 
-    if (this.hit()) {
-      this.record = this.score > this.hi;
-      this.hi = Math.max(this.hi, this.score);
-      this.enter("over");
+  /** 跳んでいるあいだの上下の動き */
+  private fall(dt: number) {
+    if (!this.air) return;
+    this.vy -= GRAVITY * dt;
+    this.y += this.vy * dt;
+    this.buffer = Math.max(0, this.buffer - dt);
+    if (this.y <= 0) {
+      this.y = 0;
+      this.vy = 0;
+      this.air = false;
+      if (this.buffer > 0) this.jump();
     }
+  }
+
+  /**
+   * 飛び出し。まず、画面に残った箱が流れ去るまではいつもどおり走る(新しい箱は出ない)。
+   * 箱がなくなって着地したら、地面が止まって「BREAK OUT」と出て、走者が右へ駆け出し、右端の手前で大きく跳んでパネルの外へ出る
+   */
+  private breakOut(dt: number) {
+    if (this.calm < 0) {
+      this.scroll(dt);
+      this.fall(dt);
+      if (this.hit()) return this.end("over");
+      if (this.obstacles.length === 0 && !this.air) this.calm = 0;
+      return;
+    }
+    this.calm += dt;
+    this.speed = Math.max(0, this.speed - 90 * dt);
+    this.scroll(dt);
+    this.fall(dt);
+    if (this.calm < 1.1) return;
+    this.x += DASH * dt;
+    if (!this.air && this.x >= COLS - RUNNER_W - 24) this.jump(LEAP);
+    if (this.x >= COLS - RUNNER_W) {
+      this.exit = { x: this.x, y: this.y, vx: DASH, vy: this.vy };
+      this.end("gone");
+    }
+  }
+
+  /** 遊び終わり(当たったか、飛び出したか)。最高点を書き換える */
+  private end(phase: "over" | "gone") {
+    this.record = this.score > this.hi;
+    this.hi = Math.max(this.hi, this.score);
+    this.enter(phase);
   }
 
   private enter(phase: Phase) {
@@ -325,7 +385,7 @@ export class Runner {
 
   /** 走者の当たり判定(絵より少し小さい四角)が、どれかの箱に重なっているか */
   private hit() {
-    const [x0, x1] = [RUNNER_X + 1, RUNNER_X + RUNNER_W - 1];
+    const [x0, x1] = [this.x + 1, this.x + RUNNER_W - 1];
     const [y0, y1] = [this.y, this.y + RUNNER_H - 1];
     for (const o of this.obstacles) {
       for (const [bx, by] of KINDS[o.kind].boxes) {
@@ -369,15 +429,21 @@ export class Runner {
     }
 
     const over = this.phase === "over";
-    // 当たった直後は、走者を点滅させる
-    if (!over || t > 0.6 || t % 0.2 < 0.1) this.runner(s, this.y, this.air ? "jump" : over ? "stand" : Math.floor(this.dist / 5) % 2 ? "a" : "b");
+    const dashing = this.phase === "break" && this.calm >= 1.1;
+    // 当たった直後は、走者を点滅させる。飛び出したあとは描かない
+    const legs = this.air ? "jump" : over || (this.calm >= 0 && !dashing) ? "stand" : Math.floor((dashing ? this.x * 2 : this.dist) / 5) % 2 ? "a" : "b";
+    if (this.phase !== "gone" && (!over || t > 0.6 || t % 0.2 < 0.1)) this.runner(s, this.y, legs);
+    if (this.phase === "break" && this.calm > 0.2 && this.calm % 0.36 < 0.24) {
+      clear(s, MSG_X + 1, 6, COLS - MSG_X - 3, 11);
+      message(s, "BREAK OUT", 8);
+    }
     if (over && t > 0.35) {
       // 後ろの山や箱を四角く消して、その上に書く
       clear(s, MSG_X + 1, 6, COLS - MSG_X - 3, 11);
       message(s, "GAME OVER", 8);
     }
     // 点数(右上)と、その左に最高点。100 点ごとと、記録を塗り替えたときは点滅させる
-    const blink = this.flash > 0 ? this.flash % 0.3 < 0.15 : over && this.record && t % 0.5 < 0.25;
+    const blink = this.flash > 0 ? this.flash % 0.3 < 0.15 : (over || this.phase === "gone") && this.record && t % 0.5 < 0.25;
     clear(s, COLS - SCORE_W - 2, 0, SCORE_W + 2, 7);
     if (!blink) text(s, pad5(this.score), COLS - 1 - SCORE_W, 1, SMALL);
     if (this.hi > 0) {
@@ -416,8 +482,9 @@ export class Runner {
 
   private runner(s: Screen, y: number, legs: keyof typeof LEGS) {
     const top = FLOOR - RUNNER_H - Math.round(y);
-    blit(s, BODY, RUNNER_X, top);
-    blit(s, LEGS[legs], RUNNER_X, top + BODY.length);
+    const x = Math.round(this.x);
+    blit(s, BODY, x, top);
+    blit(s, LEGS[legs], x, top + BODY.length);
   }
 
   private obstacle(s: Screen, x: number, kind: Kind) {
