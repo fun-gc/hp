@@ -136,3 +136,43 @@ test("画面は COLS × ROWS 個の 0 か 1 だけ", () => {
     assert.ok(s.every((v) => v === 0 || v === 1));
   }
 });
+
+/** 飛び出すまで(長くても 10 秒)進める */
+function untilGone(runner) {
+  for (let i = 0; i < 10 * 60 && runner.phase !== "gone"; i++) runner.step(1 / 60);
+}
+
+test("BREAK_AT 点まで走ると、走者がパネルの右端から跳んで飛び出す", () => {
+  // 最初の箱が来る前(距離 26)に、5 点(距離 20)で飛び出しが始まるようにする
+  const runner = new Runner(0, () => 0, 5);
+  advance(runner, 1.3);
+  runner.press();
+  for (let i = 0; i < 10 * 60 && runner.phase === "run"; i++) runner.step(1 / 60);
+  assert.equal(runner.phase, "break");
+
+  // 飛び出しのあいだは、押しても跳ばない(箱が残っていないので)
+  advance(runner, 0.8);
+  runner.press();
+  untilGone(runner);
+  assert.equal(runner.phase, "gone");
+  assert.ok(runner.exit, "飛び出した位置と速さが分かる");
+  assert.ok(runner.exit.x >= COLS - RUNNER_W);
+  assert.ok(runner.exit.vx > 0, "右へ向かっている");
+  assert.ok(runner.exit.y > 0, "跳んでいる最中に出ていく");
+  assert.equal(runner.hi, runner.score);
+
+  // 飛び出したあとのパネルに、走者はいない(左端の走者の場所が空いている)
+  assert.equal(runnerBottom(runner), -1);
+  // 押しても始め直さない
+  runner.press();
+  assert.equal(runner.phase, "gone");
+});
+
+test("飛び出しの途中で、残った箱に当たれば GAME OVER", () => {
+  // 箱が出たあと(距離 30 以降)に飛び出しが始まり、跳ばないので残った箱に当たる
+  const runner = new Runner(0, () => 0, 10);
+  advance(runner, 1.3);
+  runner.press();
+  untilOver(runner);
+  assert.equal(runner.phase, "over");
+});

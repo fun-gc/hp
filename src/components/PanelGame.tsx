@@ -1,14 +1,17 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { delay as d, type Vars } from "@/lib/motion";
-import { COLS, type Phase, ROWS, Runner } from "@/lib/runner";
+import type { Start } from "@/lib/pagerun";
+import { COLS, FLOOR, type Phase, ROWS, RUNNER_W, Runner } from "@/lib/runner";
+import { PageRun } from "./PageRun";
 
 // トップのヒーローで遊べるミニゲーム。斜体のひとこと「press any button」が Play ボタンになっていて、押すと
 //   1. ポスターの文字や線が引き、
 //   2. カメラが建物の黄色いパネル(H05)の正面へ回り込み(あらかじめレンダーした 36 コマの連番を、1 秒に 24 コマで送る)、
 //   3. パネルの穴がドット画面になって、ボタン 1 つのランゲーム(src/lib/runner.ts)が始まる。
 // ヒーローが見えていれば、Enter かスペースでも始まる。Esc か EXIT で、同じコマを逆に送ってポスターへ戻る。
+// ランゲームで BREAK_AT 点まで走ると、走者がパネルから飛び出す。カメラはポスターへ戻り、走者はページの上を走り続ける(PageRun)。
 //
 // 絵はどれも tools/poster-render/ で作る(README.md の「ミニゲームの絵」)。
 //   play/d-00〜35.webp      回り込むカメラの連番(狭い画面は m-*。ヒーローの写真と同じく、絵の横 28%〜74% を切り出したもの)
@@ -159,6 +162,9 @@ export function PanelGame({ front }: { front: ReactNode }) {
   const [loaded, setLoaded] = useState(0);
   const [failed, setFailed] = useState(false);
   const [phase, setPhase] = useState<Phase>("boot");
+  /** パネルから飛び出した走者が、ページの上を走っているあいだ(飛び出した位置と速さ) */
+  const [page, setPage] = useState<Start | null>(null);
+  const paging = useRef(false);
 
   useEffect(() => {
     const stage = layer.current?.closest<HTMLElement>(".stage");
@@ -282,6 +288,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
         seen = game.phase;
         setPhase(seen);
         if (seen === "over") saveHi(game.hi);
+        if (seen === "gone") return void breakOut(game);
         if (seen === "done") return void back();
       }
       raf = requestAnimationFrame((next) => loop(next, time));
@@ -329,7 +336,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
     };
 
     const start = async () => {
-      if (now !== "idle") return;
+      if (now !== "idle" || paging.current) return;
       const mine = ++run;
       wide = wideQuery.matches;
       warm();
@@ -375,6 +382,26 @@ export function PanelGame({ front }: { front: ReactNode }) {
       raf = requestAnimationFrame((time) => loop(time));
     };
 
+    /**
+     * 走者がパネルの右端から飛び出した。パネルの穴の位置から、ページの上での位置と速さに直して PageRun に渡し、
+     * カメラはポスターへ戻す(パネルの中はもう走者がいないので、「人」の絵には戻さない)
+     */
+    const breakOut = (from: Runner) => {
+      saveHi(from.hi);
+      const exit = from.exit!;
+      const r = dotsEl.getBoundingClientRect();
+      const [px, py] = [r.width / COLS, r.height / ROWS];
+      paging.current = true;
+      setPage({
+        x: r.left + (exit.x + RUNNER_W / 2) * px,
+        y: r.top + window.scrollY + (FLOOR - exit.y) * py,
+        vx: exit.vx * px,
+        vy: -exit.vy * py,
+        scale: px,
+      });
+      void back();
+    };
+
     /** ゲームの画面が「人」の絵に戻ったあと、逆に回り込んでポスターへ戻る */
     const back = async () => {
       const mine = run;
@@ -393,7 +420,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
       if (mine !== run) return;
       delete stage.dataset.play;
       go("idle");
-      playButton.current?.focus({ preventScroll: true });
+      if (!paging.current) playButton.current?.focus({ preventScroll: true });
     };
 
     /**
@@ -401,7 +428,7 @@ export function PanelGame({ front }: { front: ReactNode }) {
      * (下の段まで読み進めた人がスペースでスクロールしようとして、上へ戻されないように)
      */
     const onIdleKey = (e: KeyboardEvent) => {
-      if (now !== "idle" || e.repeat || e.isComposing || e.defaultPrevented) return;
+      if (now !== "idle" || paging.current || e.repeat || e.isComposing || e.defaultPrevented) return;
       if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || (e.key !== "Enter" && e.key !== " ")) return;
       if (onControl(e)) return;
       const box = stage.getBoundingClientRect();
@@ -445,7 +472,11 @@ export function PanelGame({ front }: { front: ReactNode }) {
   }, [mode]);
 
   const busy = mode === "load";
-  const hint = phase === "run" ? null : phase === "over" ? "press any button to retry" : "press any button";
+  const hint = phase === "run" ? null : phase === "break" || phase === "gone" ? "break out!" : phase === "over" ? "press any button to retry" : "press any button";
+  const endPage = useCallback(() => {
+    paging.current = false;
+    setPage(null);
+  }, []);
 
   return (
     <>
@@ -519,6 +550,8 @@ export function PanelGame({ front }: { front: ReactNode }) {
           </p>
         </>
       )}
+
+      {page && <PageRun start={page} onEnd={endPage} />}
     </>
   );
 }

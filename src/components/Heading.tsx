@@ -29,7 +29,10 @@ export const moduleOf: Record<string, { code: string; sign: string; film: Pt[] }
   JOIN: { code: "H03", sign: "PLUS", film: [[30.44, 28.41], [14.16, 17.21], [19.53, 4.68], [36.77, 14.19]] },
 };
 
-/** セクションの見出し。「▲ 日本語の名前 ———」の細い行の下に、細い英字を大きく置く */
+/**
+ * セクションの見出し。「▲ 日本語の名前 ———」の細い行の下に、細い英字を大きく置く。
+ * 細い行とリンクは、トップでパネルから飛び出した走者が乗れる足場(data-ledge。PageRun.tsx)
+ */
 export function SectionHead({
   ja,
   en,
@@ -48,7 +51,7 @@ export function SectionHead({
 }) {
   return (
     <div className="mb-9">
-      <div className={`flex items-center gap-3 ${invert ? "text-white/70" : "text-muted"}`} aria-hidden="true">
+      <div data-ledge className={`flex items-center gap-3 ${invert ? "text-white/70" : "text-muted"}`} aria-hidden="true">
         <Tri className={`size-3 ${invert ? "text-fun-yellow" : "text-ink"}`} />
         <span className="text-xs font-medium tracking-[0.2em]">{ja}</span>
         <span className="h-px min-w-8 flex-1 bg-current opacity-50" />
@@ -60,6 +63,7 @@ export function SectionHead({
         {href && (
           <Link
             href={href}
+            data-ledge
             className={`group flex items-center gap-3 px-1 font-mono text-xs font-medium tracking-[0.2em] transition-colors ${
               invert ? "hover:bg-fun-yellow hover:text-ink" : "hover:bg-fun-yellow"
             }`}

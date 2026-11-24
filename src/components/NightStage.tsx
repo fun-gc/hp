@@ -9,11 +9,12 @@ const at = (x: number, y: number, mx = 0, my = 0) => ({ "--x": x, "--y": y, "--m
  * 穴あきパネルの絵が黄色く光り、霧の向こうには函館の街の明かりが並ぶ。中身(children)は右下の空に置く。
  * トップの「Join us」と /join/ の「Contact」で使う。
  * 画面に入ると、蛍光灯がつくときのように明かりが 2、3 度またたいてからともり、少し遅れて街の明かりが浮かぶ(LightsOn)。
- * 中の文字とボタンには登場の動きを付けず、最初から出しておく
+ * 中の文字とボタンには登場の動きを付けず、最初から出しておく。
+ * 下の端は、トップでパネルから飛び出した走者が跳ね返るトランポリン(data-ledge="bounce"。PageRun.tsx)
  */
 export function NightStage({ children, labelledBy }: { children: ReactNode; labelledBy: string }) {
   return (
-    <section className="stage night text-white" aria-labelledby={labelledBy}>
+    <section className="stage night text-white" data-ledge="bounce" aria-labelledby={labelledBy}>
       <LightsOn />
       <FarShore night className="night-shore pin w-[150cqw] max-w-none lg:w-[62cqw]" style={at(40, 25.5, -22, 58)} />
       <StackPhoto name="stack-night" narrow="stack-night-m" sizes="110vw" className="night-photo" />

@@ -307,6 +307,15 @@ body {
   translate: 0 0;
 }
 
+/* ---- パネルから飛び出した走者が、ページの上を走る(PageRun) ----
+   走者が乗った足場(data-ledge)の上の端に、一瞬だけ黄色い線を引く。乗った作品カードには、ホバーと同じ黄色い影を残す */
+[data-run-step] {
+  box-shadow: 0 -3px 0 var(--color-fun-yellow);
+}
+[data-ledge="card"][data-run-got] {
+  box-shadow: 7px 7px 0 var(--color-fun-yellow);
+}
+
 /* メニューと建物の箱の連動(広い画面で、カーソルのある端末だけ)。
    箱の穴あきパネルの形に切り抜いたリンク(.mod-hit)を写真の上に置く。箱か、ヘッダーの同じ名前のメニューにカーソルが乗ると、
    その面に黄色いフィルムが乗り、行き先の札(.mod-tag)が出る。--on が 1 のとき見える */
